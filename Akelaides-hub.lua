@@ -3,22 +3,50 @@ local SaveManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/d
 local InterfaceManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/InterfaceManager.lua"))()
 
 local Window = Fluent:CreateWindow({
-    Title = "Akelaides Hub " .. Fluent.Version,
-    SubTitle = "by calvin",
+    Title = "Fluent " .. Fluent.Version,
+    SubTitle = "by dawid",
     TabWidth = 160,
     Size = UDim2.fromOffset(580, 460),
     Acrylic = true, 
-    Theme = "Dark",
+    Theme = "Dark", -- Default theme
     MinimizeKey = Enum.KeyCode.LeftControl
 })
 
 local Tabs = {
     Main = Window:AddTab({ Title = "Main", Icon = "" }),
+    Settings = Window:AddTab({ Title = "Settings", Icon = "settings" }),
     Teleportation = Window:AddTab({ Title = "Teleportation", Icon = "map-pin" })
 }
 
 local MainTab = Tabs.Main
+local SettingsTab = Tabs.Settings
 local TeleportTab = Tabs.Teleportation
+
+-- Dropdown to change the UI color theme
+local ColorDropdown = SettingsTab:AddDropdown("ColorTheme", {
+    Title = "Change UI Color",
+    Values = {"Dark", "Light", "Purple", "Red", "Green"}, -- Replaced Blue with Purple
+    Default = "Dark", -- Default theme color
+})
+
+ColorDropdown:OnChanged(function(selectedColor)
+    -- Change the UI theme based on the selection
+    if selectedColor == "Dark" then
+        Window:SetTheme("Dark")
+    elseif selectedColor == "Light" then
+        Window:SetTheme("Light")
+    elseif selectedColor == "Purple" then
+        Window:SetTheme("Purple") -- Set to purple
+        -- Adding a dark purple gradient effect
+        Window:SetBackgroundColor(Color3.fromRGB(50, 0, 50))  -- A darker purple background
+        Window:SetGradientColor(Color3.fromRGB(102, 0, 102), Color3.fromRGB(50, 0, 50))  -- Gradient from purple to dark purple
+    elseif selectedColor == "Red" then
+        Window:SetTheme("Red")
+    elseif selectedColor == "Green" then
+        Window:SetTheme("Green")
+    end
+    print("UI theme changed to:", selectedColor)
+end)
 
 -- Main Section
 MainTab:AddButton({
@@ -94,7 +122,7 @@ TeleportTab:AddButton({
 
 -- Notify
 Fluent:Notify({
-    Title = "Akelaides",
+    Title = "Fluent",
     Content = "The script has been loaded.",
     Duration = 8
 })
@@ -110,7 +138,7 @@ SaveManager:BuildConfigSection(Tabs.Settings)
 Window:SelectTab(1)
 
 Fluent:Notify({
-    Title = "Akelaides",
+    Title = "Fluent",
     Content = "The script has been loaded.",
-    Duration = 3
+    Duration = 8
 })
