@@ -3,8 +3,8 @@ local SaveManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/d
 local InterfaceManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/InterfaceManager.lua"))()
 
 local Window = Fluent:CreateWindow({
-    Title = "Fluent " .. Fluent.Version,
-    SubTitle = "by dawid",
+    Title = "Akelaides Hub " .. Fluent.Version,
+    SubTitle = "by calvin",
     TabWidth = 160,
     Size = UDim2.fromOffset(580, 460),
     Acrylic = true, 
@@ -122,7 +122,7 @@ TeleportTab:AddButton({
 
 -- Notify
 Fluent:Notify({
-    Title = "Fluent",
+    Title = "Akelaides",
     Content = "The script has been loaded.",
     Duration = 8
 })
@@ -138,7 +138,7 @@ SaveManager:BuildConfigSection(Tabs.Settings)
 Window:SelectTab(1)
 
 Fluent:Notify({
-    Title = "Fluent",
+    Title = "Akelaides",
     Content = "The script has been loaded.",
     Duration = 8
 })
