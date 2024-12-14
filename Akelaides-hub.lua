@@ -103,7 +103,7 @@ local ButtonForsaken = TeleportTab:CreateButton({
         local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
         
         -- Define teleportation location for Forsaken
-        local forsakenPosition = Vector3.new(-2750, 130, 1450)
+        local forsakenPosition = Vector3.new(-2523, 136, 1591)
         
         -- Teleport the player
         humanoidRootPart.CFrame = CFrame.new(forsakenPosition)
