@@ -74,24 +74,40 @@ local Input = MainTab:CreateInput({
 })
 
 -- Teleportation Dropdown
+-- Teleportation Dropdown
 local TeleportTab = Window:CreateTab("Teleportation", nil)
 local Section = TeleportTab:CreateSection("Islands")
 local Dropdown = TeleportTab:CreateDropdown({
     Name = "Teleport Island",
     Options = {"Moosewood", "Forsaken", "Ancient Isles"},
-    CurrentOption = {"Moosewood"},
+    CurrentOption = "Moosewood", -- Default Option
     MultipleOptions = false,
-    Flag = "Dropdown1", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
-    Callback = function(Options)
-        if Options == "Moosewood" then
-            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(400, 135, 250)  -- Example coordinates for Moosewood
-        elseif Options == "Forsaken" then
-            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-2750, 130, 1450)  -- Example coordinates for Forsaken
-        elseif Options == "Ancient Isles" then
-            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(6000, 200, 300)  -- Example coordinates for Ancient Isles
+    Flag = "Dropdown1", -- A flag for configuration saving
+    Callback = function(selectedOption)
+        local player = game.Players.LocalPlayer
+        local character = player.Character or player.CharacterAdded:Wait()
+        local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
+
+        -- Define teleportation locations with example coordinates
+        local teleportLocations = {
+            Moosewood = Vector3.new(400, 135, 250),
+            Forsaken = Vector3.new(-2750, 130, 1450),
+            ["Ancient Isles"] = Vector3.new(6000, 200, 300)
+        }
+
+        -- Check if the selected option exists in the locations table
+        local targetPosition = teleportLocations[selectedOption]
+        
+        if targetPosition then
+            -- Teleport player if a valid location is selected
+            humanoidRootPart.CFrame = CFrame.new(targetPosition)
+            print("Teleporting to " .. selectedOption)
+        else
+            print("Error: Invalid teleport location.")
         end
     end,
 })
+
 
 -- Stop Script Button
 local ButtonStop = MainTab:CreateButton({
@@ -121,8 +137,13 @@ local MinimizeButton = MainTab:CreateButton({
             -- Update FPS and Ping
             game:GetService("RunService").Heartbeat:Connect(function()
                 if minimized then
-                    fpsText:SetText("FPS: " .. tostring(game:GetService("Stats").PerformanceStats.FPS))
-                    pingText:SetText("Ping: " .. tostring(game:GetService("Stats").PerformanceStats.Ping))
+                    -- Update FPS
+                    local fps = game:GetService("Stats").PerformanceStats.FPS
+                    fpsText:SetText("FPS: " .. tostring(fps))
+
+                    -- Update Ping
+                    local ping = game:GetService("Stats").Network.ServerStats.Ping
+                    pingText:SetText("Ping: " .. tostring(ping) .. " ms")
                 end
             end)
         else
