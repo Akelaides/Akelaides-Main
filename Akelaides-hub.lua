@@ -2,31 +2,31 @@ local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 
 local Window = Rayfield:CreateWindow({
     Name = "Akelaides Hub",
-    Icon = 0, -- Icon in Topbar. Can use Lucide Icons (string) or Roblox Image (number). 0 to use no icon (default).
+    Icon = 0,
     LoadingTitle = "Akelaides",
     LoadingSubtitle = "by C4LV",
-    Theme = "Default", -- Check https://docs.sirius.menu/rayfield/configuration/themes
+    Theme = "Default",
     DisableRayfieldPrompts = false,
-    DisableBuildWarnings = false, -- Prevents Rayfield from warning when the script has a version mismatch with the interface
+    DisableBuildWarnings = false,
     ConfigurationSaving = {
        Enabled = true,
-       FolderName = nil, -- Create a custom folder for your hub/game
+       FolderName = nil,
        FileName = "Big Hub"
     },
     Discord = {
-       Enabled = false, -- Prompt the user to join your Discord server if their executor supports it
-       Invite = "noinvitelink", -- The Discord invite code, do not include discord.gg/. E.g. discord.gg/ABCD would be ABCD
-       RememberJoins = true -- Set this to false to make them join the discord every time they load it up
+       Enabled = false,
+       Invite = "noinvitelink",
+       RememberJoins = true
     },
-    KeySystem = true, -- Set this to true to use our key system
+    KeySystem = true,
     KeySettings = {
        Title = "Akelaides Hub",
        Subtitle = "Key System",
-       Note = "https://pastebin.com/GtL1EQic", -- Use this to tell the user how to get a key
-       FileName = "examplehubkey", -- It is recommended to use something unique as other scripts using Rayfield may overwrite your key file
-       SaveKey = false, -- The user's key will be saved, but if you change the key, they will be unable to use your script
-       GrabKeyFromSite = false, -- If this is true, set Key below to the RAW site you would like Rayfield to get the key from
-       Key = {"k0UwY6CJ5qg5ZWS41KB6CV1MRAYloTzR"} -- List of keys that will be accepted by the system, can be RAW file links (pastebin, github etc) or simple strings ("hello","key22")
+       Note = "https://pastebin.com/GtL1EQic",
+       FileName = "examplehubkey",
+       SaveKey = false,
+       GrabKeyFromSite = false,
+       Key = {"k0UwY6CJ5qg5ZWS41KB6CV1MRAYloTzR"}
     }
 })
 
@@ -55,7 +55,7 @@ local Slider = MainTab:CreateSlider({
     Increment = 1,
     Suffix = "Bananas",
     CurrentValue = 16,
-    Flag = "Slider1", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
+    Flag = "Slider1",
     Callback = function(Value)
         game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = (Value)
     end,
@@ -73,41 +73,60 @@ local Input = MainTab:CreateInput({
     end,
 })
 
--- Teleportation Dropdown
--- Teleportation Dropdown
+-- Teleportation Buttons
 local TeleportTab = Window:CreateTab("Teleportation", nil)
 local Section = TeleportTab:CreateSection("Islands")
-local Dropdown = TeleportTab:CreateDropdown({
-    Name = "Teleport Island",
-    Options = {"Moosewood", "Forsaken", "Ancient Isles"},
-    CurrentOption = "Moosewood", -- Default Option
-    MultipleOptions = false,
-    Flag = "Dropdown1", -- A flag for configuration saving
-    Callback = function(selectedOption)
+
+-- Button for Moosewood
+local ButtonMoosewood = TeleportTab:CreateButton({
+    Name = "Teleport to Moosewood",
+    Callback = function()
         local player = game.Players.LocalPlayer
         local character = player.Character or player.CharacterAdded:Wait()
         local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
-
-        -- Define teleportation locations with example coordinates
-        local teleportLocations = {
-            Moosewood = Vector3.new(400, 135, 250),
-            Forsaken = Vector3.new(-2750, 130, 1450),
-            ["Ancient Isles"] = Vector3.new(6000, 200, 300)
-        }
-
-        -- Check if the selected option exists in the locations table
-        local targetPosition = teleportLocations[selectedOption]
         
-        if targetPosition then
-            -- Teleport player if a valid location is selected
-            humanoidRootPart.CFrame = CFrame.new(targetPosition)
-            print("Teleporting to " .. selectedOption)
-        else
-            print("Error: Invalid teleport location.")
-        end
+        -- Define teleportation location for Moosewood
+        local moosewoodPosition = Vector3.new(400, 135, 250)
+        
+        -- Teleport the player
+        humanoidRootPart.CFrame = CFrame.new(moosewoodPosition)
+        print("Teleporting to Moosewood")
     end,
 })
 
+-- Button for Forsaken
+local ButtonForsaken = TeleportTab:CreateButton({
+    Name = "Teleport to Forsaken",
+    Callback = function()
+        local player = game.Players.LocalPlayer
+        local character = player.Character or player.CharacterAdded:Wait()
+        local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
+        
+        -- Define teleportation location for Forsaken
+        local forsakenPosition = Vector3.new(-2750, 130, 1450)
+        
+        -- Teleport the player
+        humanoidRootPart.CFrame = CFrame.new(forsakenPosition)
+        print("Teleporting to Forsaken")
+    end,
+})
+
+-- Button for Ancient Isles
+local ButtonAncientIsles = TeleportTab:CreateButton({
+    Name = "Teleport to Ancient Isles",
+    Callback = function()
+        local player = game.Players.LocalPlayer
+        local character = player.Character or player.CharacterAdded:Wait()
+        local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
+        
+        -- Define teleportation location for Ancient Isles
+        local ancientIslesPosition = Vector3.new(6000, 200, 300)
+        
+        -- Teleport the player
+        humanoidRootPart.CFrame = CFrame.new(ancientIslesPosition)
+        print("Teleporting to Ancient Isles")
+    end,
+})
 
 -- Stop Script Button
 local ButtonStop = MainTab:CreateButton({
