@@ -1,4 +1,4 @@
-local Fluent = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/main.lua"))()
+local Fluent = loadstring(game:HttpGet("https://github.com/dawid-scripts/Fluent/releases/latest/download/main.lua"))()
 local SaveManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/SaveManager.lua"))()
 local InterfaceManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/InterfaceManager.lua"))()
 
@@ -26,13 +26,10 @@ local TeleportDropdown = Tabs.Teleportation:AddDropdown("TeleportationDropdown",
     Values = {
         "Moosewood",
         "Forsaken",
-        "Ancient",
-        "Roslit",
-        "enchant",
-        "altar"
+        "Ancient Isles"
     },
     Multi = false,
-    Default = 0
+    Default = 1
 })
 
 -- Teleportation logic based on dropdown selection
@@ -44,12 +41,15 @@ TeleportDropdown:OnChanged(function(Value)
     if Value == "Moosewood" then
         local moosewoodPosition = Vector3.new(400, 135, 250)
         humanoidRootPart.CFrame = CFrame.new(moosewoodPosition)
+        print("Teleporting to Moosewood")
     elseif Value == "Forsaken" then
         local forsakenPosition = Vector3.new(-2497, 137, 1627)
         humanoidRootPart.CFrame = CFrame.new(forsakenPosition)
-    elseif Value == "Ancient" then
+        print("Teleporting to Forsaken")
+    elseif Value == "Ancient Isles" then
         local ancientIslesPosition = Vector3.new(6059, 195, 284)
         humanoidRootPart.CFrame = CFrame.new(ancientIslesPosition)
+        print("Teleporting to Ancient Isles")
     end
 end)
 
