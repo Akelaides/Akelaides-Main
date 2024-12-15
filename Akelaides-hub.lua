@@ -1,24 +1,32 @@
 local Fluent = loadstring(game:HttpGet("https://github.com/dawid-scripts/Fluent/releases/latest/download/main.lua"))()
+if not Fluent then
+    warn("Fluent library failed to load")
+else
+    print("Fluent library loaded successfully")
+end
+
 local SaveManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/SaveManager.lua"))()
 local InterfaceManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/InterfaceManager.lua"))()
 
 local Window = Fluent:CreateWindow({
-    Title = "Akelaides Hub " .. Fluent.Version,
+    Title = "Akelaides Hub " .. "1.0",  -- Fixed version if Fluent.Version is unavailable
     SubTitle = "by Calvin",
     TabWidth = 160,
     Size = UDim2.fromOffset(580, 460),
-    Acrylic = true, 
-    Theme = "Amethyst",
+    Acrylic = true,
+    Theme = "Dark",
     MinimizeKey = Enum.KeyCode.LeftControl
 })
 
 local Tabs = {
     Main = Window:AddTab({ Title = "Main", Icon = "" }),
-    Teleportation = Window:AddTab({ Title = "Teleportation", Icon = "map-pin" })
+    Teleportation = Window:AddTab({ Title = "Teleportation", Icon = "map-pin" }),
+    Settings = Window:AddTab({ Title = "Settings", Icon = "settings" })  -- Added the Settings tab
 }
 
 local MainTab = Tabs.Main
 local TeleportTab = Tabs.Teleportation
+local SettingsTab = Tabs.Settings  -- Referencing the Settings tab for later use
 
 -- Main Section
 MainTab:AddButton({
@@ -44,11 +52,11 @@ local Input = Tabs.Main:AddInput("AutofarmValue", {
     Title = "Autofarm Value",
     Default = "Default",
     Placeholder = "Enter your Value",
-    Numeric = false, -- Only allows numbers
-    Finished = false, -- Only calls callback when you press enter
+    Numeric = false, 
+    Finished = false,
     Callback = function(Value)
         print("Input changed: ", Value)
-        getgenv().farmValue = tonumber(Value) or 1 -- Ensure the value is numeric
+        getgenv().farmValue = tonumber(Value) or 1
     end
 })
 
@@ -64,46 +72,27 @@ Toggle:OnChanged(function(State)
     local character = player.Character or player.CharacterAdded:Wait()
     local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
 
-    -- Position to teleport the player for farming
     local farmPosition = Vector3.new(-191, 16, -158)
     humanoidRootPart.CFrame = CFrame.new(farmPosition)
 
-    getgenv().farmer = State -- Enable/Disable farmer based on the toggle state
+    getgenv().farmer = State
 
     if getgenv().farmer then
         while getgenv().farmer do
             local args = {
                 [1] = "ClickStat",
-                [2] = getgenv().farmValue or 1 -- Use the input value, defaulting to 1 if nil
+                [2] = getgenv().farmValue or 1
             }
-            
-            -- Perform the farming operation
             game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Client"):InvokeServer(unpack(args))
-            game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Client"):InvokeServer(unpack(args)) -- Extra click for speed
-
-            task.wait() -- Use task.wait for better performance
+            task.wait(0.1)  -- Adjusted wait for performance
         end
     end
 end)
 
-
-getgenv().farmer = true
-
-while farmer == true do
-    local args = {
-        [1] = "Moon",
-        [2] = "Single"
-    }
-    
-    game:GetService("ReplicatedStorage"):WaitForChild("RemoteEvents"):WaitForChild("EggOpened"):InvokeServer(unpack(args))
-    task.wait()
-end    
-
-
 -- Teleport Section
 local Section = TeleportTab:AddSection("Islands")
 
--- Button for Moosewood
+-- Button for Escape Island
 TeleportTab:AddButton({
     Title = "Teleport to Escape Island",
     Callback = function()
@@ -111,16 +100,16 @@ TeleportTab:AddButton({
         local character = player.Character or player.CharacterAdded:Wait()
         local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
         
-        -- Define teleportation location for Moosewood
+        -- Define teleportation location for Escape Island
         local escapePosition = Vector3.new(-167, 13, -444)
         
         -- Teleport the player
         humanoidRootPart.CFrame = CFrame.new(escapePosition)
-        print("Teleporting to Island")
+        print("Teleporting to Escape Island")
     end,
 })
 
--- Button for Forsaken
+-- Button for Winter Island
 TeleportTab:AddButton({
     Title = "Teleport to Winter",
     Callback = function()
@@ -128,34 +117,34 @@ TeleportTab:AddButton({
         local character = player.Character or player.CharacterAdded:Wait()
         local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
         
-        -- Define teleportation location for Forsaken
+        -- Define teleportation location for Winter Island
         local escWinterPosition = Vector3.new(-168, 16, -770)
         
         -- Teleport the player
         humanoidRootPart.CFrame = CFrame.new(escWinterPosition)
-        print("Teleporting to Escape Winter")
+        print("Teleporting to Winter Island")
     end,
 })
 
--- Button for Ancient Isles
+-- Button for Spooky Island
 TeleportTab:AddButton({
-    Title = "Teleport to Spooky",
+    Title = "Teleport to Spooky Island",
     Callback = function()
         local player = game.Players.LocalPlayer
         local character = player.Character or player.CharacterAdded:Wait()
         local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
         
-        -- Define teleportation location for Ancient Isles
+        -- Define teleportation location for Spooky Island
         local spookyPosition = Vector3.new(-167, 21, -768)
         
         -- Teleport the player
         humanoidRootPart.CFrame = CFrame.new(spookyPosition)
-        print("Teleporting to Spooky")
+        print("Teleporting to Spooky Island")
     end,
 })
 
 TeleportTab:AddParagraph({
-    Title = "More Teleports Soon ! <3"
+    Title = "More Teleports Soon! <3",
     Content = "I'm lazy lol."
 })
 
@@ -166,7 +155,6 @@ Fluent:Notify({
     Duration = 8
 })
 
--- Set up the save and interface managers
 SaveManager:SetLibrary(Fluent)
 InterfaceManager:SetLibrary(Fluent)
 InterfaceManager:SetFolder("FluentScriptHub")
