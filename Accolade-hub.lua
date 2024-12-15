@@ -3,8 +3,8 @@ local SaveManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/d
 local InterfaceManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/InterfaceManager.lua"))()
 
 local Window = Fluent:CreateWindow({
-	Title = "Akelaides Hub", (BETA)
-	SubTitle = "Calvin",
+	Title = "script•by-isouDz🇩🇿",
+	SubTitle = "🐙JB911-Fïsçh🐟",
 	TabWidth = 120,
 	Size = UDim2.fromOffset(550, 350),
 	Acrylic = false, 
@@ -657,10 +657,10 @@ end)
 
 Main = Tap.General:AddSection('General') do
 	SelectPosition = Main:AddParagraph({        
-		Title = "Autofarm"
+		Title = "Position : N/A"
 	})
-	Toggle(Main, "Auto Farm Fish","", "Farm Fish")
-	Toggle(Main, "Teleport To Select Position","", "To Pos Stand")
+	Toggle(Main, "AutoFarm","", "Farm Fish")
+	Toggle(Main, "Teleport To Selected Pos,"", "To Pos Stand")
 	Main:AddButton({
 		Title = "Select position",
 		Callback = function()
@@ -979,7 +979,7 @@ Shoppy = Tap.Shop:AddSection('Shop All') do
 	end
 end
 Shoppy:AddButton({
-    Title = "Buy Incant fishing rod",
+    Title = "Buy Incant Rod",
     Description = "View [11,000C$]",
     Callback = function()
         local player = game.Players.LocalPlayer
@@ -1251,23 +1251,10 @@ Settings_M = Tap.Settings:AddSection("Misc") do
 		Title = "Join Discord",
 		Description = "Click to join",
 		Callback = function()
-			-- افتح رابط ديسكورد
-			local discordLink = "https://discord.gg/GPwHf8J7"
-			-- استخدام syn.request لفتح الرابط إذا كانت البيئة تدعم ذلك
-			if syn and syn.request then
-				syn.request({
-					Url = discordLink,
-					Method = "GET"
-				})
-			-- استخدام os.execute كحل بديل
-			elseif os and os.execute then
-				os.execute("start " .. discordLink)
-			else
-				print("Environment does not support opening URLs directly.")
-			end
-		end,
+            loadstring(Game:HttpGet("https://raw.githubusercontent.com/edgeiy/infiniteyield/master/source"))
 	})
 end
+
 	RunService.Heartbeat:Connect(function() -- All RunService
 		local TimeSinceLastPlay = os.time() - Old
 		local hours = tostring(math.floor(TimeSinceLastPlay / 3600))
