@@ -97,9 +97,22 @@ Toggle:OnChanged(function(State)
                 [1] = "ClickStat",
                 [2] = getgenv().farmValue or 1
             }
-            game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Client"):InvokeServer(unpack(args))
             
-            -- Adjust wait time based on selected autofarm mode
+            -- Check if "Rage" mode is selected, and use a different remote for Rage mode
+            if getgenv().autofarmMode == "Rage" then
+                -- Use a different remote for Rage mode
+                local rageArgs = {
+                    [1] = "RageClick",  -- New remote for Rage
+                    [2] = getgenv().farmValue or 1
+                }
+                -- Send the request using the Rage remote
+                game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Client"):InvokeServer(unpack(rageArgs))
+            else
+                -- Default Fast autofarm mode
+                game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Client"):InvokeServer(unpack(args))
+            end
+
+            -- Adjust the wait time based on the mode
             if getgenv().autofarmMode == "Rage" then
                 task.wait(0.05)  -- Faster for Rage mode
             else
@@ -109,7 +122,6 @@ Toggle:OnChanged(function(State)
     end
 end)
 
-
 local Dropdown = Tabs.Main:AddDropdown("AutofarmMode", {
     Title = "Autofarm Mode",
     Default = "Fast",  -- Default selection
@@ -117,18 +129,10 @@ local Dropdown = Tabs.Main:AddDropdown("AutofarmMode", {
     Callback = function(selectedOption)
         print("Selected Autofarm Mode: " .. selectedOption)
 
-        -- Handle the selected option
-        if selectedOption == "Rage" then
-            getgenv().autofarmMode = "Rage"  -- Set the mode to Rage
-            -- Additional code for Rage autofarm behavior
-        elseif selectedOption == "Fast" then
-            getgenv().autofarmMode = "Fast"  -- Set the mode to Fast
-            -- Additional code for Fast autofarm behavior
-        end
+        -- Store the selected mode in a global variable
+        getgenv().autofarmMode = selectedOption
     end
 })
-
-
 
 -- Teleport Section
 local Section = TeleportTab:AddSection("Islands")
