@@ -74,21 +74,6 @@ Input:OnChanged(function()
     print("Input updated:", Input.Value)
 end)
 
--- Slider for Autofarm Value
-local Slider = Tabs.Main:AddSlider("AutofarmDelay", {
-    Title = "Autofarm Delay",      -- Title for the slider
-    Min = 0,                       -- Minimum value (e.g., 1)
-    Max = 2,                     -- Maximum value (e.g., 100)
-    Default = 0.1,                  -- Default value when the slider is created
-    Increment = 0.1,                 -- Increment per step
-    Callback = function(AutofarmDelay)
-        -- This callback function is called whenever the slider value changes
-        print("Autofarm value set to: " .. AutofarmDelay)
-        getgenv().farmValue = AutofarmDelay  -- Set the farm value globally
-    end
-})
-
-
 -- Toggle for Autofarm
 local Toggle = Tabs.Main:AddToggle("Autofarm", {Title = "Autofarm", Default = false})
 
@@ -113,7 +98,7 @@ Toggle:OnChanged(function(State)
                 [2] = getgenv().farmValue or 1
             }
             game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Client"):InvokeServer(unpack(args))
-            task.wait(AutofarmDelay)  -- Adjusted wait for performance
+            task.wait(0.01)  -- Adjusted wait for performance
         end
     end
 end)
