@@ -78,61 +78,51 @@ end)
 local Toggle = Tabs.Main:AddToggle("Autofarm", {Title = "Autofarm", Default = false})
 
 Toggle:OnChanged(function(State)
-    local player = game.Players.LocalPlayer
-    local character = player.Character or player.CharacterAdded:Wait()
-    local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
-
-    -- Do NOT teleport to the farm position when the script first loads.
-    -- Only teleport to the farm position when the toggle is ON
-    if State then
-        local farmPosition = Vector3.new(-191, 16, -158)
-        humanoidRootPart.CFrame = CFrame.new(farmPosition)  -- Move the player to farm position
-    end
-
-    getgenv().farmer = State
-
-    if getgenv().farmer then
-        while getgenv().farmer do
-            local args = {
-                [1] = "ClickStat",
-                [2] = getgenv().farmValue or 1
-            }
-            
-            -- Check if "Rage" mode is selected, and use a different remote for Rage mode
-            if getgenv().autofarmMode == "Rage" then
-                -- Use a different remote for Rage mode
-                local rageArgs = {
-                    [1] = "RageClick",  -- New remote for Rage
-                    [2] = getgenv().farmValue or 1
-                }
-                -- Send the request using the Rage remote
-                game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Client"):InvokeServer(unpack(rageArgs))
-            else
-                -- Default Fast autofarm mode
-                game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Client"):InvokeServer(unpack(args))
-            end
-
-            -- Adjust the wait time based on the mode
-            if getgenv().autofarmMode == "Rage" then
-                task.wait(0.05)  -- Faster for Rage mode
-            else
-                task.wait(0.1)  -- Normal for Fast mode
-            end
-        end
-    end
 end)
-
 local Dropdown = Tabs.Main:AddDropdown("AutofarmMode", {
-    Title = "Autofarm Mode",
-    Default = "Fast",  -- Default selection
+    Title = "Autofarm Mode",  -- Title of the dropdown
+    Default = "Fast",         -- Default selected option
     Options = {"Fast", "Rage"},  -- Dropdown options
     Callback = function(selectedOption)
         print("Selected Autofarm Mode: " .. selectedOption)
+        
+        -- Check if "Fast" is selected
+        if selectedOption == "Fast" then
+            getgenv().farmer = true  -- Enable farming
 
-        -- Store the selected mode in a global variable
-        getgenv().autofarmMode = selectedOption
+            if getgenv().farmer then
+                while getgenv().farmer do
+                    local args = {
+                        [1] = "ClickStat",
+                        [2] = getgenv().farmValue or 1
+                    }
+                    game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Client"):InvokeServer(unpack(args))
+                    task.wait(0.1)
+                end
+            end
+        -- Check if "Rage" is selected
+        elseif selectedOption == "Rage" then
+            getgenv().farmer = true  -- Enable farming
+
+            if getgenv().farmer then
+                while getgenv().farmer do
+                    local args = {
+                        [1] = "ClickStat",
+                        [2] = getgenv().farmValue or 1
+                    }
+                    -- Multiple invocations for "Rage" mode
+                    game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Client"):InvokeServer(unpack(args))
+                    game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Client"):InvokeServer(unpack(args))
+                    game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Client"):InvokeServer(unpack(args))
+                    game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Client"):InvokeServer(unpack(args))
+                    game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Client"):InvokeServer(unpack(args))
+                end
+            end
+        end
     end
 })
+
+
 
 -- Teleport Section
 local Section = TeleportTab:AddSection("Islands")
