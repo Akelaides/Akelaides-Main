@@ -19,151 +19,42 @@ local Tabs = {
     Settings = Window:AddTab({ Title = "Settings", Icon = "settings" })
 }
 
-local Options = Fluent.Options
-
--- Fishing Tab
-local FishingTab = Window:CreateTab("Main")
-
-local loopEnabled = false
-local function resizeButtonLoop()
-    while loopEnabled do
-        local buttonPath = game:GetService("Players").LocalPlayer:FindFirstChild("PlayerGui")
-            and game.Players.LocalPlayer.PlayerGui:FindFirstChild("shakeui")
-            and game.Players.LocalPlayer.PlayerGui.shakeui:FindFirstChild("safezone")
-            and game.Players.LocalPlayer.PlayerGui.shakeui.safezone:FindFirstChild("button")
-
-        if buttonPath then
-            buttonPath.Size = UDim2.new(0, 2000, 0, 2000)
-            buttonPath.BackgroundTransparency = 1
-        else
-            print("did not find a button in the path!?!?")
-        end
-        wait(0.01)
-    end
-end
-
-FishingTab:CreateToggle({
-    Name = "Change Shake Size",
-    CurrentValue = false,
-    Flag = "ToggleResize",
-    Callback = function(Value)
-        loopEnabled = Value
-        if loopEnabled then
-            resizeButtonLoop()
-        end
-    end,
-})
-
-FishingTab:CreateButton({
-    Name = "Perfect Cast",
-    Callback = function()
-        local args = {
-            [1] = 100,
-            [2] = 2
-        }
-        local rod = game:GetService("Players").LocalPlayer.Character:FindFirstChild("Flimsy Rod")
-        if rod then
-            rod.events.cast:FireServer(unpack(args))
-        else
-            warn("Flimsy Rod not found in character.")
-        end
-    end
-})
-
-FishingTab:CreateButton({
-    Name = "Perfect Reel",
-    Callback = function()
-        local args = {
-            [1] = 100,
-            [2] = true
-        }
-        local reelfinished = game:GetService("ReplicatedStorage"):WaitForChild("events"):WaitForChild("reelfinished")
-        reelfinished:FireServer(unpack(args))
-    end
-})
-
-local clickingEnabled = false
-
-local function startClicking()
-    while clickingEnabled do
-        local button = game:GetService("Players").LocalPlayer.PlayerGui:FindFirstChild("TargetButton")
-        if button and button:IsA("TextButton") then
-            button.MouseButton1Click:Fire()
-        end
-        wait(0.1)
-    end
-end
-
-FishingTab:CreateToggle({
-    Name = "Auto GUI Click",
-    CurrentValue = false,
-    Flag = "AutoClickToggle",
-    Callback = function(Value)
-        clickingEnabled = Value
-        if clickingEnabled then
-            startClicking()
-        end
-    end,
-})
-
-local farmEnabled = false
-
-local function startAutoFarm()
-    while farmEnabled do
-        local rod = game:GetService("Players").LocalPlayer.Character:FindFirstChild("Flimsy Rod")
-        if rod then
-            local castArgs = { [1] = 100, [2] = 2 }
-            rod.events.cast:FireServer(unpack(castArgs))
-        else
-            warn("Flimsy Rod not equipped.")
-            break
-        end
-
-        local shakeGui = game:GetService("Players").LocalPlayer.PlayerGui:FindFirstChild("shakeui")
-        if shakeGui then
-            repeat wait(0.1) until not shakeGui or not shakeGui:FindFirstChild("safezone") or not shakeGui.safezone:FindFirstChild("button") or not shakeGui.safezone.button.Visible
-        end
-
-        local reelGui = game:GetService("Players").LocalPlayer.PlayerGui:FindFirstChild("reel")
-        if reelGui then
-            wait(1)
-            while reelGui and farmEnabled do
-                local reelArgs = { [1] = 100, [2] = true }
-                local reelfinished = game:GetService("ReplicatedStorage"):WaitForChild("events"):WaitForChild("reelfinished")
-                reelfinished:FireServer(unpack(reelArgs))
-                wait(0.1)
-                reelGui = game:GetService("Players").LocalPlayer.PlayerGui:FindFirstChild("reel")
-            end
-        end
-        wait(1)
-    end
-end
-
-FishingTab:CreateToggle({
-    Name = "Enable Auto-Farm",
-    CurrentValue = false,
-    Flag = "AutoFarmToggle",
-    Callback = function(Value)
-        farmEnabled = Value
-        if farmEnabled then
-            startAutoFarm()
-        end
-    end,
-})
-
--- Auto Cast Mode Dropdown
-local AutoCastModeDropdown = Tabs.Autofarm:AddDropdown("AutoCastModeDropdown", {
-    Title = "Select Auto Cast Mode",
-    Description = "Choose the AutoCast mode.",
-    Values = {
-        "Legit",
-        "Rage"
-    },
+-- Teleportation Dropdown
+local TeleportDropdown = Tabs.Teleportation:AddDropdown("TeleportationDropdown", {
+    Title = "Select Island to Teleport",
+    Description = "Teleport to an island.",
+    Values = { "Moosewood", "Forsaken", "Ancient Isles" },
     Multi = false,
     Default = 1
 })
 
--- Auto-cast toggle
+-- Handle teleportation
+TeleportDropdown:OnChanged(function(Value)
+    local player = game.Players.LocalPlayer
+    local character = player.Character or player.CharacterAdded:Wait()
+    local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
+
+    local positions = {
+        Moosewood = Vector3.new(400, 135, 250),
+        Forsaken = Vector3.new(-2497, 137, 1627),
+        ["Ancient Isles"] = Vector3.new(6000, 200, 300)
+    }
+
+    if positions[Value] then
+        humanoidRootPart.CFrame = CFrame.new(positions[Value])
+        print("Teleporting to " .. Value)
+    end
+end)
+
+-- Auto-cast mode dropdown
+local AutoCastModeDropdown = Tabs.Autofarm:AddDropdown("AutoCastModeDropdown", {
+    Title = "Select Auto Cast Mode",
+    Description = "Choose the AutoCast mode.",
+    Values = { "Legit", "Rage" },
+    Multi = false,
+    Default = 1
+})
+
 local autoCast = false
 local autoCastDelay = 0.1
 local autoCastMode = "Legit"  -- Default mode
@@ -173,10 +64,20 @@ AutoCastModeDropdown:OnChanged(function(Value)
     print("Auto Cast Mode set to:", autoCastMode)
 end)
 
+-- Auto-cast toggle
 local autoCastToggle = Tabs.Autofarm:AddToggle("AutoCast", { Title = "Auto Cast", Default = false })
-autoCastToggle:OnChanged(function()
-    autoCast = autoCastToggle.Value
+autoCastToggle:OnChanged(function(Value)
+    autoCast = Value
     print("Auto Cast:", autoCast)
+end)
+
+-- Auto-reel toggle
+local autoReel = false
+local autoReelDelay = 0.1
+local autoReelToggle = Tabs.Autofarm:AddToggle("AutoReel", { Title = "Auto Reel", Default = false })
+autoReelToggle:OnChanged(function(Value)
+    autoReel = Value
+    print("Auto Reel:", autoReel)
 end)
 
 -- WalkSpeed Input
@@ -198,13 +99,36 @@ local WalkSpeedInput = Tabs.Settings:AddInput("WalkSpeed", {
     end
 })
 
-Fluent:Notify({
-    Title = "Akelaides",
-    Content = "The script has been loaded.",
-    Duration = 8
-})
+-- Auto-Reel and Auto-Shake connection
+local PlayerGUI = game.Players.LocalPlayer:FindFirstChildOfClass("PlayerGui")
+local VirtualInputManager = game:GetService("VirtualInputManager")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
--- Set up SaveManager and InterfaceManager
+PlayerGUI.ChildAdded:Connect(function(GUI)
+    if GUI:IsA("ScreenGui") and GUI.Name == "shakeui" then
+        if GUI:FindFirstChild("safezone") then
+            GUI.safezone.ChildAdded:Connect(function(child)
+                if child:IsA("ImageButton") and child.Name == "button" and autoCast then
+                    if child.Visible then
+                        if autoCastMode == "Legit" then
+                            local pos = child.AbsolutePosition
+                            local size = child.AbsoluteSize
+                            VirtualInputManager:SendMouseButtonEvent(pos.X + size.X / 2, pos.Y + size.Y / 2, 0, true, game.Players.LocalPlayer, 0)
+                            VirtualInputManager:SendMouseButtonEvent(pos.X + size.X / 2, pos.Y + size.Y / 2, 0, false, game.Players.LocalPlayer, 0)
+                        elseif autoCastMode == "Rage" then
+                            local rod = game.Players.LocalPlayer.Character:FindFirstChild("Flimsy Rod")
+                            if rod then
+                                rod.events.cast:FireServer(100)
+                            end
+                        end
+                    end
+                end
+            end)
+        end
+    end
+end)
+
+-- Connect to SaveManager and InterfaceManager
 SaveManager:SetLibrary(Fluent)
 InterfaceManager:SetLibrary(Fluent)
 InterfaceManager:SetFolder("FluentScriptHub")
