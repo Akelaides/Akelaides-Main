@@ -20,14 +20,17 @@ local Window = Fluent:CreateWindow({
 
 local Tabs = {
     Main = Window:AddTab({ Title = "Home", Icon = "home" }),
-    Autofarm = Window:AddTab({ Title = "Farming", Icon = "hammer"}),
+    Autofarm = Window:AddTab({ Title = "Autofarm", Icon = "hammer"}),
     Teleportation = Window:AddTab({ Title = "Teleportation", Icon = "map-pin" }),
-    Settings = Window:AddTab({ Title = "Settings", Icon = "settings" })  -- Added the Settings tab
+    Miscellaneous = Window:AddTab({ Title = "Miscellaneous", Icon = "cog" }),
+    Settings = Window:AddTab({ Title = "Settings", Icon = "settings" })
 }
 
 local MainTab = Tabs.Main
+local AutofarmTab = Tabs.Autofarm
 local TeleportTab = Tabs.Teleportation
-local SettingsTab = Tabs.Settings -- Referencing the Settings tab for later use
+local MiscTab = Tabs.Miscellaneous
+local SettingsTab = Tabs.Settings
 
 -- Main Section
 MainTab:AddButton({
@@ -37,7 +40,6 @@ MainTab:AddButton({
         setclipboard("https://discord.gg/DHJzx6gZ")
         print("Copied To Clipboard!")
         
-        -- Notify the user that the link was copied
         Fluent:Notify({
             Title = "Link Copied",
             Content = "The Discord link has been copied to your clipboard.",
@@ -46,18 +48,8 @@ MainTab:AddButton({
     end
 })
 
-
--- Infinite Yield Button
-MainTab:AddButton({
-    Title = "Infinite Yield",
-    Description = "Loads Infinite Yield script",
-    Callback = function()
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source"))()
-    end
-})
-
 -- Input Field for Autofarm Value
-local Input = Tabs.Main:AddInput("AutofarmValue", {
+local Input = AutofarmTab:AddInput("AutofarmValue", {
     Title = "Autofarm Value",
     Default = "1",
     Placeholder = "Enter your Value",
@@ -74,18 +66,16 @@ Input:OnChanged(function()
 end)
 
 -- Toggle for Autofarm
-local Toggle = Tabs.Main:AddToggle("Autofarm", {Title = "Autofarm", Default = false})
+local Toggle = AutofarmTab:AddToggle("Autofarm", {Title = "Autofarm", Default = false})
 
 Toggle:OnChanged(function(State)
     local player = game.Players.LocalPlayer
     local character = player.Character or player.CharacterAdded:Wait()
     local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
 
-    -- Do NOT teleport to the farm position when the script first loads.
-    -- Only teleport to the farm position when the toggle is ON
     if State then
         local farmPosition = Vector3.new(-191, 16, -158)
-        humanoidRootPart.CFrame = CFrame.new(farmPosition)  -- Move the player to farm position
+        humanoidRootPart.CFrame = CFrame.new(farmPosition)
     end
 
     getgenv().farmer = State
@@ -97,10 +87,19 @@ Toggle:OnChanged(function(State)
                 [2] = getgenv().farmValue or 1
             }
             game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Client"):InvokeServer(unpack(args))
-            task.wait(0.01)  -- Adjusted wait for performance
+            task.wait(0.01)
         end
     end
 end)
+
+-- Miscellaneous Section for Infinite Yield
+MiscTab:AddButton({
+    Title = "Load Infinite Yield",
+    Description = "Loads Infinite Yield script",
+    Callback = function()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source"))()
+    end
+})
 
 -- Teleport Section
 local Section = TeleportTab:AddSection("Islands")
@@ -113,10 +112,7 @@ TeleportTab:AddButton({
         local character = player.Character or player.CharacterAdded:Wait()
         local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
         
-        -- Define teleportation location for Escape Island
         local escapePosition = Vector3.new(-167, 17, -100)
-        
-        -- Teleport the player
         humanoidRootPart.CFrame = CFrame.new(escapePosition)
         print("Teleporting to Escape Island")
     end,
