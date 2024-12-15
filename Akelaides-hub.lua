@@ -28,9 +28,7 @@ local Tabs = {
 
 local MainTab = Tabs.Main
 local TeleportTab = Tabs.Teleportation
-local SettingsTab = Tabs.Settings
-local AutofarmTab = Tabs.Autofarm
-local MiscellanousTab = Tabs.Misc  -- Referencing the Settings tab for later use
+local SettingsTab = Tabs.Settings -- Referencing the Settings tab for later use
 
 -- Main Section
 MainTab:AddButton({
