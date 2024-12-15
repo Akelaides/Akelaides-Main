@@ -27,7 +27,7 @@ local TeleportDropdown = Tabs.Teleportation:AddDropdown("TeleportationDropdown",
         "Moosewood",
         "Forsaken",
         "Ancient Isles",
-        "Roslit"
+        "Roslit Bay"
     },
     Multi = false,
     Default = 1
@@ -51,7 +51,7 @@ TeleportDropdown:OnChanged(function(Value)
         local ancientIslesPosition = Vector3.new(6059, 195, 284)
         humanoidRootPart.CFrame = CFrame.new(ancientIslesPosition)
         print("Teleporting to Ancient Isles")
-    elseif Value == "Roslit" then
+    elseif Value == "Roslit Bay" then
         local roslitPosition = Vector3.new(-1474, 133, 702)
         humanoidRootPart.CFrame = CFrame.new(roslitPosition)
         print("Teleporting to Roslit")
