@@ -7,7 +7,7 @@ local SaveManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/d
 local InterfaceManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/InterfaceManager.lua"))()
 
 local Window = Fluent:CreateWindow({
-    Title = 'Accolade' (BETA), Fluent.version
+    Title = 'Accolade' V1.2.3 (BETA)',
     Center = true,
     AutoShow = true,
     TabPadding = 8,
@@ -17,8 +17,6 @@ local Window = Fluent:CreateWindow({
 local FrameTimer = tick()
 local FrameCounter = 0;
 local FPS = 60;
-
-local Options = Fluent.options
 
 local WatermarkConnection = game:GetService('RunService').RenderStepped:Connect(function()
     FrameCounter += 1;
@@ -48,6 +46,7 @@ local Tabs = {
 
 local teleportSpots = {}
 
+local racistPeople = { --[[ all racist people abandoned :pensive: ]] }
 
 local itemSpots = {
     Bait_Crate = CFrame.new(384.57513427734375, 135.3519287109375, 337.5340270996094),

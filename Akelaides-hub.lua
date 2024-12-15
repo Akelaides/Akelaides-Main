@@ -54,58 +54,132 @@ TeleportDropdown:OnChanged(function(Value)
     end
 end)
 
--- Auto-cast mode dropdown
-local AutoCastModeDropdown = Tabs.Autofarm:AddDropdown("AutoCastModeDropdown", {
-    Title = "Select Auto Cast Mode",
-    Description = "Choose the AutoCast mode.",
-    Values = {
-        "Legit",
-        "Rage"
-    },
-    Multi = false,
-    Default = 1
+-- Auto-cast toggle
+AutoCastGroup:AddToggle('AutoCast', {
+    Text = 'Enabled',
+    Default = false,
+    Tooltip = 'Automatically throws the rod',
+    Callback = function(Value)
+        autoCast = Value
+        local Tool = LocalCharacter:FindFirstChildOfClass("Tool")
+        if Tool ~= nil and Tool:FindFirstChild("events"):WaitForChild("cast") ~= nil and Value == true then
+            task.wait(autoCastDelay)
+            if autoCastMode == "Legit" then
+                VirtualInputManager:SendMouseButtonEvent(0, 0, 0, true, LocalPlayer, 0)
+                HumanoidRootPart.ChildAdded:Connect(function()
+                    if HumanoidRootPart:FindFirstChild("power") ~= nil and HumanoidRootPart.power.powerbar.bar ~= nil then
+                        HumanoidRootPart.power.powerbar.bar.Changed:Connect(function(property)
+                            if property == "Size" then
+                                if HumanoidRootPart.power.powerbar.bar.Size == UDim2.new(1, 0, 1, 0) then
+                                    VirtualInputManager:SendMouseButtonEvent(0, 0, 0, false, LocalPlayer, 0)
+                                end
+                            end
+                        end)
+                    end
+                end)
+            elseif autoCastMode == "Rage" then
+                Tool.events.cast:FireServer(100)
+            end
+        end
+    end
 })
 
--- Auto-cast toggle
-local autoCast = false
-local autoCastDelay = 0.1
-local autoCastMode = "Legit"  -- Default mode
+local AutoCastSettings = AutoCastGroup:AddDependencyBox()
 
-AutoCastModeDropdown:OnChanged(function(Value)
-    autoCastMode = Value
-    print("Auto Cast Mode set to:", autoCastMode)
-end)
+AutoCastSettings:AddSlider('AutoCastDelay', {
+    Text = 'AutoCast Delay',
+    Default = 2,
+    Min = 0,
+    Max = 10,
+    Rounding = 1,
 
-local autoCastToggle = Tabs.Autofarm:AddToggle("AutoCast", { Title = "Auto Cast", Default = false })
-autoCastToggle:OnChanged(function()
-    autoCast = autoCastToggle.Value
-    print("Auto Cast:", autoCast)
-end)
+    Callback = function(Value)
+        autoCastDelay = Value
+    end
+})
+
+
+  
+    Callback = function(Value)
+        autoCastMode = Value
+    end
+})
+
+AutoCastSettings:SetupDependencies({
+    { Toggles.AutoCast, true }
+})
+
 
 -- Auto-reel toggle
-local autoReel = false
-local autoReelDelay = 0.1
+AutoReelGroup:AddToggle('AutoReel', {
+    Text = 'Enabled',
+    Default = false,
+    Tooltip = 'Automatically reels in the fishing rod',
+    Callback = function(Value)
+        autoReel = Value
+    end
+})
 
-local autoReelToggle = Tabs.Autofarm:AddToggle("AutoReel", { Title = "Auto Reel", Default = false })
-autoReelToggle:OnChanged(function()
-    autoReel = autoReelToggle.Value
-    print("Auto Reel:", autoReel)
-end)
+local AutoReelSettings = AutoReelGroup:AddDependencyBox()
+
+AutoReelSettings:AddSlider('AutoReelDelay', {
+    Text = 'AutoReel Delay',
+    Default = 2,
+    Min = 0,
+    Max = 10,
+    Rounding = 1,
+
+    Callback = function(Value)
+        autoReelDelay = Value
+    end
+})
+
+AutoReelSettings:SetupDependencies({
+    { Toggles.AutoReel, true }
+})
 
 -- Auto-shake toggle
-local autoShake = false
-local autoShakeDelay = 0.1  -- Time between shakes
-local autoShakeMethod = "KeyCodeEvent"  -- Can be "ClickEvent" or "KeyCodeEvent"
-local GuiService = game:GetService("GuiService")
-local VirtualInputManager = game:GetService("VirtualInputManager")
-local RunService = game:GetService("RunService")
-local PlayerGUI = game.Players.LocalPlayer:FindFirstChildOfClass("PlayerGui")
+AutoShakeGroup:AddToggle('AutoShake', {
+    Text = 'Enabled',
+    Default = false,
+    Tooltip = 'Automatically clicks the shake button for you',
+    Callback = function(Value)
+        autoShake = Value
+    end
+})
 
-local autoShakeToggle = Tabs.Autofarm:AddToggle("AutoShake", {Title = "Auto Shake", Default = false})
-autoShakeToggle:OnChanged(function()
-    autoShake = autoShakeToggle.Value
-    print("Auto Shake:", autoShake)
-end)
+local AutoShakeSettings = AutoShakeGroup:AddDependencyBox()
+
+AutoShakeSettings:AddDropdown('AutoShakeMode', {
+    Text = 'Auto Shake Method',
+    Tooltip = 'Method to click on the shake button',
+    Values = {'ClickEvent', --[['firesignal',]] 'KeyCodeEvent' },
+    Default = autoShakeMethod,
+  
+    Callback = function(Value)
+        autoShakeMethod = Value
+    end
+})
+
+AutoShakeKeyCodeEventText:SetupDependencies({
+    { Options.AutoShakeMode, "KeyCodeEvent" }
+})
+
+AutoShakeSettings:AddSlider('AutoShakeDelay', {
+    Text = 'AutoShake Delay',
+    Default = 0.1,
+    Min = 0,
+    Max = 10,
+    Rounding = 1,
+
+    Callback = function(Value)
+        autoShakeDelay = Value
+    end
+})
+
+AutoShakeSettings:SetupDependencies({
+    { Toggles.AutoShake, true }
+})
 
 -- Auto-Reel and Auto-Shake connection
 local autoreelAndShakeConnection = PlayerGUI.ChildAdded:Connect(function(GUI)
