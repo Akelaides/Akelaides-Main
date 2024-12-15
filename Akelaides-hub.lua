@@ -19,7 +19,7 @@ local Window = Fluent:CreateWindow({
 })
 
 local Tabs = {
-    Main = Window:AddTab({ Title = "Main", Icon = "home" }),
+    Main = Window:AddTab({ Title = "Home", Icon = "home" }),
     Teleportation = Window:AddTab({ Title = "Teleportation", Icon = "map-pin" }),
     Settings = Window:AddTab({ Title = "Settings", Icon = "settings" })  -- Added the Settings tab
 }
@@ -35,8 +35,16 @@ MainTab:AddButton({
     Callback = function()
         setclipboard("https://discord.gg/DHJzx6gZ")
         print("Copied To Clipboard!")
+        
+        -- Notify the user that the link was copied
+        Fluent:Notify({
+            Title = "Link Copied",
+            Content = "The Discord link has been copied to your clipboard.",
+            Duration = 4
+        })
     end
 })
+
 
 -- Infinite Yield Button
 MainTab:AddButton({
