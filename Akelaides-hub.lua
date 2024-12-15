@@ -31,7 +31,6 @@ local TeleportDropdown = Tabs.Teleportation:AddDropdown("TeleportationDropdown",
     },
     Multi = false,
     Default = 1
-    MaxVisibleItems = 20
 })
 
 -- Teleportation logic based on dropdown selection
