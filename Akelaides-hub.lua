@@ -48,7 +48,7 @@ MainTab:AddButton({
 
 
 -- Infinite Yield Button
-MiscellanousTab:AddButton({
+MainTab:AddButton({
     Title = "Infinite Yield",
     Description = "Loads Infinite Yield script",
     Callback = function()
