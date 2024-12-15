@@ -3,132 +3,260 @@ local SaveManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/d
 local InterfaceManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/InterfaceManager.lua"))()
 
 local Window = Fluent:CreateWindow({
-    Title = "Akelaides Hub" .. Fluent.Version,
-    SubTitle = "Staff",  -- Changed to "by calvin"
+    Title = "Akelaides Hub " .. Fluent.version,
+    SubTitle = "by calvin ",
     TabWidth = 160,
     Size = UDim2.fromOffset(580, 460),
-    Acrylic = true,
+    Acrylic = true, -- The blur may be detectable, setting this to false disables blur entirely
     Theme = "Dark",
-    MinimizeKey = Enum.KeyCode.LeftControl
+    MinimizeKey = Enum.KeyCode.LeftControl -- Used when theres no MinimizeKeybind
 })
 
+--Fluent provides Lucide Icons https://lucide.dev/icons/ for the tabs, icons are optional
 local Tabs = {
-    Main = Window:AddTab({ Title = "Main", Icon = "home" }),
-    Teleportation = Window:AddTab({ Title = "Teleportation", Icon = "map-pin" }),
+    Main = Window:AddTab({ Title = "Home", Icon = "home" }),
+    Local = Window:AddTab({ Title = "Player", Icon = "person-standing"})
     Settings = Window:AddTab({ Title = "Settings", Icon = "settings" })
-    AutoFarm = Window:AddTab({Title = "Autofarm", Icon = "hammer"})
 }
-
---Locals
-
-local LocalPlayer = Players.LocalPlayer
-local LocalCharacter = LocalPlayer.Character
-local humanoidRootPart = LocalCharacter:FindFirstChild("HumanoidRootPart")
-local PlayerGUI = LocalPlayer:FindFirstChild("PlayerGui")
-
--- Variables
-
-local autoShake = false
-local autoShakeDelay = 0.1
-local autoShakeMethod = "KeyCodeEvent"
-local autoShakeClickOffsetX = 0
-local autoShakeClickOffsetY = 0
-local autoReel = false
-local autoReelDelay = 2
-local autoCast = false
-local autoCastMode = "Legit"
-local autoCastDelay = 2
-local zoneCast = false
-local Zone = "Brine Pool"
-local Noclip = false
-local AntiDrown = false
-local Target
-local FreezeChar = false
 
 local Options = Fluent.Options
 
--- Teleportation Dropdown
-local TeleportDropdown = Tabs.Teleportation:AddDropdown("TeleportationDropdown", {
-    Title = "Select Island to Teleport",
-    Values = {
-        "Moosewood",
-        "Forsaken",
-        "Ancient Isle"
-    },
-    Multi = false,
-    Default = 1
-})
+do
+    Fluent:Notify({
+        Title = "Notification",
+        Content = "This is a notification",
+        SubContent = "SubContent", -- Optional
+        Duration = 5 -- Set to nil to make the notification not disappear
+    })
 
--- Teleportation logic based on dropdown selection
-TeleportDropdown:OnChanged(function(Value)
-    local player = game.Players.LocalPlayer
-    local character = player.Character or player.CharacterAdded:Wait()
-    local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
-    
-    if Value == "Moosewood" then
-        local moosewoodPosition = Vector3.new(400, 135, 250)
-        humanoidRootPart.CFrame = CFrame.new(moosewoodPosition)
-        print("Teleporting to Moosewood")
-    elseif Value == "Forsaken" then
-        local forsakenPosition = Vector3.new(-2497, 137, 1627)
-        humanoidRootPart.CFrame = CFrame.new(forsakenPosition)
-        print("Teleporting to Forsaken")
-    elseif Value == "Ancient Isles" then
-        local ancientIslesPosition = Vector3.new(6059, 195, 284)
-        humanoidRootPart.CFrame = CFrame.new(ancientIslesPosition)
-        print("Teleporting to Ancient Isles")
-    end
-end)
 
--- WalkSpeed Input
-local WalkSpeedInput = Tabs.Settings:AddInput("WalkSpeed", {
-    Title = "Walkspeed",
-    Default = "16",
-    Placeholder = "Enter walkspeed",
-    Numeric = true,
-    Finished = true,
-    Callback = function(Value)
-        local walkSpeedValue = tonumber(Value)
-        if walkSpeedValue then
-            game.Players.LocalPlayer.Character:WaitForChild("Humanoid").WalkSpeed = walkSpeedValue
-            print("Walkspeed set to: " .. walkSpeedValue)
-        else
-            print("Invalid walkspeed value!")
+
+    Tabs.Main:AddParagraph({
+        Title = "Made By Calvin With Love",
+        Content = "Private Script >.<"
+    })
+
+
+
+    Tabs.Main:AddButton({
+        Title = "Infinite Yield",
+        Description = "Loads Infinite Yield into the game.",
+        Callback = function()
+            Window:Dialog({
+                Title = "Infinite yield",
+                Content = "",
+                Buttons = {
+                    {
+                        Title = "Confirm?",
+                        Callback = function()
+                            print("Confirmed the dialog.")
+                        end
+                    },
+                    loadstring(game:HttpGet("https://raw.githubusercontent.com/edgeiy/infiniteyield/master/source"))
+                    {
+                        Title = "Cancel",
+                        Callback = function()
+                            print("Cancelled the dialog.")
+                        end
+                    }
+                }
+            })
         end
-    end
-})
+    })
 
-local Toggle = Tabs.Main:AddToggle("AutoReel", {Title = "Auto Reel", Default = false })
 
-    AutoReel:OnChanged(function()
-        
- 
 
--- Additional Example Inputs and Features
-local Keybind = Tabs.Main:AddKeybind("Keybind", {
-    Title = "KeyBind",
-    Mode = "Toggle",
-    Default = "LeftControl",
-    Callback = function(Value)
-        print("Keybind clicked:", Value)
-    end
-})
+    local Toggle = Tabs.Main:AddToggle("MyToggle", {Title = "Toggle", Default = false })
 
--- Set up SaveManager and InterfaceManager
+    Toggle:OnChanged(function()
+        print("Toggle changed:", Options.MyToggle.Value)
+    end)
+
+    Options.MyToggle:SetValue(false)
+
+
+    
+    local Slider = Tabs.Main:AddSlider("Slider", {
+        Title = "Slider",
+        Description = "This is a slider",
+        Default = 16,
+        Min = 16,
+        Max = 200,
+        Rounding = 1,
+        Callback = function(Value)
+            game.Players.LocalPlayer.Character.HumanoidRootPart.Walkspeed = (Default)
+        end
+    })
+
+    Slider:OnChanged(function(Value)
+        print("Slider changed:", Value)
+    end)
+
+    Slider:SetValue(3)
+
+
+
+    local Dropdown = Tabs.Main:AddDropdown("Dropdown", {
+        Title = "Dropdown",
+        Values = {"one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twelve", "thirteen", "fourteen"},
+        Multi = false,
+        Default = 1,
+    })
+
+    Dropdown:SetValue("four")
+
+    Dropdown:OnChanged(function(Value)
+        print("Dropdown changed:", Value)
+    end)
+
+
+    
+    local MultiDropdown = Tabs.Main:AddDropdown("MultiDropdown", {
+        Title = "Dropdown",
+        Description = "You can select multiple values.",
+        Values = {"one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twelve", "thirteen", "fourteen"},
+        Multi = true,
+        Default = {"seven", "twelve"},
+    })
+
+    MultiDropdown:SetValue({
+        three = true,
+        five = true,
+        seven = false
+    })
+
+    MultiDropdown:OnChanged(function(Value)
+        local Values = {}
+        for Value, State in next, Value do
+            table.insert(Values, Value)
+        end
+        print("Mutlidropdown changed:", table.concat(Values, ", "))
+    end)
+
+
+
+    local Colorpicker = Tabs.Main:AddColorpicker("Colorpicker", {
+        Title = "Colorpicker",
+        Default = Color3.fromRGB(96, 205, 255)
+    })
+
+    Colorpicker:OnChanged(function()
+        print("Colorpicker changed:", Colorpicker.Value)
+    end)
+    
+    Colorpicker:SetValueRGB(Color3.fromRGB(0, 255, 140))
+
+
+
+    local TColorpicker = Tabs.Main:AddColorpicker("TransparencyColorpicker", {
+        Title = "Colorpicker",
+        Description = "but you can change the transparency.",
+        Transparency = 0,
+        Default = Color3.fromRGB(96, 205, 255)
+    })
+
+    TColorpicker:OnChanged(function()
+        print(
+            "TColorpicker changed:", TColorpicker.Value,
+            "Transparency:", TColorpicker.Transparency
+        )
+    end)
+
+
+
+    local Keybind = Tabs.Main:AddKeybind("Keybind", {
+        Title = "KeyBind",
+        Mode = "Toggle", -- Always, Toggle, Hold
+        Default = "LeftControl", -- String as the name of the keybind (MB1, MB2 for mouse buttons)
+
+        -- Occurs when the keybind is clicked, Value is `true`/`false`
+        Callback = function(Value)
+            print("Keybind clicked!", Value)
+        end,
+
+        -- Occurs when the keybind itself is changed, `New` is a KeyCode Enum OR a UserInputType Enum
+        ChangedCallback = function(New)
+            print("Keybind changed!", New)
+        end
+    })
+
+    -- OnClick is only fired when you press the keybind and the mode is Toggle
+    -- Otherwise, you will have to use Keybind:GetState()
+    Keybind:OnClick(function()
+        print("Keybind clicked:", Keybind:GetState())
+    end)
+
+    Keybind:OnChanged(function()
+        print("Keybind changed:", Keybind.Value)
+    end)
+
+    task.spawn(function()
+        while true do
+            wait(1)
+
+            -- example for checking if a keybind is being pressed
+            local state = Keybind:GetState()
+            if state then
+                print("Keybind is being held down")
+            end
+
+            if Fluent.Unloaded then break end
+        end
+    end)
+
+    Keybind:SetValue("MB2", "Toggle") -- Sets keybind to MB2, mode to Hold
+
+
+    local Input = Tabs.Main:AddInput("Input", {
+        Title = "Input",
+        Default = "Default",
+        Placeholder = "Placeholder",
+        Numeric = false, -- Only allows numbers
+        Finished = false, -- Only calls callback when you press enter
+        Callback = function(Value)
+            print("Input changed:", Value)
+        end
+    })
+
+    Input:OnChanged(function()
+        print("Input updated:", Input.Value)
+    end)
+end
+
+
+-- Addons:
+-- SaveManager (Allows you to have a configuration system)
+-- InterfaceManager (Allows you to have a interface managment system)
+
+-- Hand the library over to our managers
 SaveManager:SetLibrary(Fluent)
 InterfaceManager:SetLibrary(Fluent)
+
+-- Ignore keys that are used by ThemeManager.
+-- (we dont want configs to save themes, do we?)
+SaveManager:IgnoreThemeSettings()
+
+-- You can add indexes of elements the save manager should ignore
+SaveManager:SetIgnoreIndexes({})
+
+-- use case for doing it this way:
+-- a script hub could have themes in a global folder
+-- and game configs in a separate folder per game
 InterfaceManager:SetFolder("FluentScriptHub")
 SaveManager:SetFolder("FluentScriptHub/specific-game")
 
 InterfaceManager:BuildInterfaceSection(Tabs.Settings)
 SaveManager:BuildConfigSection(Tabs.Settings)
 
+
 Window:SelectTab(1)
 
 Fluent:Notify({
-    Title = "Akelaides",
+    Title = "Fluent",
     Content = "The script has been loaded.",
     Duration = 8
 })
 
+-- You can use the SaveManager:LoadAutoloadConfig() to load a config
+-- which has been marked to be one that auto loads!
 SaveManager:LoadAutoloadConfig()
