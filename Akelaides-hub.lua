@@ -56,7 +56,7 @@ TeleportDropdown:OnChanged(function(Value)
     elseif Value ==  "enchant" then
         local enchantPosition = Vector3.new(1298, -805, -288)
         humanoidRootPart.CFrame = CFrame.new(enchantPosition)
-    elseif Value == "altar" hten
+    elseif Value == "altar" then
         local altarPosition = Vector3.new(1309, -805, -102)
         humanoidRootPart.CFrame = CFrame.new(altarPosition)
     end
