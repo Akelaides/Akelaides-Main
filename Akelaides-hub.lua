@@ -3,8 +3,8 @@ local SaveManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/d
 local InterfaceManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/InterfaceManager.lua"))()
 
 local Window = Fluent:CreateWindow({
-    Title = "Fluent " .. Fluent.Version,
-    SubTitle = "by calvin",  -- Changed to "by calvin"
+    Title = "Akelaides Hub " .. Fluent.Version,
+    SubTitle = "by calvin",
     TabWidth = 160,
     Size = UDim2.fromOffset(580, 460),
     Acrylic = true,
@@ -13,16 +13,17 @@ local Window = Fluent:CreateWindow({
 })
 
 local Tabs = {
-    Main = Window:AddTab({ Title = "Main", Icon = "" }),
+    Main = Window:AddTab({ Title = "Home", Icon = "home" }),
+    Autofarm = Window:AddTab({ Title = "Autofarm", Icon = "hammer"}),
     Teleportation = Window:AddTab({ Title = "Teleportation", Icon = "map-pin" }),
     Settings = Window:AddTab({ Title = "Settings", Icon = "settings" })
 }
 
 local Options = Fluent.Options
 
--- Teleportation Dropdown
 local TeleportDropdown = Tabs.Teleportation:AddDropdown("TeleportationDropdown", {
     Title = "Select Island to Teleport",
+    Description = "Teleport to an island.",
     Values = {
         "Moosewood",
         "Forsaken",
@@ -53,9 +54,90 @@ TeleportDropdown:OnChanged(function(Value)
     end
 end)
 
+-- Auto-cast mode dropdown
+local AutoCastModeDropdown = Tabs.Autofarm:AddDropdown("AutoCastModeDropdown", {
+    Title = "Select Auto-Cast Mode",
+    Description = "Choose the auto-cast mode.",
+    Values = {
+        "Legit",  -- Normal mode
+        "Fast",   -- Fast mode
+        "Rage"    -- Aggressive mode
+    },
+    Multi = false,
+    Default = 1  -- Default to "Legit"
+})
+
+-- Auto-cast toggle
+local autoCast = false
+local autoCastDelay = 0.1
+local autoCastMode = "Legit"  -- Default mode
+
+AutoCastModeDropdown:OnChanged(function(Value)
+    autoCastMode = Value
+    print("Auto-cast mode set to:", autoCastMode)
+end)
+
+local autoCastToggle = Tabs.Autofarm:AddToggle("AutoCast", { Title = "Auto Cast", Default = false })
+autoCastToggle:OnChanged(function()
+    autoCast = autoCastToggle.Value
+    print("Auto Cast:", autoCast)
+end)
+
+-- Auto-Cast connection
+local autoCastConnection = LocalCharacter.ChildAdded:Connect(function(child)
+    if child:IsA("Tool") and child:FindFirstChild("events"):WaitForChild("cast") ~= nil and autoCast then
+        task.wait(autoCastDelay)
+        if autoCastMode == "Legit" then
+            VirtualInputManager:SendMouseButtonEvent(0, 0, 0, true, LocalPlayer, 0)
+            HumanoidRootPart.ChildAdded:Connect(function()
+                if HumanoidRootPart:FindFirstChild("power") ~= nil and HumanoidRootPart.power.powerbar.bar ~= nil then
+                    HumanoidRootPart.power.powerbar.bar.Changed:Connect(function(property)
+                        if property == "Size" then
+                            if HumanoidRootPart.power.powerbar.bar.Size == UDim2.new(1, 0, 1, 0) then
+                                VirtualInputManager:SendMouseButtonEvent(0, 0, 0, false, LocalPlayer, 0)
+                            end
+                        end
+                    end)
+                end
+            end)
+        elseif autoCastMode == "Fast" then
+            child.events.cast:FireServer(100)  -- Fires the cast for "Fast" mode
+        elseif autoCastMode == "Rage" then
+            child.events.cast:FireServer(200)  -- Fires the cast for "Rage" mode
+        end
+    end
+end)
+
+-- Auto-Cast connection for when GUI is removed
+local autoCastConnection2 = PlayerGUI.ChildRemoved:Connect(function(GUI)
+    local Tool = LocalCharacter:FindFirstChildOfClass("Tool")
+    if GUI.Name == "reel" and autoCast == true and Tool ~= nil and Tool:FindFirstChild("events"):WaitForChild("cast") ~= nil then
+        task.wait(autoCastDelay)
+        if autoCastMode == "Legit" then
+            VirtualInputManager:SendMouseButtonEvent(0, 0, 0, true, LocalPlayer, 0)
+            HumanoidRootPart.ChildAdded:Connect(function()
+                if HumanoidRootPart:FindFirstChild("power") ~= nil and HumanoidRootPart.power.powerbar.bar ~= nil then
+                    HumanoidRootPart.power.powerbar.bar.Changed:Connect(function(property)
+                        if property == "Size" then
+                            if HumanoidRootPart.power.powerbar.bar.Size == UDim2.new(1, 0, 1, 0) then
+                                VirtualInputManager:SendMouseButtonEvent(0, 0, 0, false, LocalPlayer, 0)
+                            end
+                        end
+                    end)
+                end
+            end)
+        elseif autoCastMode == "Fast" then
+            Tool.events.cast:FireServer(100)
+        elseif autoCastMode == "Rage" then
+            Tool.events.cast:FireServer(200)
+        end
+    end
+end)
+
 -- WalkSpeed Input
 local WalkSpeedInput = Tabs.Settings:AddInput("WalkSpeed", {
     Title = "Walkspeed",
+    Description = "Change your walkspeed.",
     Default = "16",
     Placeholder = "Enter walkspeed",
     Numeric = true,
@@ -102,7 +184,7 @@ SaveManager:BuildConfigSection(Tabs.Settings)
 Window:SelectTab(1)
 
 Fluent:Notify({
-    Title = "Fluent",
+    Title = "Akelaides",
     Content = "The script has been loaded.",
     Duration = 8
 })
