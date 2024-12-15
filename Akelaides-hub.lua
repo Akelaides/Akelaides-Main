@@ -56,15 +56,14 @@ end)
 
 -- Auto-cast mode dropdown
 local AutoCastModeDropdown = Tabs.Autofarm:AddDropdown("AutoCastModeDropdown", {
-    Title = "Select Auto-Cast Mode",
-    Description = "Choose the auto-cast mode.",
+    Title = "Select Auto Cast Mode",
+    Description = "Choose the AutoCast mode.",
     Values = {
-        "Legit",  -- Normal mode
-        "Fast",   -- Fast mode
-        "Rage"    -- Aggressive mode
+        "Legit",
+        "Rage"
     },
     Multi = false,
-    Default = 1  -- Default to "Legit"
+    Default = 1
 })
 
 -- Auto-cast toggle
@@ -74,13 +73,70 @@ local autoCastMode = "Legit"  -- Default mode
 
 AutoCastModeDropdown:OnChanged(function(Value)
     autoCastMode = Value
-    print("Auto-cast mode set to:", autoCastMode)
+    print("Auto Cast Mode set to:", autoCastMode)
 end)
 
 local autoCastToggle = Tabs.Autofarm:AddToggle("AutoCast", { Title = "Auto Cast", Default = false })
 autoCastToggle:OnChanged(function()
     autoCast = autoCastToggle.Value
     print("Auto Cast:", autoCast)
+end)
+
+-- Auto-reel toggle
+local autoReel = false
+local autoReelDelay = 0.1
+
+local autoReelToggle = Tabs.Autofarm:AddToggle("AutoReel", { Title = "Auto Reel", Default = false })
+autoReelToggle:OnChanged(function()
+    autoReel = autoReelToggle.Value
+    print("Auto Reel:", autoReel)
+end)
+
+-- Auto-shake toggle
+local autoShake = false
+local autoShakeDelay = 0.1  -- Time between shakes
+local autoShakeMethod = "KeyCodeEvent"  -- Can be "ClickEvent" or "KeyCodeEvent"
+local GuiService = game:GetService("GuiService")
+local VirtualInputManager = game:GetService("VirtualInputManager")
+local RunService = game:GetService("RunService")
+local PlayerGUI = game.Players.LocalPlayer:FindFirstChildOfClass("PlayerGui")
+
+local autoShakeToggle = Tabs.Autofarm:AddToggle("AutoShake", {Title = "Auto Shake", Default = false})
+autoShakeToggle:OnChanged(function()
+    autoShake = autoShakeToggle.Value
+    print("Auto Shake:", autoShake)
+end)
+
+-- Auto-Reel and Auto-Shake connection
+local autoreelAndShakeConnection = PlayerGUI.ChildAdded:Connect(function(GUI)
+    if GUI:IsA("ScreenGui") and GUI.Name == "shakeui" then
+        if GUI:FindFirstChild("safezone") ~= nil then
+            GUI.safezone.ChildAdded:Connect(function(child)
+                if child:IsA("ImageButton") and child.Name == "button" then
+                    if autoShake == true then
+                        task.wait(autoShakeDelay)
+                        if child.Visible == true then
+                            if autoShakeMethod == "ClickEvent" then
+                                local pos = child.AbsolutePosition
+                                local size = child.AbsoluteSize
+                                VirtualInputManager:SendMouseButtonEvent(pos.X + size.X / 2, pos.Y + size.Y / 2, 0, true, LocalPlayer, 0)
+                                VirtualInputManager:SendMouseButtonEvent(pos.X + size.X / 2, pos.Y + size.Y / 2, 0, false, LocalPlayer, 0)
+                            elseif autoShakeMethod == "KeyCodeEvent" then
+                                VirtualInputManager:SendKeyEvent(true, Enum.KeyCode.Return, false, game)
+                                VirtualInputManager:SendKeyEvent(false, Enum.KeyCode.Return, false, game)
+                            end
+                        end
+                    end
+                end
+            end)
+        end
+    end
+
+    if GUI:IsA("ScreenGui") and GUI.Name == "reel" then
+        if autoReel and ReplicatedStorage:WaitForChild("events"):WaitForChild("reelfinished") ~= nil then
+            repeat task.wait(autoReelDelay) ReplicatedStorage.events.reelfinished:FireServer(100, false) until GUI == nil
+        end
+    end
 end)
 
 -- Auto-Cast connection
@@ -100,10 +156,8 @@ local autoCastConnection = LocalCharacter.ChildAdded:Connect(function(child)
                     end)
                 end
             end)
-        elseif autoCastMode == "Fast" then
-            child.events.cast:FireServer(100)  -- Fires the cast for "Fast" mode
         elseif autoCastMode == "Rage" then
-            child.events.cast:FireServer(200)  -- Fires the cast for "Rage" mode
+            child.events.cast:FireServer(100)
         end
     end
 end)
@@ -126,10 +180,8 @@ local autoCastConnection2 = PlayerGUI.ChildRemoved:Connect(function(GUI)
                     end)
                 end
             end)
-        elseif autoCastMode == "Fast" then
-            Tool.events.cast:FireServer(100)
         elseif autoCastMode == "Rage" then
-            Tool.events.cast:FireServer(200)
+            Tool.events.cast:FireServer(100)
         end
     end
 end)
