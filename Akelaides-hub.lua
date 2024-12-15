@@ -3,8 +3,8 @@ local SaveManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/d
 local InterfaceManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/InterfaceManager.lua"))()
 
 local Window = Fluent:CreateWindow({
-    Title = " " .. Fluent.Version,
-    SubTitle = "by calvin",  -- Changed to "by calvin"
+    Title = " Akelaides Hub " .. Fluent.Version,
+    SubTitle = "Staff",  -- Changed to "by calvin"
     TabWidth = 160,
     Size = UDim2.fromOffset(580, 460),
     Acrylic = true,
@@ -26,7 +26,8 @@ local TeleportDropdown = Tabs.Teleportation:AddDropdown("TeleportationDropdown",
     Values = {
         "Moosewood",
         "Forsaken",
-        "Ancient Isles"
+        "Ancient Isles",
+        "Roslit"
     },
     Multi = false,
     Default = 1
@@ -50,6 +51,10 @@ TeleportDropdown:OnChanged(function(Value)
         local ancientIslesPosition = Vector3.new(6059, 195, 284)
         humanoidRootPart.CFrame = CFrame.new(ancientIslesPosition)
         print("Teleporting to Ancient Isles")
+    elseif Value == "Roslit" then
+        local roslitPosition = Vector3.new(-1474, 133, 702)
+        humanoidRootPart.CFrame = CFrame.new(roslitPosition)
+        print("Teleporting to Roslit")
     end
 end)
 
