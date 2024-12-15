@@ -50,15 +50,6 @@ TeleportDropdown:OnChanged(function(Value)
     elseif Value == "Ancient" then
         local ancientIslesPosition = Vector3.new(6059, 195, 284)
         humanoidRootPart.CFrame = CFrame.new(ancientIslesPosition)
-    elseif Value == "Roslit" then
-        local roslitPosition = Vector3.new(-1474, 133, 702)
-        humanoidRootPart.CFrame = CFrame.new(roslitPosition)    
-    elseif Value ==  "enchant" then
-        local enchantPosition = Vector3.new(1298, -805, -288)
-        humanoidRootPart.CFrame = CFrame.new(enchantPosition)
-    elseif Value == "altar" then
-        local altarPosition = Vector3.new(1309, -805, -102)
-        humanoidRootPart.CFrame = CFrame.new(altarPosition)
     end
 end)
 
