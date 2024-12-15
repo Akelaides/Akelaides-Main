@@ -9,7 +9,7 @@ local SaveManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/d
 local InterfaceManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/InterfaceManager.lua"))()
 
 local Window = Fluent:CreateWindow({
-    Title = "Akelaides Hub " .. "1.0",  -- Fixed version if Fluent.Version is unavailable
+    Title = "Akelaides Hub " .. "1.1",  -- Fixed version if Fluent.Version is unavailable
     SubTitle = "by Calvin",
     TabWidth = 160,
     Size = UDim2.fromOffset(580, 460),
@@ -33,10 +33,11 @@ MainTab:AddButton({
     Title = "Copy Discord Link",
     Description = "https://discord.gg/DHJzx6gZ",
     Callback = function()
+        -- Set the clipboard to the Discord link
         setclipboard("https://discord.gg/DHJzx6gZ")
         print("Copied To Clipboard!")
-        
-        -- Notify the user that the link was copied
+
+        -- Trigger the notification after the link is copied
         Fluent:Notify({
             Title = "Link Copied",
             Content = "The Discord link has been copied to your clipboard.",
@@ -44,6 +45,7 @@ MainTab:AddButton({
         })
     end
 })
+
 
 
 -- Infinite Yield Button
@@ -175,9 +177,3 @@ InterfaceManager:BuildInterfaceSection(Tabs.Settings)
 SaveManager:BuildConfigSection(Tabs.Settings)
 
 Window:SelectTab(1)
-
-Fluent:Notify({
-    Title = "Thank You!",
-    Content = "Enjoy the Script! <3",
-    Duration = 2
-})
