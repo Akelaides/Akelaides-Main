@@ -3,7 +3,7 @@ local SaveManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/d
 local InterfaceManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/InterfaceManager.lua"))()
 
 local Window = Fluent:CreateWindow({
-    Title = " Akelaides Hub " .. Fluent.Version,
+    Title = "Akelaides Hub" .. Fluent.Version,
     SubTitle = "Staff",  -- Changed to "by calvin"
     TabWidth = 160,
     Size = UDim2.fromOffset(580, 460),
@@ -31,6 +31,7 @@ local TeleportDropdown = Tabs.Teleportation:AddDropdown("TeleportationDropdown",
     },
     Multi = false,
     Default = 1
+    MaxVisibleItems = 20
 })
 
 -- Teleportation logic based on dropdown selection
@@ -107,7 +108,7 @@ SaveManager:BuildConfigSection(Tabs.Settings)
 Window:SelectTab(1)
 
 Fluent:Notify({
-    Title = "Fluent",
+    Title = "Akelaides",
     Content = "The script has been loaded.",
     Duration = 8
 })
