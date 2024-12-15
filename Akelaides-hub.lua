@@ -15,7 +15,7 @@ local Window = Fluent:CreateWindow({
 --Fluent provides Lucide Icons https://lucide.dev/icons/ for the tabs, icons are optional
 local Tabs = {
     Main = Window:AddTab({ Title = "Home", Icon = "home" }),
-    Local = Window:AddTab({ Title = "Player", Icon = "person-standing"})
+    Local = Window:AddTab({ Title = "Player", Icon = "person-standing"}),
     Settings = Window:AddTab({ Title = "Settings", Icon = "settings" })
 }
 
@@ -38,7 +38,7 @@ do
 
 
 
-    Tabs.Main:AddButton({
+    Tabs.Local:AddButton({
         Title = "Infinite Yield",
         Description = "Loads Infinite Yield into the game.",
         Callback = function()
