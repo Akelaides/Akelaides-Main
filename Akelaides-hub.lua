@@ -8,53 +8,150 @@ local Window = Fluent:CreateWindow({
     TabWidth = 160,
     Size = UDim2.fromOffset(580, 460),
     Acrylic = true,
-    Theme = "Dark",
+    Theme = "Dark", "Amethyst", "Aqua",
     MinimizeKey = Enum.KeyCode.LeftControl
 })
 
 local Tabs = {
     Main = Window:AddTab({ Title = "Home", Icon = "home" }),
-    Autofarm = Window:AddTab({ Title = "Autofarm", Icon = "hammer"}),
+    Autofarm = Window:AddTab({ Title = "Autofarm", Icon = "hammer" }),
     Teleportation = Window:AddTab({ Title = "Teleportation", Icon = "map-pin" }),
     Settings = Window:AddTab({ Title = "Settings", Icon = "settings" })
 }
 
 local Options = Fluent.Options
 
-local TeleportDropdown = Tabs.Teleportation:AddDropdown("TeleportationDropdown", {
-    Title = "Select Island to Teleport",
-    Description = "Teleport to an island.",
-    Values = {
-        "Moosewood",
-        "Forsaken",
-        "Ancient Isles"
-    },
-    Multi = false,
-    Default = 1
+-- Fishing Tab
+local FishingTab = Window:CreateTab("Main")
+
+local loopEnabled = false
+local function resizeButtonLoop()
+    while loopEnabled do
+        local buttonPath = game:GetService("Players").LocalPlayer:FindFirstChild("PlayerGui")
+            and game.Players.LocalPlayer.PlayerGui:FindFirstChild("shakeui")
+            and game.Players.LocalPlayer.PlayerGui.shakeui:FindFirstChild("safezone")
+            and game.Players.LocalPlayer.PlayerGui.shakeui.safezone:FindFirstChild("button")
+
+        if buttonPath then
+            buttonPath.Size = UDim2.new(0, 2000, 0, 2000)
+            buttonPath.BackgroundTransparency = 1
+        else
+            print("did not find a button in the path!?!?")
+        end
+        wait(0.01)
+    end
+end
+
+FishingTab:CreateToggle({
+    Name = "Change Shake Size",
+    CurrentValue = false,
+    Flag = "ToggleResize",
+    Callback = function(Value)
+        loopEnabled = Value
+        if loopEnabled then
+            resizeButtonLoop()
+        end
+    end,
 })
 
--- Teleportation logic based on dropdown selection
-TeleportDropdown:OnChanged(function(Value)
-    local player = game.Players.LocalPlayer
-    local character = player.Character or player.CharacterAdded:Wait()
-    local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
-    
-    if Value == "Moosewood" then
-        local moosewoodPosition = Vector3.new(400, 135, 250)
-        humanoidRootPart.CFrame = CFrame.new(moosewoodPosition)
-        print("Teleporting to Moosewood")
-    elseif Value == "Forsaken" then
-        local forsakenPosition = Vector3.new(-2497, 137, 1627)
-        humanoidRootPart.CFrame = CFrame.new(forsakenPosition)
-        print("Teleporting to Forsaken")
-    elseif Value == "Ancient Isles" then
-        local ancientIslesPosition = Vector3.new(6000, 200, 300)
-        humanoidRootPart.CFrame = CFrame.new(ancientIslesPosition)
-        print("Teleporting to Ancient Isles")
+FishingTab:CreateButton({
+    Name = "Perfect Cast",
+    Callback = function()
+        local args = {
+            [1] = 100,
+            [2] = 2
+        }
+        local rod = game:GetService("Players").LocalPlayer.Character:FindFirstChild("Flimsy Rod")
+        if rod then
+            rod.events.cast:FireServer(unpack(args))
+        else
+            warn("Flimsy Rod not found in character.")
+        end
     end
-end)
+})
 
--- Auto-cast mode dropdown
+FishingTab:CreateButton({
+    Name = "Perfect Reel",
+    Callback = function()
+        local args = {
+            [1] = 100,
+            [2] = true
+        }
+        local reelfinished = game:GetService("ReplicatedStorage"):WaitForChild("events"):WaitForChild("reelfinished")
+        reelfinished:FireServer(unpack(args))
+    end
+})
+
+local clickingEnabled = false
+
+local function startClicking()
+    while clickingEnabled do
+        local button = game:GetService("Players").LocalPlayer.PlayerGui:FindFirstChild("TargetButton")
+        if button and button:IsA("TextButton") then
+            button.MouseButton1Click:Fire()
+        end
+        wait(0.1)
+    end
+end
+
+FishingTab:CreateToggle({
+    Name = "Auto GUI Click",
+    CurrentValue = false,
+    Flag = "AutoClickToggle",
+    Callback = function(Value)
+        clickingEnabled = Value
+        if clickingEnabled then
+            startClicking()
+        end
+    end,
+})
+
+local farmEnabled = false
+
+local function startAutoFarm()
+    while farmEnabled do
+        local rod = game:GetService("Players").LocalPlayer.Character:FindFirstChild("Flimsy Rod")
+        if rod then
+            local castArgs = { [1] = 100, [2] = 2 }
+            rod.events.cast:FireServer(unpack(castArgs))
+        else
+            warn("Flimsy Rod not equipped.")
+            break
+        end
+
+        local shakeGui = game:GetService("Players").LocalPlayer.PlayerGui:FindFirstChild("shakeui")
+        if shakeGui then
+            repeat wait(0.1) until not shakeGui or not shakeGui:FindFirstChild("safezone") or not shakeGui.safezone:FindFirstChild("button") or not shakeGui.safezone.button.Visible
+        end
+
+        local reelGui = game:GetService("Players").LocalPlayer.PlayerGui:FindFirstChild("reel")
+        if reelGui then
+            wait(1)
+            while reelGui and farmEnabled do
+                local reelArgs = { [1] = 100, [2] = true }
+                local reelfinished = game:GetService("ReplicatedStorage"):WaitForChild("events"):WaitForChild("reelfinished")
+                reelfinished:FireServer(unpack(reelArgs))
+                wait(0.1)
+                reelGui = game:GetService("Players").LocalPlayer.PlayerGui:FindFirstChild("reel")
+            end
+        end
+        wait(1)
+    end
+end
+
+FishingTab:CreateToggle({
+    Name = "Enable Auto-Farm",
+    CurrentValue = false,
+    Flag = "AutoFarmToggle",
+    Callback = function(Value)
+        farmEnabled = Value
+        if farmEnabled then
+            startAutoFarm()
+        end
+    end,
+})
+
+-- Auto Cast Mode Dropdown
 local AutoCastModeDropdown = Tabs.Autofarm:AddDropdown("AutoCastModeDropdown", {
     Title = "Select Auto Cast Mode",
     Description = "Choose the AutoCast mode.",
@@ -82,110 +179,6 @@ autoCastToggle:OnChanged(function()
     print("Auto Cast:", autoCast)
 end)
 
--- Auto-reel toggle
-local autoReel = false
-local autoReelDelay = 0.1
-
-local autoReelToggle = Tabs.Autofarm:AddToggle("AutoReel", { Title = "Auto Reel", Default = false })
-autoReelToggle:OnChanged(function()
-    autoReel = autoReelToggle.Value
-    print("Auto Reel:", autoReel)
-end)
-
--- Auto-shake toggle
-local autoShake = false
-local autoShakeDelay = 0.1  -- Time between shakes
-local autoShakeMethod = "KeyCodeEvent"  -- Can be "ClickEvent" or "KeyCodeEvent"
-local GuiService = game:GetService("GuiService")
-local VirtualInputManager = game:GetService("VirtualInputManager")
-local RunService = game:GetService("RunService")
-local PlayerGUI = game.Players.LocalPlayer:FindFirstChildOfClass("PlayerGui")
-
-local autoShakeToggle = Tabs.Autofarm:AddToggle("AutoShake", {Title = "Auto Shake", Default = false})
-autoShakeToggle:OnChanged(function()
-    autoShake = autoShakeToggle.Value
-    print("Auto Shake:", autoShake)
-end)
-
--- Auto-Reel and Auto-Shake connection
-local autoreelAndShakeConnection = PlayerGUI.ChildAdded:Connect(function(GUI)
-    if GUI:IsA("ScreenGui") and GUI.Name == "shakeui" then
-        if GUI:FindFirstChild("safezone") ~= nil then
-            GUI.safezone.ChildAdded:Connect(function(child)
-                if child:IsA("ImageButton") and child.Name == "button" then
-                    if autoShake == true then
-                        task.wait(autoShakeDelay)
-                        if child.Visible == true then
-                            if autoShakeMethod == "ClickEvent" then
-                                local pos = child.AbsolutePosition
-                                local size = child.AbsoluteSize
-                                VirtualInputManager:SendMouseButtonEvent(pos.X + size.X / 2, pos.Y + size.Y / 2, 0, true, LocalPlayer, 0)
-                                VirtualInputManager:SendMouseButtonEvent(pos.X + size.X / 2, pos.Y + size.Y / 2, 0, false, LocalPlayer, 0)
-                            elseif autoShakeMethod == "KeyCodeEvent" then
-                                VirtualInputManager:SendKeyEvent(true, Enum.KeyCode.Return, false, game)
-                                VirtualInputManager:SendKeyEvent(false, Enum.KeyCode.Return, false, game)
-                            end
-                        end
-                    end
-                end
-            end)
-        end
-    end
-
-    if GUI:IsA("ScreenGui") and GUI.Name == "reel" then
-        if autoReel and ReplicatedStorage:WaitForChild("events"):WaitForChild("reelfinished") ~= nil then
-            repeat task.wait(autoReelDelay) ReplicatedStorage.events.reelfinished:FireServer(100, false) until GUI == nil
-        end
-    end
-end)
-
--- Auto-Cast connection
-local autoCastConnection = LocalCharacter.ChildAdded:Connect(function(child)
-    if child:IsA("Tool") and child:FindFirstChild("events"):WaitForChild("cast") ~= nil and autoCast then
-        task.wait(autoCastDelay)
-        if autoCastMode == "Legit" then
-            VirtualInputManager:SendMouseButtonEvent(0, 0, 0, true, LocalPlayer, 0)
-            HumanoidRootPart.ChildAdded:Connect(function()
-                if HumanoidRootPart:FindFirstChild("power") ~= nil and HumanoidRootPart.power.powerbar.bar ~= nil then
-                    HumanoidRootPart.power.powerbar.bar.Changed:Connect(function(property)
-                        if property == "Size" then
-                            if HumanoidRootPart.power.powerbar.bar.Size == UDim2.new(1, 0, 1, 0) then
-                                VirtualInputManager:SendMouseButtonEvent(0, 0, 0, false, LocalPlayer, 0)
-                            end
-                        end
-                    end)
-                end
-            end)
-        elseif autoCastMode == "Rage" then
-            child.events.cast:FireServer(100)
-        end
-    end
-end)
-
--- Auto-Cast connection for when GUI is removed
-local autoCastConnection2 = PlayerGUI.ChildRemoved:Connect(function(GUI)
-    local Tool = LocalCharacter:FindFirstChildOfClass("Tool")
-    if GUI.Name == "reel" and autoCast == true and Tool ~= nil and Tool:FindFirstChild("events"):WaitForChild("cast") ~= nil then
-        task.wait(autoCastDelay)
-        if autoCastMode == "Legit" then
-            VirtualInputManager:SendMouseButtonEvent(0, 0, 0, true, LocalPlayer, 0)
-            HumanoidRootPart.ChildAdded:Connect(function()
-                if HumanoidRootPart:FindFirstChild("power") ~= nil and HumanoidRootPart.power.powerbar.bar ~= nil then
-                    HumanoidRootPart.power.powerbar.bar.Changed:Connect(function(property)
-                        if property == "Size" then
-                            if HumanoidRootPart.power.powerbar.bar.Size == UDim2.new(1, 0, 1, 0) then
-                                VirtualInputManager:SendMouseButtonEvent(0, 0, 0, false, LocalPlayer, 0)
-                            end
-                        end
-                    end)
-                end
-            end)
-        elseif autoCastMode == "Rage" then
-            Tool.events.cast:FireServer(100)
-        end
-    end
-end)
-
 -- WalkSpeed Input
 local WalkSpeedInput = Tabs.Settings:AddInput("WalkSpeed", {
     Title = "Walkspeed",
@@ -205,23 +198,10 @@ local WalkSpeedInput = Tabs.Settings:AddInput("WalkSpeed", {
     end
 })
 
--- Example Button
-Tabs.Main:AddButton({
-    Title = "Test Button",
-    Description = "A test button to trigger actions",
-    Callback = function()
-        print("Test button clicked!")
-    end
-})
-
--- Additional Example Inputs and Features
-local Keybind = Tabs.Main:AddKeybind("Keybind", {
-    Title = "KeyBind",
-    Mode = "Toggle",
-    Default = "LeftControl",
-    Callback = function(Value)
-        print("Keybind clicked:", Value)
-    end
+Fluent:Notify({
+    Title = "Akelaides",
+    Content = "The script has been loaded.",
+    Duration = 8
 })
 
 -- Set up SaveManager and InterfaceManager
