@@ -2,12 +2,12 @@
 
 local repo = 'https://raw.githubusercontent.com/KINGHUB01/Gui/main/'
 
-local Library = loadstring(game:HttpGet(repo ..'Gui%20Lib%20%5BLibrary%5D'))()
-local ThemeManager = loadstring(game:HttpGet(repo ..'Gui%20Lib%20%5BThemeManager%5D'))()
-local SaveManager = loadstring(game:HttpGet(repo ..'Gui%20Lib%20%5BSaveManager%5D'))()
+local Fluent = loadstring(game:HttpGet("https://github.com/dawid-scripts/Fluent/releases/latest/download/main.lua"))()
+local SaveManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/SaveManager.lua"))()
+local InterfaceManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/InterfaceManager.lua"))()
 
-local Window = Library:CreateWindow({
-    Title = 'Fisch V1.2.3 (BETA)',
+local Window = Fluent:CreateWindow({
+    Title = 'Accolade' (BETA), Fluent.version
     Center = true,
     AutoShow = true,
     TabPadding = 8,
@@ -17,6 +17,8 @@ local Window = Library:CreateWindow({
 local FrameTimer = tick()
 local FrameCounter = 0;
 local FPS = 60;
+
+local Options = Fluent.options
 
 local WatermarkConnection = game:GetService('RunService').RenderStepped:Connect(function()
     FrameCounter += 1;
@@ -46,7 +48,6 @@ local Tabs = {
 
 local teleportSpots = {}
 
-local racistPeople = { --[[ all racist people abandoned :pensive: ]] }
 
 local itemSpots = {
     Bait_Crate = CFrame.new(384.57513427734375, 135.3519287109375, 337.5340270996094),
