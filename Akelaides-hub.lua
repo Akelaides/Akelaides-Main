@@ -57,7 +57,7 @@ MainTab:AddButton({
 })
 
 -- Input Field for Autofarm Value
-local Input = Tabs.Autofarm:AddInput("AutofarmValue", {
+local Input = Tabs.Main:AddInput("AutofarmValue", {
     Title = "Autofarm Value",
     Default = "1",
     Placeholder = "Enter your Value",
@@ -74,7 +74,7 @@ Input:OnChanged(function()
 end)
 
 -- Toggle for Autofarm
-local Toggle = Tabs.Autofarm:AddToggle("Autofarm", {Title = "Autofarm", Default = false})
+local Toggle = Tabs.Main:AddToggle("Autofarm", {Title = "Autofarm", Default = false})
 
 Toggle:OnChanged(function(State)
     local player = game.Players.LocalPlayer
