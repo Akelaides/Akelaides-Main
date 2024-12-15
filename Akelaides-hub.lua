@@ -13,7 +13,7 @@ local Window = Fluent:CreateWindow({
 })
 
 local Tabs = {
-    Main = Window:AddTab({ Title = "Main", Icon = "" }),
+    Main = Window:AddTab({ Title = "Main", Icon = "home" }),
     Teleportation = Window:AddTab({ Title = "Teleportation", Icon = "map-pin" }),
     Settings = Window:AddTab({ Title = "Settings", Icon = "settings" })
 }
@@ -29,7 +29,7 @@ local TeleportDropdown = Tabs.Teleportation:AddDropdown("TeleportationDropdown",
         "Ancient Isles"
     },
     Multi = false,
-    Default = 1
+    Default = nil
 })
 
 -- Teleportation logic based on dropdown selection
@@ -47,7 +47,7 @@ TeleportDropdown:OnChanged(function(Value)
         humanoidRootPart.CFrame = CFrame.new(forsakenPosition)
         print("Teleporting to Forsaken")
     elseif Value == "Ancient Isles" then
-        local ancientIslesPosition = Vector3.new(6000, 200, 300)
+        local ancientIslesPosition = Vector3.new(6059, 195, 284)
         humanoidRootPart.CFrame = CFrame.new(ancientIslesPosition)
         print("Teleporting to Ancient Isles")
     end
