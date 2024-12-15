@@ -3,8 +3,8 @@ local SaveManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/d
 local InterfaceManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/InterfaceManager.lua"))()
 
 local Window = Fluent:CreateWindow({
-	Title = "script•by-isouDz🇩🇿",
-	SubTitle = "🐙JB911-Fïsçh🐟",
+	Title = "Accolades Hub",
+	SubTitle = "Kino ohana Yap",
 	TabWidth = 120,
 	Size = UDim2.fromOffset(550, 350),
 	Acrylic = false, 
