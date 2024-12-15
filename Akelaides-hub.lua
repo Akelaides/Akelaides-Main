@@ -60,7 +60,7 @@ MainTab:AddButton({
 -- Input Field for Autofarm Value
 local Input = Tabs.Main:AddInput("AutofarmValue", {
     Title = "Autofarm Value",
-    Default = "Default",
+    Default = "1",
     Placeholder = "Enter your Value",
     Numeric = false, 
     Finished = false,
@@ -98,10 +98,37 @@ Toggle:OnChanged(function(State)
                 [2] = getgenv().farmValue or 1
             }
             game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Client"):InvokeServer(unpack(args))
-            task.wait(0.1)  -- Adjusted wait for performance
+            
+            -- Adjust wait time based on selected autofarm mode
+            if getgenv().autofarmMode == "Rage" then
+                task.wait(0.05)  -- Faster for Rage mode
+            else
+                task.wait(0.1)  -- Normal for Fast mode
+            end
         end
     end
 end)
+
+
+local Dropdown = Tabs.Main:AddDropdown("AutofarmMode", {
+    Title = "Autofarm Mode",
+    Default = "Fast",  -- Default selection
+    Options = {"Fast", "Rage"},  -- Dropdown options
+    Callback = function(selectedOption)
+        print("Selected Autofarm Mode: " .. selectedOption)
+
+        -- Handle the selected option
+        if selectedOption == "Rage" then
+            getgenv().autofarmMode = "Rage"  -- Set the mode to Rage
+            -- Additional code for Rage autofarm behavior
+        elseif selectedOption == "Fast" then
+            getgenv().autofarmMode = "Fast"  -- Set the mode to Fast
+            -- Additional code for Fast autofarm behavior
+        end
+    end
+})
+
+
 
 -- Teleport Section
 local Section = TeleportTab:AddSection("Islands")
