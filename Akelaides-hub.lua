@@ -252,9 +252,9 @@ SaveManager:BuildConfigSection(Tabs.Settings)
 Window:SelectTab(1)
 
 Fluent:Notify({
-    Title = "Fluent",
+    Title = "Akelaides Hub",
     Content = "The script has been loaded.",
-    Duration = 8
+    Duration = 3
 })
 
 -- You can use the SaveManager:LoadAutoloadConfig() to load a config
