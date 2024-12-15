@@ -20,6 +20,7 @@ local Window = Fluent:CreateWindow({
 
 local Tabs = {
     Main = Window:AddTab({ Title = "Home", Icon = "home" }),
+    Autofarm = Window:AddTab({ Title = "Farming", Icon = "hammer"}),
     Teleportation = Window:AddTab({ Title = "Teleportation", Icon = "map-pin" }),
     Settings = Window:AddTab({ Title = "Settings", Icon = "settings" })  -- Added the Settings tab
 }
@@ -58,7 +59,7 @@ MainTab:AddButton({
 -- Input Field for Autofarm Value
 local Input = Tabs.Main:AddInput("AutofarmValue", {
     Title = "Autofarm Value",
-    Default = "Default",
+    Default = "1",
     Placeholder = "Enter your Value",
     Numeric = false, 
     Finished = false,
