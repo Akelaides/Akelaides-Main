@@ -3,8 +3,8 @@ local SaveManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/d
 local InterfaceManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/InterfaceManager.lua"))()
 
 local Window = Fluent:CreateWindow({
-	Title = "script•by-isouDz🇩🇿",
-	SubTitle = "🐙JB911-Fïsçh🐟",
+	Title = "Akelaides Hub", (BETA)
+	SubTitle = " By Calvin",
 	TabWidth = 120,
 	Size = UDim2.fromOffset(550, 350),
 	Acrylic = false, 
@@ -113,7 +113,7 @@ ImageButton.Position = UDim2.new(0.218742043, 0, -0.155235752, 0)
 ImageButton.Size = UDim2.new(0, 64, 0, 64)
 
 -- Set initial image to "open"
-ImageButton.Image = "rbxassetid://95601269496067" -- Replace with your open image Asset ID
+ImageButton.Image = "rbxassetid://18475590147" -- Replace with your open image Asset ID
 local isOpen = true -- Variable to track the state
 
 ImageButton.MouseButton1Click:Connect(function()
@@ -125,9 +125,9 @@ ImageButton.MouseButton1Click:Connect(function()
 
     -- Toggle the image based on the state
     if isOpen then
-        ImageButton.Image = "rbxassetid://95601269496067" -- Replace with your close image Asset ID
+        ImageButton.Image = "rbxassetid://18475590147" -- Replace with your close image Asset ID
     else
-        ImageButton.Image = "rbxassetid://95601269496067" -- Open image Asset ID
+        ImageButton.Image = "rbxassetid://18475590147" -- Open image Asset ID
     end
     isOpen = not isOpen -- Toggle the state
 
@@ -590,76 +590,16 @@ AllFuncs['Sending Webhook'] = function()
 				end
 				AllFishInventory = AllFishInventory.."```"
 			end
-			local SendingSuccess = sendwebhook(Config['WebHook Configs'], {
-				["content"] = ((Config['Ping Discord Id'] and Config['"Discord Id'] ~= "") and "<@"..Config['"Discord Id']..">"),
-				["embeds"] = {
-					{
-						["id"]= 661605297,
-						["title"]= "fisch notifi",
-						["description"] = "** Player : "..LocalPlayer.Name.."\n "..MoneyDes..""..LevelDes..""..AllFishInventory.."**",
-						["color"]= 8646911,
-						["fields"]= {},
-						["thumbnail"]= {
-							["url"]= GetPlayerProfile()
-						},
-						["footer"]= {
-							["text"]  = "ZrC Hub Notify",
-							["icon_url"] = "https://cdn.discordapp.com/attachments/1306627401664692265/1306646029080465469/--_.._.png?ex=67376c71&is=67361af1&hm=7fafeb4fd1c96f83533a6522405b17b4687c5eca7403b8c4048575adbc929c8f&"
-						}
-					}
-				}
-			})
-			if SendingSuccess then
-				Notify("Sending WebHook Success")
-			else
-				Notify("Failed Sending WebHook!")
 			end
 		end
 	end
 end
 
-workspace.active.ChildAdded:Connect(function(child)
-	if Config['Safe Whirlpool Spawn'] and Config['WebHook Configs'] ~= "" then
-		if child.Name == "Safe Whirlpool" then
-			local Pos = {
-				child.Position.X,
-				child.Position.Y,
-				child.Position.Z,
-			}
-			local StringInput = string.format("%s, %s, %s", ExportValue(Pos[1]), ExportValue(Pos[2]), ExportValue(Pos[3]))
-			local SendingSuccess = sendwebhook(Config['WebHook Configs'], {
-				["content"] = ((Config['Ping Discord Id'] and Config['"Discord Id'] ~= "") and "<@"..Config['"Discord Id']..">"),
-				["embeds"] = {
-					{
-						["id"]= 661605297,
-						["title"]= "уведомление о рыб",
-						["description"] = "** Player : "..LocalPlayer.Name.."\n Found Safe Whirlpool\n Position : "..StringInput.."**",
-						["color"]= 8646911,
-						["fields"]= {},
-						["thumbnail"]= {
-							["url"]= GetPlayerProfile()
-						},
-						["footer"]= {
-							["text"]  = "Normal Hub Notify",
-							["icon_url"] = "https://cdn.discordapp.com/attachments/1306627401664692265/1306646029080465469/--_.._.png?ex=67376c71&is=67361af1&hm=7fafeb4fd1c96f83533a6522405b17b4687c5eca7403b8c4048575adbc929c8f&"
-						}
-					}
-				}
-			})
-			if SendingSuccess then
-				Notify("Sending WebHook Success")
-			else
-				Notify("Failed Sending WebHook!")
-			end
-		end
-	end
-end)
-
 Main = Tap.General:AddSection('General') do
 	SelectPosition = Main:AddParagraph({        
-		Title = "Position : N/A"
+		Title = "Autofarm"
 	})
-	Toggle(Main, "Auto Farm Fish","", "Farm Fish")
+	Toggle(Main, "Auto Farm","", "Farm Fish")
 	Toggle(Main, "Teleport To Select Position","", "To Pos Stand")
 	Main:AddButton({
 		Title = "Select position",
@@ -761,42 +701,6 @@ AllFuncs['Auto Find Boat Event'] = function()
 					VirtualInputManager:SendKeyEvent(true, "E", false, game)
 					VirtualInputManager:SendKeyEvent(false, "E", false, game)
 					fireproximityprompt(v.PickupPrompt, 1)				
-				end
-			end
-		end
-		if _hasItem("Witches Ingredient") then
-			repeat
-				task.wait()
-				LocalPlayer.Character:FindFirstChild("HumanoidRootPart").CFrame = CFrame.new(404.7090148925781, 134.5, 317.6537780761719)
-				if Backpack:FindFirstChild("Witches Ingredient") then
-					LocalPlayer.Character.Humanoid:EquipTool(Backpack:FindFirstChild("Witches Ingredient"))
-				end
-				fireproximityprompt(workspace.world.map.halloween.witch.WitchesPot.AcidTop.Prompt, 1)				
-			until not _hasItem("Witches Ingredient") or not Config["Auto Find Boat Event"]
-			if Config['Halloween Success'] and Config['WebHook Configs'] ~= "" then
-				local SendingSuccess = sendwebhook(Config['WebHook Configs'], {
-					["content"] = ((Config['Ping Discord Id'] and Config['"Discord Id'] ~= "") and "<@"..Config['"Discord Id']..">"),
-					["embeds"] = {
-						{
-							["id"]= 661605297,
-							["title"]= "рыба Уведомить",
-							["description"] = "** Player : "..LocalPlayer.Name.."\n Trade Witches Ingredient Success **",
-							["color"]= 8646911,
-							["fields"]= {},
-							["thumbnail"]= {
-								["url"]= GetPlayerProfile()
-							},
-							["footer"]= {
-								["text"]  = "Normal Hub Notify",
-								["icon_url"] = "https://cdn.discordapp.com/attachments/1306627401664692265/1306646029080465469/--_.._.png?ex=67376c71&is=67361af1&hm=7fafeb4fd1c96f83533a6522405b17b4687c5eca7403b8c4048575adbc929c8f&"
-							}
-						}
-					}
-				})
-				if SendingSuccess then
-					Notify("Sending WebHook Success")
-				else
-					Notify("Failed Sending WebHook!")
 				end
 			end
 		end
@@ -936,15 +840,15 @@ MiscPlayer = Tap.Player:AddSection('Misc Player') do
 		end,
 	})
 	MiscPlayer:AddButton({
-		Title = "restart to another server",
+		Title = "Restart To Another Server",
 		Description = "",
 		Callback = function()
 			AllFuncs.HopServer(true)
 		end
 	})
 	MiscPlayer:AddButton({
-		Title = "tp on empty server",
-		Description = "",
+		Title = "Tp To Empty Server",
+		Description = "Teleports you to a empty server",
 		Callback = function()
 			AllFuncs.HopServer(false)
 		end
@@ -979,7 +883,7 @@ Shoppy = Tap.Shop:AddSection('Shop All') do
 	end
 end
 Shoppy:AddButton({
-    Title = "Buy Incant fishing rod",
+    Title = "Buy Incant rod",
     Description = "View [11,000C$]",
     Callback = function()
         local player = game.Players.LocalPlayer
@@ -1003,45 +907,6 @@ wait(0)  -- Adjust the wait time if needed
 character:SetPrimaryPartCFrame(CFrame.new(previousPosition))
     end
 })
-
-WebHookConfigs = Tap.Configs:AddSection('WebHook') do
-	TextBox(WebHookConfigs, "WebHook","","discord.com/api/webhooks", false, "WebHook Configs")
-	TextBox(WebHookConfigs, "Discord Id","","1010021431075155979", false, "Discord Id Ping")
-	Slider(WebHookConfigs, "Delay Sending (Sec)", 10, 600, false, "Delay Sending")
-	Toggle(WebHookConfigs, "Sending WebHook","","Sending Webhook")
-	Toggle(WebHookConfigs, "Ping Discord Id","","Ping Discord Id")
-	
-	WebHookConfigs:AddButton({
-		Title = "Testing the Web Hook",
-		Description = "",
-		Callback = function()
-			local SendingSuccess = sendwebhook(Config['WebHook Configs'], {
-				["content"] = ((Config['Ping Discord Id'] and tostring(Config['"Discord Id']) ~= "") and "<@"..tostring(Config['"Discord Id'])..">"),
-				["embeds"] = {
-					{
-						["id"]= 661605297,
-						["title"]= "Рыба уведомление",
-						["description"] = "** Player : "..LocalPlayer.Name.."\n THIS TESTING WEBHOOK**",
-						["color"]= 8646911,
-						["fields"]= {},
-						["thumbnail"]= {
-							["url"]= GetPlayerProfile()
-						},
-						["footer"]= {
-							["text"]  = "Normal Hub Notify",
-							["icon_url"] = "https://cdn.discordapp.com/attachments/1306627401664692265/1306646029080465469/--_.._.png?ex=67376c71&is=67361af1&hm=7fafeb4fd1c96f83533a6522405b17b4687c5eca7403b8c4048575adbc929c8f&"
-						}
-					}
-				}
-			})
-			if SendingSuccess then
-				Notify("Sending WebHook Success", 1)
-			else
-				Notify("Failed Sending WebHook!", 1)
-			end
-		end,
-	})
-end
 local TableZum = {}
 GetCount = function(NameFish)
 	local ReturnCound = 0
@@ -1090,8 +955,6 @@ WebHookConfigsData = Tap.Configs:AddSection('Data Sending') do
 	Toggle(WebHookConfigsData, "All Fish Inventory","","All Fish Inventory")
 	Toggle(WebHookConfigsData, "Send Kilo Fish","","Send Kilo Fish")
 	Toggle(WebHookConfigsData, "Send Price Fish","","Send Price Fish")
-	Toggle(WebHookConfigsData, "Safe Whirlpool Spawn","","Safe Whirlpool Spawn")
-	Toggle(WebHookConfigsData, "Halloween Success","","Halloween Success")
 end
 
 local Teleporting = Tap.Teleport:AddSection('Teleport') do
