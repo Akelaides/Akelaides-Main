@@ -72,8 +72,12 @@ Toggle:OnChanged(function(State)
     local character = player.Character or player.CharacterAdded:Wait()
     local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
 
-    local farmPosition = Vector3.new(-191, 16, -158)
-    humanoidRootPart.CFrame = CFrame.new(farmPosition)
+    -- Do NOT teleport to the farm position when the script first loads.
+    -- Only teleport to the farm position when the toggle is ON
+    if State then
+        local farmPosition = Vector3.new(-191, 16, -158)
+        humanoidRootPart.CFrame = CFrame.new(farmPosition)  -- Move the player to farm position
+    end
 
     getgenv().farmer = State
 
