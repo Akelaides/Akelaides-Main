@@ -74,56 +74,49 @@ Input:OnChanged(function()
     print("Input updated:", Input.Value)
 end)
 
--- Toggle for Autofarm
-local Toggle = Tabs.Main:AddToggle("Autofarm", {Title = "Autofarm", Default = false})
-
-Toggle:OnChanged(function(State)
-end)
-local Dropdown = Tabs.Main:AddDropdown("AutofarmMode", {
-    Title = "Autofarm Mode",  -- Title of the dropdown
-    Default = "Fast",         -- Default selected option
-    Options = {"Fast", "Rage"},  -- Dropdown options
-    Callback = function(selectedOption)
-        print("Selected Autofarm Mode: " .. selectedOption)
-        
-        -- Check if "Fast" is selected
-        if selectedOption == "Fast" then
-            getgenv().farmer = true  -- Enable farming
-
-            if getgenv().farmer then
-                while getgenv().farmer do
-                    local args = {
-                        [1] = "ClickStat",
-                        [2] = getgenv().farmValue or 1
-                    }
-                    game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Client"):InvokeServer(unpack(args))
-                    task.wait(0.1)
-                end
-            end
-        -- Check if "Rage" is selected
-        elseif selectedOption == "Rage" then
-            getgenv().farmer = true  -- Enable farming
-
-            if getgenv().farmer then
-                while getgenv().farmer do
-                    local args = {
-                        [1] = "ClickStat",
-                        [2] = getgenv().farmValue or 1
-                    }
-                    -- Multiple invocations for "Rage" mode
-                    game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Client"):InvokeServer(unpack(args))
-                    game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Client"):InvokeServer(unpack(args))
-                    game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Client"):InvokeServer(unpack(args))
-                    game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Client"):InvokeServer(unpack(args))
-                    game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Client"):InvokeServer(unpack(args))
-                end
-            end
-        end
+-- Slider for Autofarm Value
+local Slider = Tabs.Main:AddSlider("AutofarmDelay", {
+    Title = "Autofarm Delay",      -- Title for the slider
+    Min = 0,                       -- Minimum value (e.g., 1)
+    Max = 2,                     -- Maximum value (e.g., 100)
+    Default = 0.1,                  -- Default value when the slider is created
+    Increment = 0.1,                 -- Increment per step
+    Callback = function(AutofarmDelay)
+        -- This callback function is called whenever the slider value changes
+        print("Autofarm value set to: " .. AutofarmDelay)
+        getgenv().farmValue = AutofarmDelay  -- Set the farm value globally
     end
 })
 
 
+-- Toggle for Autofarm
+local Toggle = Tabs.Main:AddToggle("Autofarm", {Title = "Autofarm", Default = false})
 
+Toggle:OnChanged(function(State)
+    local player = game.Players.LocalPlayer
+    local character = player.Character or player.CharacterAdded:Wait()
+    local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
+
+    -- Do NOT teleport to the farm position when the script first loads.
+    -- Only teleport to the farm position when the toggle is ON
+    if State then
+        local farmPosition = Vector3.new(-191, 16, -158)
+        humanoidRootPart.CFrame = CFrame.new(farmPosition)  -- Move the player to farm position
+    end
+
+    getgenv().farmer = State
+
+    if getgenv().farmer then
+        while getgenv().farmer do
+            local args = {
+                [1] = "ClickStat",
+                [2] = getgenv().farmValue or 1
+            }
+            game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Client"):InvokeServer(unpack(args))
+            task.wait(AutofarmDelay)  -- Adjusted wait for performance
+        end
+    end
+end)
 -- Teleport Section
 local Section = TeleportTab:AddSection("Islands")
 
