@@ -101,7 +101,7 @@ TeleportTab:AddButton({
         local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
         
         -- Define teleportation location for Escape Island
-        local escapePosition = Vector3.new(-167, 13, -444)
+        local escapePosition = Vector3.new(-167, 17, -100)
         
         -- Teleport the player
         humanoidRootPart.CFrame = CFrame.new(escapePosition)
@@ -118,7 +118,7 @@ TeleportTab:AddButton({
         local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
         
         -- Define teleportation location for Winter Island
-        local escWinterPosition = Vector3.new(-168, 16, -770)
+        local escWinterPosition = Vector3.new(-168, 17, -445)
         
         -- Teleport the player
         humanoidRootPart.CFrame = CFrame.new(escWinterPosition)
@@ -135,7 +135,7 @@ TeleportTab:AddButton({
         local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
         
         -- Define teleportation location for Spooky Island
-        local spookyPosition = Vector3.new(-167, 21, -768)
+        local spookyPosition = Vector3.new(-168, 16, -771)
         
         -- Teleport the player
         humanoidRootPart.CFrame = CFrame.new(spookyPosition)
