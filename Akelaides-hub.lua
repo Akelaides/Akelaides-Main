@@ -26,10 +26,13 @@ local TeleportDropdown = Tabs.Teleportation:AddDropdown("TeleportationDropdown",
     Values = {
         "Moosewood",
         "Forsaken",
-        "Ancient Isles"
+        "Ancient",
+        "Roslit",
+        "enchant",
+        "altar"
     },
     Multi = false,
-    Default = nil
+    Default = 0
 })
 
 -- Teleportation logic based on dropdown selection
@@ -41,15 +44,21 @@ TeleportDropdown:OnChanged(function(Value)
     if Value == "Moosewood" then
         local moosewoodPosition = Vector3.new(400, 135, 250)
         humanoidRootPart.CFrame = CFrame.new(moosewoodPosition)
-        print("Teleporting to Moosewood")
     elseif Value == "Forsaken" then
         local forsakenPosition = Vector3.new(-2497, 137, 1627)
         humanoidRootPart.CFrame = CFrame.new(forsakenPosition)
-        print("Teleporting to Forsaken")
-    elseif Value == "Ancient Isles" then
+    elseif Value == "Ancient" then
         local ancientIslesPosition = Vector3.new(6059, 195, 284)
         humanoidRootPart.CFrame = CFrame.new(ancientIslesPosition)
-        print("Teleporting to Ancient Isles")
+    elseif Value == "Roslit" then
+        local RoslitPosition = Vector3.new(-1474, 133, 702)
+        humanoidRootPart.CFrame = CFrame.new(roslitPosition)
+    elseif Value ==  "enchant" then
+        local enchantPosition = Vector3.new(1298, -805, -288)
+        humanoidRootPart.CFrame = CFrame.new(enchantPosition)
+    elseif Value == "altar" hten
+        local altarPosition = Vector3.new(1309, -805, -102)
+        humanoidRootPart.CFrame = CFrame.new(altarPosition)
     end
 end)
 
