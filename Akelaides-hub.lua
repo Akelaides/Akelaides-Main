@@ -22,7 +22,6 @@ local Tabs = {
     Main = Window:AddTab({ Title = "Home", Icon = "home" }),
     Autofarm = Window:AddTab({ Title = "Farming", Icon = "hammer"}),
     Teleportation = Window:AddTab({ Title = "Teleportation", Icon = "map-pin" }),
-    Miscellanous = Window:AddTab({ Title = "Misc", Icon = "boxes"}),
     Settings = Window:AddTab({ Title = "Settings", Icon = "settings" })  -- Added the Settings tab
 }
 
