@@ -9,8 +9,8 @@ local SaveManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/d
 local InterfaceManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/InterfaceManager.lua"))()
 
 local Window = Fluent:CreateWindow({
-    Title = "Akelaides Hub " .. "1.0",  -- Fixed version if Fluent.Version is unavailable
-    SubTitle = "by Calvin",
+    Title = "Akelaides Hub " .. "",  -- Fixed version if Fluent.Version is unavailable
+    SubTitle = "1.2 | By Calvin",
     TabWidth = 160,
     Size = UDim2.fromOffset(580, 460),
     Acrylic = true,
@@ -22,12 +22,15 @@ local Tabs = {
     Main = Window:AddTab({ Title = "Home", Icon = "home" }),
     Autofarm = Window:AddTab({ Title = "Farming", Icon = "hammer"}),
     Teleportation = Window:AddTab({ Title = "Teleportation", Icon = "map-pin" }),
+    Miscellanous = Window:AddTab({ Title = "Misc", Icon = "boxes"}),
     Settings = Window:AddTab({ Title = "Settings", Icon = "settings" })  -- Added the Settings tab
 }
 
 local MainTab = Tabs.Main
 local TeleportTab = Tabs.Teleportation
-local SettingsTab = Tabs.Settings  -- Referencing the Settings tab for later use
+local SettingsTab = Tabs.Settings
+local AutofarmTab = Tabs.Autofarm
+local MiscellanousTab = Tabs.Misc  -- Referencing the Settings tab for later use
 
 -- Main Section
 MainTab:AddButton({
@@ -48,7 +51,7 @@ MainTab:AddButton({
 
 
 -- Infinite Yield Button
-MainTab:AddButton({
+MiscellanousTab:AddButton({
     Title = "Infinite Yield",
     Description = "Loads Infinite Yield script",
     Callback = function()
@@ -57,7 +60,7 @@ MainTab:AddButton({
 })
 
 -- Input Field for Autofarm Value
-local Input = Tabs.Main:AddInput("AutofarmValue", {
+local Input = Tabs.Autofarm:AddInput("AutofarmValue", {
     Title = "Autofarm Value",
     Default = "1",
     Placeholder = "Enter your Value",
@@ -74,7 +77,7 @@ Input:OnChanged(function()
 end)
 
 -- Toggle for Autofarm
-local Toggle = Tabs.Main:AddToggle("Autofarm", {Title = "Autofarm", Default = false})
+local Toggle = Tabs.Autofarm:AddToggle("Autofarm", {Title = "Autofarm", Default = false})
 
 Toggle:OnChanged(function(State)
     local player = game.Players.LocalPlayer
