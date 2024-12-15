@@ -55,36 +55,74 @@ TeleportDropdown:OnChanged(function(Value)
 end)
 
 -- Auto-cast mode dropdown
-local AutoCastModeDropdown = Tabs.Autofarm:AddDropdown("AutoCastModeDropdown", {
-    Title = "Select Auto-Cast Mode",
-    Description = "Choose the auto-cast mode.",
-    Values = {
-        "Legit",  -- Normal mode
-        "Fast",   -- Fast mode
-        "Rage"    -- Aggressive mode
-    },
-    Multi = false,
-    Default = 1  -- Default to "Legit"
-})
+-- Varbiables
 
--- Auto-cast toggle
+local autoShake = false
+local autoShakeDelay = 0.1
+local autoShakeMethod = "KeyCodeEvent"
+local autoShakeClickOffsetX = 0
+local autoShakeClickOffsetY = 0
+local autoReel = false
+local autoReelDelay = 2
 local autoCast = false
-local autoCastDelay = 0.1
-local autoCastMode = "Legit"  -- Default mode
+local autoCastMode = "Legit"
+local autoCastDelay = 2
+local ZoneCast = false
+local Zone = "Brine Pool"
+local Noclip = false
+local AntiDrown = false
+local CollarPlayer = false
+local Target
+local FreezeChar = false
 
-AutoCastModeDropdown:OnChanged(function(Value)
-    autoCastMode = Value
-    print("Auto-cast mode set to:", autoCastMode)
+-- Rest
+
+autoreelandshakeConnection = PlayerGUI.ChildAdded:Connect(function(GUI)
+    if GUI:IsA("ScreenGui") and GUI.Name == "shakeui" then
+        if GUI:FindFirstChild("safezone") ~= nil then
+            GUI.safezone.ChildAdded:Connect(function(child)
+                if child:IsA("ImageButton") and child.Name == "button" then
+                    if autoShake == true then
+                        task.wait(autoShakeDelay)
+                        if child.Visible == true then
+                            if autoShakeMethod == "ClickEvent" then
+                                local pos = child.AbsolutePosition
+                                local size = child.AbsoluteSize
+                                VirtualInputManager:SendMouseButtonEvent(pos.X + size.X / 2, pos.Y + size.Y / 2, 0, true, LocalPlayer, 0)
+                                VirtualInputManager:SendMouseButtonEvent(pos.X + size.X / 2, pos.Y + size.Y / 2, 0, false, LocalPlayer, 0)
+                            --[[elseif autoShakeMethod == "firesignal" then
+                                firesignal(child.MouseButton1Click)]]
+                            elseif autoShakeMethod == "KeyCodeEvent" then
+                                while WaitForSomeone(RenderStepped) do
+                                    if autoShake and GUI.safezone:FindFirstChild(child.Name) ~= nil then
+                                        task.wait()
+                                        pcall(function()
+                                            GuiService.SelectedObject = child
+                                            if GuiService.SelectedObject == child then
+                                                VirtualInputManager:SendKeyEvent(true, Enum.KeyCode.Return, false, game)
+                                                VirtualInputManager:SendKeyEvent(false, Enum.KeyCode.Return, false, game)
+                                            end
+                                        end)
+                                    else
+                                        GuiService.SelectedObject = nil
+                                        break
+                                    end
+                                end
+                            end
+                        end
+                    end
+                end
+            end)
+        end
+    end
+    if GUI:IsA("ScreenGui") and GUI.Name == "reel" then
+        if autoReel and ReplicatedStorage:WaitForChild("events"):WaitForChild("reelfinished") ~= nil then
+            repeat task.wait(autoReelDelay) ReplicatedStorage.events.reelfinished:FireServer(100, false) until GUI == nil
+        end
+    end
 end)
 
-local autoCastToggle = Tabs.Autofarm:AddToggle("AutoCast", { Title = "Auto Cast", Default = false })
-autoCastToggle:OnChanged(function()
-    autoCast = autoCastToggle.Value
-    print("Auto Cast:", autoCast)
-end)
-
--- Auto-Cast connection
-local autoCastConnection = LocalCharacter.ChildAdded:Connect(function(child)
+autoCastConnection = LocalCharacter.ChildAdded:Connect(function(child)
     if child:IsA("Tool") and child:FindFirstChild("events"):WaitForChild("cast") ~= nil and autoCast then
         task.wait(autoCastDelay)
         if autoCastMode == "Legit" then
@@ -100,16 +138,13 @@ local autoCastConnection = LocalCharacter.ChildAdded:Connect(function(child)
                     end)
                 end
             end)
-        elseif autoCastMode == "Fast" then
-            child.events.cast:FireServer(100)  -- Fires the cast for "Fast" mode
         elseif autoCastMode == "Rage" then
-            child.events.cast:FireServer(200)  -- Fires the cast for "Rage" mode
+            child.events.cast:FireServer(100)
         end
     end
 end)
 
--- Auto-Cast connection for when GUI is removed
-local autoCastConnection2 = PlayerGUI.ChildRemoved:Connect(function(GUI)
+autoCastConnection2 = PlayerGUI.ChildRemoved:Connect(function(GUI)
     local Tool = LocalCharacter:FindFirstChildOfClass("Tool")
     if GUI.Name == "reel" and autoCast == true and Tool ~= nil and Tool:FindFirstChild("events"):WaitForChild("cast") ~= nil then
         task.wait(autoCastDelay)
@@ -126,10 +161,8 @@ local autoCastConnection2 = PlayerGUI.ChildRemoved:Connect(function(GUI)
                     end)
                 end
             end)
-        elseif autoCastMode == "Fast" then
-            Tool.events.cast:FireServer(100)
         elseif autoCastMode == "Rage" then
-            Tool.events.cast:FireServer(200)
+            Tool.events.cast:FireServer(100)
         end
     end
 end)
