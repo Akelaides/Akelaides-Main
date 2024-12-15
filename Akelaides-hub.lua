@@ -3,110 +3,114 @@ local SaveManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/d
 local InterfaceManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/InterfaceManager.lua"))()
 
 local Window = Fluent:CreateWindow({
-    Title = "Akelaides Hub " .. Fluent.version,
+    Title = "Akelaides Hub " .. Fluent.Version,
     SubTitle = "by Calvin",
     TabWidth = 160,
     Size = UDim2.fromOffset(580, 460),
-    Acrylic = true, -- The blur may be detectable, setting this to false disables blur entirely
+    Acrylic = true, 
     Theme = "Dark",
-    MinimizeKey = Enum.KeyCode.LeftControl -- Used when there's no MinimizeKeybind
+    MinimizeKey = Enum.KeyCode.LeftControl
 })
 
 local Tabs = {
-    Main = Window:AddTab({ Title = "Home", Icon = "home" }),
-    Local = Window:AddTab({ Title = "Player", Icon = "person-standing"}),
-    Settings = Window:AddTab({ Title = "Settings", Icon = "settings" })
+    Main = Window:AddTab({ Title = "Main", Icon = "" }),
+    Teleportation = Window:AddTab({ Title = "Teleportation", Icon = "map-pin" })
 }
 
-local Options = Fluent.Options
+local MainTab = Tabs.Main
+local TeleportTab = Tabs.Teleportation
 
--- Notification example
-if Fluent then
-    Fluent:Notify({
-        Title = "Akelaides Hub",
-        Content = "Script loaded successfully!",
-        Duration = 5
-    })
-else
-    warn("Failed to initialize Fluent library.")
-end
-
--- Home Tab Paragraph
-Tabs.Main:AddParagraph({
-    Title = "Made By Calvin With Love",
-    Content = "Private Script >.<"
+-- Main Section
+MainTab:AddButton({
+    Title = "Example Button",
+    Description = "Just a placeholder",
+    Callback = function()
+        print("Button clicked!")
+    end
 })
 
 -- Infinite Yield Button
-Tabs.Local:AddButton({
+MainTab:AddButton({
     Title = "Infinite Yield",
-    Description = "Loads Infinite Yield into the game.",
+    Description = "Loads Infinite Yield script",
     Callback = function()
-        Window:Dialog({
-            Title = "Infinite Yield",
-            Content = "Are you sure you want to load Infinite Yield?",
-            Buttons = {
-                {
-                    Title = "Confirm",
-                    Callback = function()
-                        loadstring(game:HttpGet("https://raw.githubusercontent.com/edgeiy/infiniteyield/master/source"))()
-                        print("Infinite Yield loaded successfully.")
-                    end
-                },
-                {
-                    Title = "Cancel",
-                    Callback = function()
-                        print("Dialog canceled.")
-                    end
-                }
-            }
-        })
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source"))()
     end
 })
 
--- WalkSpeed Slider
-local Slider = Tabs.Local:AddSlider("Slider", {
-    Title = "WalkSpeed Adjuster",
-    Description = "Adjust your player's walking speed.",
-    Default = 16,
-    Min = 16,
-    Max = 200,
-    Rounding = 1,
-    Callback = function(Value)
-        game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = Value
-        print("WalkSpeed set to:", Value)
-    end
+-- Teleport Section
+local Section = TeleportTab:AddSection("Islands")
+
+-- Button for Moosewood
+TeleportTab:AddButton({
+    Title = "Teleport to Moosewood",
+    Callback = function()
+        local player = game.Players.LocalPlayer
+        local character = player.Character or player.CharacterAdded:Wait()
+        local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
+        
+        -- Define teleportation location for Moosewood
+        local moosewoodPosition = Vector3.new(400, 135, 250)
+        
+        -- Teleport the player
+        humanoidRootPart.CFrame = CFrame.new(moosewoodPosition)
+        print("Teleporting to Moosewood")
+    end,
 })
 
-Slider:OnChanged(function(Value)
-    print("Slider changed to:", Value)
-end)
-
--- Dropdown Example
-local Dropdown = Tabs.Main:AddDropdown("Dropdown", {
-    Title = "Example Dropdown",
-    Values = {"Option 1", "Option 2", "Option 3"},
-    Multi = false,
-    Default = 1
+-- Button for Forsaken
+TeleportTab:AddButton({
+    Title = "Teleport to Forsaken",
+    Callback = function()
+        local player = game.Players.LocalPlayer
+        local character = player.Character or player.CharacterAdded:Wait()
+        local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
+        
+        -- Define teleportation location for Forsaken
+        local forsakenPosition = Vector3.new(-2497, 137, 1627)
+        
+        -- Teleport the player
+        humanoidRootPart.CFrame = CFrame.new(forsakenPosition)
+        print("Teleporting to Forsaken")
+    end,
 })
 
-Dropdown:OnChanged(function(Value)
-    print("Dropdown changed:", Value)
-end)
+-- Button for Ancient Isles
+TeleportTab:AddButton({
+    Title = "Teleport to Ancient Isles",
+    Callback = function()
+        local player = game.Players.LocalPlayer
+        local character = player.Character or player.CharacterAdded:Wait()
+        local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
+        
+        -- Define teleportation location for Ancient Isles
+        local ancientIslesPosition = Vector3.new(6000, 200, 300)
+        
+        -- Teleport the player
+        humanoidRootPart.CFrame = CFrame.new(ancientIslesPosition)
+        print("Teleporting to Ancient Isles")
+    end,
+})
 
--- SaveManager and InterfaceManager setup
+-- Notify
+Fluent:Notify({
+    Title = "Fluent",
+    Content = "The script has been loaded.",
+    Duration = 8
+})
+
+-- Set up the save and interface managers
 SaveManager:SetLibrary(Fluent)
 InterfaceManager:SetLibrary(Fluent)
-
-SaveManager:IgnoreThemeSettings()
-SaveManager:SetIgnoreIndexes({})
 InterfaceManager:SetFolder("FluentScriptHub")
 SaveManager:SetFolder("FluentScriptHub/specific-game")
-
 InterfaceManager:BuildInterfaceSection(Tabs.Settings)
 SaveManager:BuildConfigSection(Tabs.Settings)
 
--- Load configurations
-SaveManager:LoadAutoloadConfig()
-
 Window:SelectTab(1)
+
+Fluent:Notify({
+    Title = "Fluent",
+    Content = "The script has been loaded.",
+    Duration = 8
+})
