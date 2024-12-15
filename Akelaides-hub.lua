@@ -1,4 +1,4 @@
-local Fluent = loadstring(game:HttpGet("https://github.com/dawid-scripts/Fluent/releases/latest/download/main.lua"))()
+local Fluent = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/main.lua"))()
 local SaveManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/SaveManager.lua"))()
 local InterfaceManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/InterfaceManager.lua"))()
 
@@ -51,8 +51,8 @@ TeleportDropdown:OnChanged(function(Value)
         local ancientIslesPosition = Vector3.new(6059, 195, 284)
         humanoidRootPart.CFrame = CFrame.new(ancientIslesPosition)
     elseif Value == "Roslit" then
-        local RoslitPosition = Vector3.new(-1474, 133, 702)
-        humanoidRootPart.CFrame = CFrame.new(roslitPosition)
+        local roslitPosition = Vector3.new(-1474, 133, 702)
+        humanoidRootPart.CFrame = CFrame.new(roslitPosition)    
     elseif Value ==  "enchant" then
         local enchantPosition = Vector3.new(1298, -805, -288)
         humanoidRootPart.CFrame = CFrame.new(enchantPosition)
