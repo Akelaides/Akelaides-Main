@@ -9,22 +9,21 @@ local SaveManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/d
 local InterfaceManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/InterfaceManager.lua"))()
 
 local Window = Fluent:CreateWindow({
-    Title = "Akelaides Hub " .. "",  -- Fixed version if Fluent.Version is unavailable
+    Title = "Akelaides Hub",
     SubTitle = "Power Slap Simulator | By Calvin",
     TabWidth = 160,
     Size = UDim2.fromOffset(580, 460),
-    Acrylic = true,  -- Keep this true for the acrylic effect
+    Acrylic = true,
     Theme = "Dark",
     MinimizeKey = Enum.KeyCode.LeftControl
 })
 
--- Optional: Adjust the background color and transparency for better visibility
-Window.BackgroundColor3 = Color3.fromRGB(30, 30, 30)  -- Dark background color
-Window.BackgroundTransparency = 0.5  -- Adjust transparency to enhance the acrylic effect
+Window.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+Window.BackgroundTransparency = 0.5
 
 local Tabs = {
     Main = Window:AddTab({ Title = "Home", Icon = "home" }),
-    Autofarm = Window:AddTab({ Title = "Autofarm", Icon = "plane"}),
+    Autofarm = Window:AddTab({ Title = "Autofarm", Icon = "plane" }),
     Teleportation = Window:AddTab({ Title = "Teleportation", Icon = "compass" }),
     Miscellaneous = Window:AddTab({ Title = "Miscellaneous", Icon = "boxes" }),
     Settings = Window:AddTab({ Title = "Settings", Icon = "settings" })
@@ -36,20 +35,18 @@ local TeleportTab = Tabs.Teleportation
 local MiscTab = Tabs.Miscellaneous
 local SettingsTab = Tabs.Settings
 
-
 -- Anti-AFK Logic
 local RunService = game:GetService("RunService")
 local player = game.Players.LocalPlayer
 local antiAFKEnabled = false
 local antiAFKConnection
-local initialized = false -- New variable to track initialization
+local initialized = false
 
 local function startAntiAFK()
     antiAFKConnection = RunService.RenderStepped:Connect(function()
         if player.Character and player.Character:FindFirstChild("Humanoid") then
-            -- Simulate activity without moving the character
-            player.Character.Humanoid:Move(Vector3.new(0, 0, 0), true) -- This does not cause movement
-            wait(0.1) -- Adjust the wait time as needed
+            player.Character.Humanoid:Move(Vector3.new(0, 0, 0), true)
+            wait(0.1)
         end
     end)
 end
@@ -61,11 +58,9 @@ local function stopAntiAFK()
     end
 end
 
--- Move the Anti-AFK Toggle to the Miscellaneous Tab
 local ToggleAntiAFK = MiscTab:AddToggle("Anti-AFK", { Title = "Enable Anti-AFK", Default = false })
 
 ToggleAntiAFK:OnChanged(function(antiAFKState)
-    -- Prevent unnecessary notifications on initialization
     if not initialized then
         initialized = true
         return
@@ -107,9 +102,10 @@ MainTab:AddButton({
 
 local Section = AutofarmTab:AddSection("Autofarm")
 
+-- Autofarm Value Input
 local Input = AutofarmTab:AddInput("AutofarmValue", {
     Title = "Autofarm Click Value",
-    Description = "Change How much u get per click.",
+    Description = "Change how much you get per click.",
     Default = "1",
     Placeholder = "Enter your Value",
     Numeric = false, 
@@ -129,13 +125,12 @@ Input:OnChanged(function()
     print("Input updated:", Input.Value)
 end)
 
--- Toggle for Autofarm
--- Check if getgenv().farmer exists to prevent multiple initializations
+-- Autofarm Toggle Logic
 if getgenv().farmer == nil then
-    getgenv().farmer = false -- Initialize only if it doesn't exist
+    getgenv().farmer = false
 end
 
-local Toggle = AutofarmTab:AddToggle("Autofarm", {Title = "Autofarm", Default = getgenv().farmer})
+local Toggle = AutofarmTab:AddToggle("Autofarm", { Title = "Autofarm", Default = getgenv().farmer })
 
 Toggle:OnChanged(function(State)
     local player = game.Players.LocalPlayer
@@ -162,18 +157,18 @@ Toggle:OnChanged(function(State)
     end
 end)
 
-    getgenv().farmer = State
+getgenv().farmer = State
 
-    if getgenv().farmer then
-        while getgenv().farmer do
-            local args = {
-                [1] = "ClickStat",
-                [2] = getgenv().farmValue or 1
-            }
-            game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Client"):InvokeServer(unpack(args))
-            task.wait(0.01)
-        end
+if getgenv().farmer then
+    while getgenv().farmer do
+        local args = {
+            [1] = "ClickStat",
+            [2] = getgenv().farmValue or 1
+        }
+        game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Client"):InvokeServer(unpack(args))
+        task.wait(0.01)
     end
+end
 
 -- Miscellaneous Section for Infinite Yield
 MiscTab:AddButton({
@@ -184,7 +179,7 @@ MiscTab:AddButton({
     end
 })
 
--- Teleport Section
+-- Teleportation Section
 local Section = TeleportTab:AddSection("Islands")
 
 -- Button for Escape Island
@@ -198,13 +193,11 @@ TeleportTab:AddButton({
         local escapePosition = Vector3.new(-167, 17, -100)
         humanoidRootPart.CFrame = CFrame.new(escapePosition)
         
-            
         Fluent:Notify({
             Title = "Teleportation",
             Content = "Teleported to Island",
             Duration = 3
         })
-
     end,
 })
 
@@ -216,12 +209,9 @@ TeleportTab:AddButton({
         local character = player.Character or player.CharacterAdded:Wait()
         local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
         
-        -- Define teleportation location for Winter Island
         local escWinterPosition = Vector3.new(-168, 17, -445)
         
-        -- Teleport the player
         humanoidRootPart.CFrame = CFrame.new(escWinterPosition)
-
 
         Fluent:Notify({
             Title = "Teleportation",
@@ -239,12 +229,9 @@ TeleportTab:AddButton({
         local character = player.Character or player.CharacterAdded:Wait()
         local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
         
-        -- Define teleportation location for Spooky Island
         local spookyPosition = Vector3.new(-168, 16, -771)
         
-        -- Teleport the player
         humanoidRootPart.CFrame = CFrame.new(spookyPosition)
-
 
         Fluent:Notify({
             Title = "Teleportation",
