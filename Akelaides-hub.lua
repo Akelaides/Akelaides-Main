@@ -175,7 +175,7 @@ end)
             task.wait(0.01)
         end
     end
-end)
+end
 
 -- Miscellaneous Section for Infinite Yield
 MiscTab:AddButton({
@@ -276,5 +276,3 @@ InterfaceManager:BuildInterfaceSection(Tabs.Settings)
 SaveManager:BuildConfigSection(Tabs.Settings)
 
 Window:SelectTab(1)
-
-end
