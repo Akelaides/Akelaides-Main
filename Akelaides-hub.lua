@@ -46,7 +46,7 @@ local function startAntiAFK()
     antiAFKConnection = RunService.RenderStepped:Connect(function()
         if player.Character and player.Character:FindFirstChild("Humanoid") then
             -- Simulate activity without moving the character
-            player.Character.Humanoid:ChangeState(Enum.HumanoidStateType.Freefall) -- Change to freefall state
+            player.Character.Humanoid:Move(Vector3.new(0, 0, 0), true) -- This does not cause movement
             wait(0.1) -- Adjust the wait time as needed
         end
     end)
@@ -60,7 +60,7 @@ local function stopAntiAFK()
 end
 
 -- Move the Anti-AFK Toggle to the Miscellaneous Tab
-local ToggleAntiAFK = MiscTab:AddToggle("Anti-AFK", { Title = "Enable Anti-AFK", Default = false })
+local ToggleAntiAFK = MiscTab:AddToggle("Anti-AFK", { Title = "Anti-AFK", Default = false })
 
 ToggleAntiAFK:OnChanged(function(antiAFKState)  -- Renamed variable to antiAFKState
     antiAFKEnabled = antiAFKState
