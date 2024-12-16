@@ -36,7 +36,98 @@ local TeleportTab = Tabs.Teleportation
 local MiscTab = Tabs.Miscellaneous
 local SettingsTab = Tabs.Settings
 
--- Anti-AFK Logic
+local PingFpsWindow = Instance.new("ScreenGui")
+local PingFpsFrame = Instance.new("Frame")
+local PingLabel = Instance.new("TextLabel")
+local FpsLabel = Instance.new("TextLabel")
+local Divider = Instance.new("Frame")
+local PingIcon = Instance.new("ImageLabel")
+local FpsIcon = Instance.new("ImageLabel")
+
+PingFpsWindow.Name = "PingFpsWindow"
+PingFpsWindow.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+
+-- Frame for the Ping/FPS UI
+PingFpsFrame.Size = UDim2.new(0, 300, 0, 100)
+PingFpsFrame.Position = UDim2.new(0.5, -150, 0.5, -50)
+PingFpsFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+PingFpsFrame.BackgroundTransparency = 0.5
+PingFpsFrame.BorderSizePixel = 0
+PingFpsFrame.ClipsDescendants = true
+PingFpsFrame.Parent = PingFpsWindow
+
+-- Add a drop shadow effect
+local Shadow = Instance.new("Frame")
+Shadow.Size = UDim2.new(1, 10, 1, 10)
+Shadow.Position = UDim2.new(0, -5, 0, -5)
+Shadow.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+Shadow.BackgroundTransparency = 0.5
+Shadow.Parent = PingFpsFrame
+
+-- Ping Label
+PingLabel.Size = UDim2.new(0.4, 0, 1, 0)
+PingLabel.Position = UDim2.new(0, 0, 0, 0)
+PingLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+PingLabel.TextScaled = true
+PingLabel.BackgroundTransparency = 1
+PingLabel.Parent = PingFpsFrame
+
+-- FPS Label
+FpsLabel.Size = UDim2.new(0.4, 0, 1, 0)
+FpsLabel.Position = UDim2.new(0.6, 0, 0, 0)
+FpsLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+FpsLabel.TextScaled = true
+FpsLabel.BackgroundTransparency = 1
+FpsLabel.Parent = PingFpsFrame
+
+-- Divider
+Divider.Size = UDim2.new(0, 2, 0.6, 0)
+Divider.Position = UDim2.new(0.5, 0, 0.2, 0)
+Divider.BackgroundColor3 = Color3.fromRGB(255, 0, 0) -- Heartbeat color
+Divider.Parent = PingFpsFrame
+
+local function updatePingAndFps()
+    while true do
+        local ping = game:GetService("Stats").Network.ServerStatsItem["Data Ping"]:GetValue()
+        local fps = math.floor(1 / game:GetService("RunService").RenderStepped:Wait())
+        
+        PingLabel.Text = "Ping: " .. ping .. " ms"
+        FpsLabel.Text = "FPS: " .. fps
+        
+        wait(1) -- Update every second
+    end
+end
+
+-- Function to toggle UI visibility
+local function toggleUI()
+    if PingFpsWindow.Enabled then
+        PingFpsWindow.Enabled = false
+    else
+        PingFpsWindow.Enabled = true
+    end
+end
+
+-- Add a button to toggle the UI in the Main Tab
+MainTab:AddButton({
+    Title = "Toggle Ping/FPS UI",
+    Description = "Show or hide the ping and FPS UI.",
+    Callback = function()
+        toggleUI()
+    end
+})
+
+-- Start updating Ping and FPS
+updatePingAndFps()
+
+-- Notify
+Fluent:Notify({
+    Title = "Akelaides",
+    Content = "The script has been loaded.",
+    Duration = 8
+})
+
+
+--Anti-AFK
 local RunService = game:GetService("RunService")
 local player = game.Players.LocalPlayer
 local antiAFKEnabled = false
