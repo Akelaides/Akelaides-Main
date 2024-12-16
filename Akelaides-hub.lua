@@ -109,7 +109,7 @@ if game.PlaceId == 14330243992 then
     local sections = AutofarmTab:AddSection("Auto Farm")
     local Input = AutofarmTab:AddInput("AutofarmValue", {
         Title = "Autofarm Click Value",
-        Description = "Change How many Slaps per Click"
+        Description = "Change How many Slaps per Click",
         Default = "1",
         Placeholder = "Enter your Value",
         Numeric = false, 
