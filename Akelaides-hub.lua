@@ -26,8 +26,8 @@ Window.BackgroundTransparency = 0.5  -- Adjust transparency to enhance the acryl
 
 local Tabs = {
     Main = Window:AddTab({ Title = "Home", Icon = "home" }),
-    Autofarm = Window:AddTab({ Title = "Autofarm", Icon = "hammer"}),
-    Teleportation = Window:AddTab({ Title = "Teleportation", Icon = "map-pin" }),
+    Autofarm = Window:AddTab({ Title = "Autofarm", Icon = "plane-takeoff"}),
+    Teleportation = Window:AddTab({ Title = "Teleportation", Icon = "compass" }),
     Miscellaneous = Window:AddTab({ Title = "Miscellaneous", Icon = "boxes" }),
     Settings = Window:AddTab({ Title = "Settings", Icon = "settings" })
 }
@@ -107,8 +107,8 @@ MainTab:AddButton({
     end
 })
 
--- Input Field for Autofarm Value
--- Input Field for Autofarm Value
+local Section = AutofarmTab:AddSection("Autofarm")
+
 local Input = AutofarmTab:AddInput("AutofarmValue", {
     Title = "Autofarm Value",
     Default = "1",
@@ -175,7 +175,7 @@ end)
             task.wait(0.01)
         end
     end
-end)
+end
 
 -- Miscellaneous Section for Infinite Yield
 MiscTab:AddButton({
@@ -276,5 +276,3 @@ InterfaceManager:BuildInterfaceSection(Tabs.Settings)
 SaveManager:BuildConfigSection(Tabs.Settings)
 
 Window:SelectTab(1)
-
-end
