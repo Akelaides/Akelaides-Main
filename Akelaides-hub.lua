@@ -26,7 +26,7 @@ Window.BackgroundTransparency = 0.5  -- Adjust transparency to enhance the acryl
 
 local Tabs = {
     Main = Window:AddTab({ Title = "Home", Icon = "home" }),
-    Autofarm = Window:AddTab({ Title = "Autofarm", Icon = "airplane"}),
+    Autofarm = Window:AddTab({ Title = "Autofarm", Icon = "hammer"}),
     Teleportation = Window:AddTab({ Title = "Teleportation", Icon = "map-pin" }),
     Miscellaneous = Window:AddTab({ Title = "Miscellaneous", Icon = "boxes" }),
     Settings = Window:AddTab({ Title = "Settings", Icon = "settings" })
