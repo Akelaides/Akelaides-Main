@@ -1,5 +1,3 @@
-if game.PlaceId == 14330243992 then
-
 local Fluent = loadstring(game:HttpGet("https://github.com/dawid-scripts/Fluent/releases/latest/download/main.lua"))()
 if not Fluent then
     warn("Fluent library failed to load")
