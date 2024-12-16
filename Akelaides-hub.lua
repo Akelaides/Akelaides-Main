@@ -45,8 +45,8 @@ local antiAFKConnection
 local function startAntiAFK()
     antiAFKConnection = RunService.RenderStepped:Connect(function()
         if player.Character and player.Character:FindFirstChild("Humanoid") then
-            -- Simulate a jump state to keep the player active
-            player.Character.Humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
+            -- Simulate a small input to keep the player active without moving
+            player.Character.Humanoid:ChangeState(Enum.HumanoidStateType.Seated) -- Change to seated state
             wait(0.1) -- Adjust the wait time as needed
         end
     end)
