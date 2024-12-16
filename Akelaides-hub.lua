@@ -36,6 +36,41 @@ local TeleportTab = Tabs.Teleportation
 local MiscTab = Tabs.Miscellaneous
 local SettingsTab = Tabs.Settings
 
+-- Anti-AFK Logic
+local RunService = game:GetService("RunService")
+local player = game.Players.LocalPlayer
+local antiAFKEnabled = false
+local antiAFKConnection
+
+local function startAntiAFK()
+    antiAFKConnection = RunService.RenderStepped:Connect(function()
+        if player.Character and player.Character:FindFirstChild("Humanoid") then
+            -- Simulate a jump state to keep the player active
+            player.Character.Humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
+            wait(0.1) -- Adjust the wait time as needed
+        end
+    end)
+end
+
+local function stopAntiAFK()
+    if antiAFKConnection then
+        antiAFKConnection:Disconnect()
+        antiAFKConnection = nil
+    end
+end
+
+-- Move the Anti-AFK Toggle to the Miscellaneous Tab
+local ToggleAntiAFK = MiscTab:AddToggle("Anti-AFK", { Title = "Enable Anti-AFK", Default = false })
+
+ToggleAntiAFK:OnChanged(function(antiAFKState)  -- Renamed variable to antiAFKState
+    antiAFKEnabled = antiAFKState
+    if antiAFKEnabled then
+        startAntiAFK()
+    else
+        stopAntiAFK()
+    end
+end)
+
 -- Main Section
 MainTab:AddButton({
     Title = "Copy Discord Link",
