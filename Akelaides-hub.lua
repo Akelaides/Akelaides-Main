@@ -12,7 +12,7 @@ local InterfaceManager = loadstring(game:HttpGet("https://raw.githubusercontent.
 
 local Window = Fluent:CreateWindow({
     Title = "Akelaides Hub " .. "",  -- Fixed version if Fluent.Version is unavailable
-    SubTitle = "v1.6 | By Calvin",
+    SubTitle = "Power Slap Simulator | By Calvin",
     TabWidth = 160,
     Size = UDim2.fromOffset(580, 460),
     Acrylic = true,  -- Keep this true for the acrylic effect
