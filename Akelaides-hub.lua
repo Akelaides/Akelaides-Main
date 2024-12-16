@@ -110,7 +110,8 @@ MainTab:AddButton({
 local Section = AutofarmTab:AddSection("Autofarm")
 
 local Input = AutofarmTab:AddInput("AutofarmValue", {
-    Title = "Autofarm Value",
+    Title = "Autofarm Click Value",
+    Description = "Change How much u get per click.",
     Default = "1",
     Placeholder = "Enter your Value",
     Numeric = false, 
