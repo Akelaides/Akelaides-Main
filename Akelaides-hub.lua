@@ -13,10 +13,14 @@ local Window = Fluent:CreateWindow({
     SubTitle = "1.2 | By Calvin",
     TabWidth = 160,
     Size = UDim2.fromOffset(580, 460),
-    Acrylic = true,
+    Acrylic = true,  -- Keep this true for the acrylic effect
     Theme = "Dark",
     MinimizeKey = Enum.KeyCode.LeftControl
 })
+
+-- Optional: Adjust the background color and transparency for better visibility
+Window.BackgroundColor3 = Color3.fromRGB(30, 30, 30)  -- Dark background color
+Window.BackgroundTransparency = 0.5  -- Adjust transparency to enhance the acrylic effect
 
 local Tabs = {
     Main = Window:AddTab({ Title = "Home", Icon = "home" }),
@@ -162,7 +166,7 @@ TeleportTab:AddButton({
         -- Teleport the player
         humanoidRootPart.CFrame = CFrame.new(spookyPosition)
 
-        
+
         Fluent:Notify({
             Title = "Teleportation",
             Content = "Teleported to Spooky",
