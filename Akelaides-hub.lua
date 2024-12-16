@@ -22,7 +22,7 @@ local Tabs = {
     Main = Window:AddTab({ Title = "Home", Icon = "home" }),
     Autofarm = Window:AddTab({ Title = "Autofarm", Icon = "hammer"}),
     Teleportation = Window:AddTab({ Title = "Teleportation", Icon = "map-pin" }),
-    Miscellaneous = Window:AddTab({ Title = "Miscellaneous", Icon = "cog" }),
+    Miscellaneous = Window:AddTab({ Title = "Miscellaneous", Icon = "boxes" }),
     Settings = Window:AddTab({ Title = "Settings", Icon = "settings" })
 }
 
@@ -114,7 +114,14 @@ TeleportTab:AddButton({
         
         local escapePosition = Vector3.new(-167, 17, -100)
         humanoidRootPart.CFrame = CFrame.new(escapePosition)
-        print("Teleporting to Escape Island")
+        
+            
+        Fluent:Notify({
+            Title = "Teleportation",
+            Content = "Teleported to Island",
+            Duration = 3
+        })
+
     end,
 })
 
@@ -131,7 +138,13 @@ TeleportTab:AddButton({
         
         -- Teleport the player
         humanoidRootPart.CFrame = CFrame.new(escWinterPosition)
-        print("Teleporting to Winter Island")
+
+
+        Fluent:Notify({
+            Title = "Teleportation",
+            Content = "Teleported to Winter",
+            Duration = 3
+        })
     end,
 })
 
@@ -148,7 +161,13 @@ TeleportTab:AddButton({
         
         -- Teleport the player
         humanoidRootPart.CFrame = CFrame.new(spookyPosition)
-        print("Teleporting to Spooky Island")
+
+        
+        Fluent:Notify({
+            Title = "Teleportation",
+            Content = "Teleported to Spooky",
+            Duration = 3
+        })
     end,
 })
 
