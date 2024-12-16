@@ -182,6 +182,18 @@ if game.PlaceId == 14330243992 then
         end
     })
 
+    local Input = MiscTab:AddInput("Walkspeed", {
+        Title = "Player Walkspeed",
+        Description = "Changes ur Walkspeed",
+        Default = "16",
+        Placeholder = "Enter your Speed",
+        Numeric = true, 
+        Finished = false,
+        Callback = function(Value)
+            game.Players.LocalPlayer.Walkspeed = Value
+        end
+    })
+
     -- Teleport Section
     local Section = TeleportTab:AddSection("Islands")
 
@@ -248,6 +260,79 @@ if game.PlaceId == 14330243992 then
         end,
     })
 
+    TeleportTab:AddButton({
+        Title = "Teleport To Anime Island",
+        Callback = function()
+            local player = game.Players.LocalPlayer
+            local character = player.Character or player.CharacterAdded:Wait()
+            local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
+
+            local animePosition = Vector3.new(-168, 16, -771)
+
+            humanoidRootPart.CFrame = CFrame.new(animePosition)
+
+            Fluent:Notify({
+                Title = "Teleportation",
+                Content = "Teleported To Anime!",
+                Duration = 3
+            })
+        end,
+    })
+
+    TeleportTab:AddButton({
+        Title = "Teleport to Desert Island",
+        Callback = function()
+            local player = game.Players.LocalPlayer
+            local character = player.Character or player.CharacterAdded:Wait()
+            local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
+
+            local desertPosition = Vector3.new(-167, 15, -1383)
+            
+            humanoidRootPart.CFrame = CFrame.new(desertPosition)
+            Fluent:Notify({
+                Title = "Teleportation",
+                Content = "Teleported To Desert!",
+                Duration = 3
+            })
+        end,
+    })
+
+    TeleportTab:AddButton({
+        Title = "Teleport To Underworld",
+        Callback = function()
+            local player = game.Players.LocalPlayer
+            local character = player.Character or player.CharacterAdded:Wait()
+            local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
+
+            local underworldPosition = Vector3.new(-167, 15, -1719)
+
+            humanoidRootPart.CFrame = CFrame.new(underworldPosition)
+            Fluent:Notify({
+                Title = "Teleportation",
+                Content = "Teleported To Underworld",
+                Duration = 3
+            })
+        end,
+    })
+
+    TeleportTab:AddButton({
+        Title = "Teleport To Luck",
+        Callback = function()
+            local player = game.Players.LocalPlayer
+            local character = player.Character or player.CharacterAdded:Wait()
+            local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
+
+            local LuckPosition = Vector3.new(-168, 15, -2041)
+
+            humanoidRootPart.CFrame = CFrame.new(LuckPosition)
+            Fluent:Notify({
+                Title = "Teleportation",
+                Content = "Teleported To Luck Island",
+                Duration = 3
+            })
+        end,   
+    })
+    
     TeleportTab:AddParagraph({
         Title = "More Teleports Soon! <3",
         Content = "I'm lazy lol."
