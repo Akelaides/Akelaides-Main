@@ -108,7 +108,8 @@ if game.PlaceId == 14330243992 then
 
     local sections = AutofarmTab:AddSection("Auto Farm")
     local Input = AutofarmTab:AddInput("AutofarmValue", {
-        Title = "Autofarm Value",
+        Title = "Autofarm Click Value",
+        Description = "Change How many Slaps per Click"
         Default = "1",
         Placeholder = "Enter your Value",
         Numeric = false, 
@@ -267,7 +268,7 @@ if game.PlaceId == 14330243992 then
             local character = player.Character or player.CharacterAdded:Wait()
             local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
 
-            local animePosition = Vector3.new(-168, 16, -771)
+            local animePosition = Vector3.new(-168, 17, -1071)
 
             humanoidRootPart.CFrame = CFrame.new(animePosition)
 
@@ -332,7 +333,7 @@ if game.PlaceId == 14330243992 then
             })
         end,   
     })
-    
+
     TeleportTab:AddParagraph({
         Title = "More Teleports Soon! <3",
         Content = "I'm lazy lol."
