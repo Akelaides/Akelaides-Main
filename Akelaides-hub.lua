@@ -174,7 +174,6 @@ end)
             task.wait(0.01)
         end
     end
-end
 
 -- Miscellaneous Section for Infinite Yield
 MiscTab:AddButton({
