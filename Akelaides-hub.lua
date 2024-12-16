@@ -60,14 +60,24 @@ local function stopAntiAFK()
 end
 
 -- Move the Anti-AFK Toggle to the Miscellaneous Tab
-local ToggleAntiAFK = MiscTab:AddToggle("Anti-AFK", { Title = "Anti-AFK", Default = false })
+local ToggleAntiAFK = MiscTab:AddToggle("Anti-AFK", { Title = "Enable Anti-AFK", Default = false })
 
 ToggleAntiAFK:OnChanged(function(antiAFKState)  -- Renamed variable to antiAFKState
     antiAFKEnabled = antiAFKState
     if antiAFKEnabled then
         startAntiAFK()
+        Fluent:Notify({
+            Title = "Anti-AFK Enabled",
+            Content = "You will no longer be marked as AFK.",
+            Duration = 4
+        })
     else
         stopAntiAFK()
+        Fluent:Notify({
+            Title = "Anti-AFK Disabled",
+            Content = "You are now allowed to be AFK.",
+            Duration = 4
+        })
     end
 end)
 
@@ -88,6 +98,7 @@ MainTab:AddButton({
 })
 
 -- Input Field for Autofarm Value
+-- Input Field for Autofarm Value
 local Input = AutofarmTab:AddInput("AutofarmValue", {
     Title = "Autofarm Value",
     Default = "1",
@@ -97,6 +108,11 @@ local Input = AutofarmTab:AddInput("AutofarmValue", {
     Callback = function(Value)
         print("Input changed: ", Value)
         getgenv().farmValue = tonumber(Value) or 1
+        Fluent:Notify({
+            Title = "Autofarm Value Changed",
+            Content = "Autofarm value set to: " .. tostring(getgenv().farmValue),
+            Duration = 4
+        })
     end
 })
 
@@ -115,6 +131,17 @@ Toggle:OnChanged(function(State)
     if State then
         local farmPosition = Vector3.new(-191, 16, -158)
         humanoidRootPart.CFrame = CFrame.new(farmPosition)
+        Fluent:Notify({
+            Title = "Autofarm Enabled",
+            Content = "Autofarm has been activated.",
+            Duration = 4
+        })
+    else
+        Fluent:Notify({
+            Title = "Autofarm Disabled",
+            Content = "Autofarm has been deactivated.",
+            Duration = 4
+        })
     end
 
     getgenv().farmer = State
