@@ -132,8 +132,6 @@ Toggle:OnChanged(function(State)
     local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
 
     if State then
-        local farmPosition = Vector3.new(-191, 16, -158)
-        humanoidRootPart.CFrame = CFrame.new(farmPosition)
         Fluent:Notify({
             Title = "Autofarm Enabled",
             Content = "Autofarm has been activated.",
