@@ -2,9 +2,18 @@ if game.PlaceId == 14330243992 then
 
     local Fluent = loadstring(game:HttpGet("https://github.com/dawid-scripts/Fluent/releases/latest/download/main.lua"))()
     if not Fluent then
+        Fluent:Notify({
+            Title = "Akelaides",
+            Content = "Akelaides failed to load..",
+            Duration = 3
+        })
         warn("Fluent library failed to load")
     else
-        print("Fluent library loaded successfully")
+        Fluent:notify({
+            Title = "Akelaides",
+            Content = "Akelaides Loaded Sucessfully!",
+            Duration = 3
+        })
     end
 
     local SaveManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/SaveManager.lua"))()
@@ -96,7 +105,6 @@ if game.PlaceId == 14330243992 then
         Description = "https://discord.gg/DHJzx6gZ",
         Callback = function()
             setclipboard("https://discord.gg/DHJzx6gZ")
-            print("Copied To Clipboard!")
             
             Fluent:Notify({
                 Title = "Link Copied",
@@ -115,7 +123,6 @@ if game.PlaceId == 14330243992 then
         Numeric = false, 
         Finished = false,
         Callback = function(Value)
-            print("Input changed: ", Value)
             getgenv().farmValue = tonumber(Value) or 1
             Fluent:Notify({
                 Title = "Autofarm Value Changed",
@@ -124,10 +131,6 @@ if game.PlaceId == 14330243992 then
             })
         end
     })
-
-    Input:OnChanged(function()
-        print("Input updated:", Input.Value)
-    end)
 
     -- Toggle for Autofarm
     if getgenv().farmer == nil then
