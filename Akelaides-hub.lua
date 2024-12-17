@@ -1,28 +1,27 @@
-if not game:FindFirstChild("Window") then
-
 if game.PlaceId == 14330243992 then
+    local FluentSuccess, Fluent = pcall(function()
+        return loadstring(game:HttpGet("https://github.com/dawid-scripts/Fluent/releases/latest/download/main.lua"))()
+    end)
 
-    local Fluent = loadstring(game:HttpGet("https://github.com/dawid-scripts/Fluent/releases/latest/download/main.lua"))()
-    if Fluent then
+    if FluentSuccess and Fluent then
         Fluent:Notify({
             Title = "Akelaides",
-            Content = "Akelaides failed to load..",
+            Content = "Akelaides Loaded Successfully!",
             Duration = 3
         })
-        else
-        Fluent:notify({
-            Title = "Akelaides",
-            Content = "Akelaides Loaded Sucessfully!",
-            Duration = 3
-        })
-        end
     else
-        Fluent:Notify({
-            Title = "Akelaides",
-            Content = "Akelaides has already been loaded.",
-            Duration = 3
-        })
-end
+        if Fluent then
+            Fluent:Notify({
+                Title = "Akelaides",
+                Content = "Akelaides failed to load.",
+                Duration = 3
+            })
+        else
+            warn("Fluent could not be loaded.")
+        end
+        return -- Exit the script since Fluent failed to load
+    end
+
     local SaveManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/SaveManager.lua"))()
     local InterfaceManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/InterfaceManager.lua"))()
 
@@ -465,11 +464,6 @@ end)
                 Duration = 3
             })
         end
-    })
-
-    TeleportTab:AddParagraph({
-        Title = "More Teleports Soon! <3",
-        Content = "I'm lazy lol."
     })
 
     -- Notify
