@@ -1,21 +1,28 @@
+if not game:FindFirstChild("Window") then
+
 if game.PlaceId == 14330243992 then
 
     local Fluent = loadstring(game:HttpGet("https://github.com/dawid-scripts/Fluent/releases/latest/download/main.lua"))()
-    if not Fluent then
+    if Fluent then
         Fluent:Notify({
             Title = "Akelaides",
             Content = "Akelaides failed to load..",
             Duration = 3
         })
-        warn("Fluent library failed to load")
-    else
+        else
         Fluent:notify({
             Title = "Akelaides",
             Content = "Akelaides Loaded Sucessfully!",
             Duration = 3
         })
-    end
-
+        end
+    else
+        Fluent:Notify({
+            Title = "Akelaides",
+            Content = "Akelaides has already been loaded.",
+            Duration = 3
+        })
+end
     local SaveManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/SaveManager.lua"))()
     local InterfaceManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/InterfaceManager.lua"))()
 
