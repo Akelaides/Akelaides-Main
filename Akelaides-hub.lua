@@ -201,7 +201,7 @@ end
         Numeric = true, 
         Finished = false,
         Callback = function(Value)
-            game.Players.LocalPlayer.Walkspeed = Value
+            game.Players.LocalPlayer.Character.Humanoid.Walkspeed = Value
         end
     })
 
