@@ -109,9 +109,9 @@ end
     -- Main Section
     MainTab:AddButton({
         Title = "Copy Discord Link",
-        Description = "https://discord.gg/DHJzx6gZ",
+        Description = " Click To Copy https://discord.gg/SE8fDd6YcC",
         Callback = function()
-            setclipboard("https://discord.gg/DHJzx6gZ")
+            setclipboard("https://discord.gg/SE8fDd6YcC")
             
             Fluent:Notify({
                 Title = "Link Copied",
@@ -187,18 +187,44 @@ end
     local sections = AutofarmTab:AddSection("Automatic")
     local Toggle = Tabs.Autofarm:AddToggle("AutoRebirth", {Title = "Auto Rebirth", Default = false})
 
-    Toggle:OnChanged(function(state)
-        getgenv().rebirth = state
-        
-        if getgenv().rebirth then
-            while getgenv().rebirth do
+    local isFirstRun = true  -- Variable to check if it's the first time the script is loading
 
-                game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Rebirth"):FireServer()
-                
-                wait(0.1)
+Toggle:OnChanged(function(state)
+    getgenv().rebirth = state
+
+    -- Prevent notifying during the initial loading phase
+    if isFirstRun then
+        isFirstRun = false  -- Set to false after the first run
+        return  -- Exit the function early, so no notification is sent
+    end
+
+    if getgenv().rebirth then
+        while getgenv().rebirth do
+            game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Rebirth"):FireServer()
+            wait(0.1)
+
+            if getgenv().rebirth ~= state then
+                getgenv().rebirth = state
             end
         end
-    end)
+    end
+
+    -- Notify only after the toggle state has changed
+    if state then
+        Fluent:Notify({
+            Title = "Auto Rebirth",
+            Content = "Auto Rebirth Enabled.",
+            Duration = 4
+        })
+    else 
+        Fluent:Notify({
+            Title = "Auto Rebirth",
+            Content = "Auto Rebirth Disabled.",
+            Duration = 4
+        })
+    end
+end)
+
 
     -- Miscellaneous Section for Infinite Yield
     MiscTab:AddButton({
