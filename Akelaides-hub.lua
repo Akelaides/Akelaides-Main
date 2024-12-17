@@ -381,6 +381,23 @@ end)
         Content = "I'm lazy lol."
     })
 
+    local slider = SettingsTab:AddSlider({
+        Title = "Background Transparency",
+        Description = "Changes UI's Background\n Transparency.",
+        Default = 50,
+        Min = 5,
+        Max = 100,
+        Callback(function(value)
+            local transparency = value / 100
+            Window.BackgroundTransparency = transparency
+            Fluent:Notify({
+                Title = "Akelaides",
+                Content = "Background Transparency set to: ".. tostring(value) .. "%",
+                Duration = 3
+            })
+        end)
+    })
+
     -- Notify
     Fluent:Notify({
         Title = "Akelaides",
