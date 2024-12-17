@@ -376,6 +376,97 @@ end)
         end,   
     })
 
+    TeleportTab:AddButton({
+        Title = "Teleport to Ice Island",
+        Callback = function()
+            local player = game.Players.LocalPlayer
+            local character = player.Character or player.CharacterAdded:Wait()
+            local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
+
+            local IcePosition = Vector3.new(-169, 17, -2356)
+
+            humanoidRootPart.CFrame = CFrame.new(IcePosition)
+            Fluent:Notify({
+                Title = "Teleportation",
+                Content = "Teleported To Ice Island",
+                Duration = 3
+            })
+        end,
+    })
+
+    TeleportTab:AddButton({
+        Title = "Teleport to Volcano Island",
+        Callback = function()
+            local player = game.Players.LocalPlayer
+            local character = player.Character or player.CharacterAdded:Wait()
+            local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
+
+            local volcanoPosition = Vector3.new(-168, 15, -2685)
+
+            humanoidRootPart.CFrame = CFrame.new(volcanoPosition)
+            Fluent:Notify({
+                Title = "Teleportation",
+                Content = "Teleported to Volcano",
+                Duration = 3
+            })
+        end
+    })
+
+    TeleportTab:AddButton({
+        Title = "Teleport to Mars Island",
+        Callback = function()
+            local player = game.Players.LocalPlayer
+            local character = player.Character or player.CharacterAdded:Wait()
+            local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
+
+            local marsPosition = Vector3.new(-169, 16, -3052)
+
+            humanoidRootPart.CFrame = CFrame.new(marsPosition)
+            Fluent:Notify({
+                Title = "Teleportation",
+                Content = "Teleported to Mars",
+                Duration = 3
+            })
+        end
+    })
+
+    TeleportTab:AddButton({
+        Title = "Teleport to Robot Island",
+        Callback = function()
+            local player = game.Players.LocalPlayer
+            local character = player.Character or player.CharacterAdded:Wait()
+            local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
+
+            local robotPosition = Vector3.new(-180, 16, -3419)
+
+            humanoidRootPart.CFrame = CFrame.new(robotPosition)
+            Fluent:Notify({
+                Title = "Teleportation",
+                Content = "Teleported to Robot Island",
+                Duration = 3
+            })
+        end
+    })
+
+    TeleportTab:AddButton({
+        Title = "Teleport to Pyramid Island",
+        Description = "The Last Island",
+        Callback = function()
+            local player = game.Players.LocalPlayer
+            local character = player.Character or player.CharacterAdded:Wait()
+            local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
+
+            local pyramidPosition = Vector3.new(-179, 14, -3797)
+
+            humanoidRootPart.CFrame = CFrame.new(pyramidPosition)
+            Fluent:Notify({
+                Title = "Teleportation",
+                Content = "Teleported to Pyramid Island",
+                Duration = 3
+            })
+        end
+    })
+
     TeleportTab:AddParagraph({
         Title = "More Teleports Soon! <3",
         Content = "I'm lazy lol."
