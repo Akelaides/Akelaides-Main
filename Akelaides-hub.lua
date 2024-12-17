@@ -42,7 +42,7 @@ end
 
     local Tabs = {
         Main = Window:AddTab({ Title = "Home", Icon = "home" }),
-        Autofarm = Window:AddTab({ Title = "Autofarm", Icon = "plane"}),
+        Autofarm = Window:AddTab({ Title = "Automatic", Icon = "plane"}),
         Teleportation = Window:AddTab({ Title = "Teleportation", Icon = "compass" }),
         Miscellaneous = Window:AddTab({ Title = "Miscellaneous", Icon = "boxes" }),
         Settings = Window:AddTab({ Title = "Settings", Icon = "settings" })
@@ -184,6 +184,22 @@ end
         end
     end)
 
+    local sections = AutofarmTab:AddSection("Automatic")
+    local Toggle = Tabs.Autofarm:AddToggle("AutoRebirth", {Title = "Auto Rebirth", Default = false})
+
+    Toggle:OnChanged(function(state)
+        getgenv().rebirth = state
+        
+        if getgenv().rebirth then
+            while getgenv().rebirth do
+
+                game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Rebirth"):FireServer()
+                
+                wait(0.1)
+            end
+        end
+    end)
+
     -- Miscellaneous Section for Infinite Yield
     MiscTab:AddButton({
         Title = "Load Infinite Yield",
@@ -193,17 +209,7 @@ end
         end
     })
 
-    local Input = MiscTab:AddInput("Walkspeed", {
-        Title = "Player Walkspeed",
-        Description = "Changes ur Walkspeed",
-        Default = "16",
-        Placeholder = "Enter your Speed",
-        Numeric = true, 
-        Finished = false,
-        Callback = function(Value)
-            game.Players.LocalPlayer.PlayerScripts.Walkspeed = Value
-        end
-    })
+
 
     -- Teleport Section
     local Section = TeleportTab:AddSection("Islands")
