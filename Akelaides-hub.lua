@@ -230,7 +230,7 @@ end)
         Title = "Load Infinite Yield",
         Description = "Loads Infinite Yield script",
         Callback = function()
-            loadstring(game:HttpGet("https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source"))()
+            loadstring(game:HttpGet("https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source"))() 
         end
     })
 
