@@ -62,6 +62,77 @@ if game.PlaceId == 10822399154 then
         Content = "Selamat Datang di Akelaides, Revengers Online. Karena ini \nmasih beta dan in progress, maaf kalo ada beberapa \nfitur yang tidak jalan baik. \n Jika ada bug atau error, silahkan dihubungi kepada discord kita."
     })
     
+    local function boostFPS()
+        -- Optimizations for FPS Boost
+        local Players = game:GetService("Players")
+        local Lighting = game:GetService("Lighting")
+        local Workspace = game:GetService("Workspace")
+        
+        -- Ignore Other Characters
+        for _, player in ipairs(Players:GetPlayers()) do
+            if player ~= Players.LocalPlayer and player.Character then
+                player.Character:Destroy() -- Removes other players' characters for performance
+            end
+        end
+    
+        -- Optimize Lighting
+        Lighting.GlobalShadows = false
+        Lighting.FogEnd = 9e9
+        Lighting.Brightness = 1
+        for _, effect in ipairs(Lighting:GetDescendants()) do
+            if effect:IsA("PostEffect") then
+                effect:Destroy() -- Removes camera/lighting effects
+            end
+        end
+    
+        -- Lower Rendering and Quality
+        Workspace.LevelOfDetail = Enum.ModelLevelOfDetail.Disabled
+        for _, instance in ipairs(Workspace:GetDescendants()) do
+            if instance:IsA("BasePart") then
+                instance.Material = Enum.Material.SmoothPlastic -- Lower material detail
+                instance.CastShadow = false -- Disable shadows
+            elseif instance:IsA("ParticleEmitter") or instance:IsA("Trail") then
+                instance:Destroy() -- Removes particles and trails
+            elseif instance:IsA("MeshPart") then
+                instance.RenderFidelity = Enum.RenderFidelity.Performance -- Set to low fidelity
+            end
+        end
+    
+        -- Remove Clothes and Accessories
+        for _, player in ipairs(Players:GetPlayers()) do
+            if player.Character then
+                for _, obj in ipairs(player.Character:GetDescendants()) do
+                    if obj:IsA("Clothing") or obj:IsA("Accessory") then
+                        obj:Destroy() -- Removes clothing and accessories
+                    end
+                end
+            end
+        end
+    
+        -- Optimize Water Graphics
+        Workspace.Terrain.WaterWaveSize = 0
+        Workspace.Terrain.WaterWaveSpeed = 0
+        Workspace.Terrain.WaterTransparency = 1
+        Workspace.Terrain.WaterReflectance = 0
+    end
+    
+    -- Add FPS Boost Button
+    Tabs.Miscellaneous:AddButton({
+        Title = "Boost FPS",
+        Description = "Applies FPS boost to optimize game performance.",
+        Callback = function()
+            boostFPS() -- Call the FPS boost function
+    
+            -- Notify the user
+            Fluent:Notify({
+                Title = "FPS Boost Applied",
+                Content = "Game settings have been optimized for better performance.",
+                Duration = 5,
+            })
+        end,
+    })
+    
+
     local section = TeleportTab:AddSection("Teleport To Players")
 
     local Players = game:GetService("Players")
@@ -151,7 +222,6 @@ if game.PlaceId == 10822399154 then
             end
         end,
     })
-    
     
     MiscTab:AddButton({
         Title = "Load Infinite Yield",
