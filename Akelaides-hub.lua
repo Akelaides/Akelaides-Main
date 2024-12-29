@@ -36,17 +36,15 @@ if game.PlaceId == 14330243992 then
     })
 
     -- Optional: Adjust the background color and transparency for better visibility
-    Window.BackgroundColor3 = Color3.fromRGB(35, 35, 35)  -- Dark background color
+    Window.BackgroundColor3 = Color3.fromRGB(30, 30, 30)  -- Dark background color
     Window.BackgroundTransparency = 0.5  -- Adjust transparency to enhance the acrylic effect
 
-    Window.AccentColor = Color3.fromRGB(255, 87, 51)
-
     local Tabs = {
-        Main = Window:AddTab({ Title = "Home", Icon = "home", TabColor = Color3.fromRGB(255, 87, 51) }),
-        Autofarm = Window:AddTab({ Title = "Automatic", Icon = "plane", TabColor = Color3.fromRGB(255, 87, 51) }),
-        Teleportation = Window:AddTab({ Title = "Teleportation", Icon = "compass", TabColor = Color3.fromRGB(255,87, 51) }),
-        Miscellaneous = Window:AddTab({ Title = "Miscellaneous", Icon = "boxes", TabColor = Color3.fromRGB(255, 87, 51) }),
-        Settings = Window:AddTab({ Title = "Settings", Icon = "settings", TabColor = Color3.fromRGB(255, 87, 51) })
+        Main = Window:AddTab({ Title = "Home", Icon = "home" }),
+        Autofarm = Window:AddTab({ Title = "Automatic", Icon = "plane"}),
+        Teleportation = Window:AddTab({ Title = "Teleportation", Icon = "compass" }),
+        Miscellaneous = Window:AddTab({ Title = "Miscellaneous", Icon = "boxes" }),
+        Settings = Window:AddTab({ Title = "Settings", Icon = "settings" })
     }
 
     local MainTab = Tabs.Main
@@ -111,7 +109,6 @@ if game.PlaceId == 14330243992 then
     MainTab:AddButton({
         Title = "Copy Discord Link",
         Description = " Click To Copy https://discord.gg/SE8fDd6YcC",
-        ButtonColor = Color3.fromRGB(255, 87, 51),
         Callback = function()
             setclipboard("https://discord.gg/SE8fDd6YcC")
             
@@ -186,9 +183,7 @@ if game.PlaceId == 14330243992 then
         end
     end)
 
-    local sections = AutofarmTab:AddSection("Automatic", {
-        SectionColor = Color3.fromRGB(255, 87, 51)
-    })
+    local sections = AutofarmTab:AddSection("Automatic")
     local Toggle = Tabs.Autofarm:AddToggle("AutoRebirth", {Title = "Auto Rebirth", Default = false})
 
     local isFirstRun = true  -- Variable to check if it's the first time the script is loading
@@ -234,7 +229,6 @@ end)
     MiscTab:AddButton({
         Title = "Load Infinite Yield",
         Description = "Loads Infinite Yield script",
-        ButtonColor = Color3.fromRGB(255, 87, 51),
         Callback = function()
             loadstring(game:HttpGet("https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source"))() 
         end
@@ -245,68 +239,19 @@ end)
     -- Teleport Section
     local Section = TeleportTab:AddSection("Islands")
 
-    local teleportLocations = {
-        ["Anime"] = Vector3.new(-168, 17, -1071),
-        ["Escape Island"] = Vector3.new(-167, 17, -100),
-        ["Winter"] = Vector3.new(-168, 17, -445),
-        ["Spooky Island"] = Vector3.new(-168, 16, -771),
-        ["Desert Island"] = Vector3.new(-167, 15, -1383),
-        ["Underworld"] = Vector3.new(-167, 15, -1719),
-        ["Luck Island"] = Vector3.new(-168, 15, -2041),
-        ["Ice Island"] = Vector3.new(-169, 17, -2356),
-        ["Volcano"] = Vector3.new(-168, 15, -2685),
-        ["Mars"] = Vector3.new(-169, 16, -3052),
-        ["Robot Island"] = Vector3.new(-180, 16, -3419),
-        ["Pyramid Island"] = Vector3.new(-179, 14, -3797),
-    }
-
-    local Dropdown = Tabs.TeleportTab:AddDropdown("Dropdown", {
-        Title = "Select Location",
-        Values = {"Anime", "Escape Island", "Winter", "Spooky Island", "Desert Island", "Underworld", "Luck Island", "Ice Island", "Volcano", "Mars", "Robot Island", "Pyramid Island"},
+    local Dropdown = Tabs.Main:AddDropdown("Dropdown", {
+        Title = "Dropdown",
+        Values = {"one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twelve", "thirteen", "fourteen"},
         Multi = false,
         Default = 1,
     })
-    
-    Dropdown:OnChanged(function(value)
-        local player = game.Players.LocalPlayer
-        local character = player.Character or player.CharacterAdded:Wait()
-        local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
-    
-        local targetPosition = teleportLocations[value]
-        if targetPosition then
-            humanoidRootPart.CFrame = CFrame.new(targetPosition)
-    
-            Fluent:Notify({
-                Title = "Teleportation",
-                Content = "Teleported to " .. value .. "!",
-                Duration = 3
-            })
-        else
-            Fluent:Notify({
-                Title = "Error",
-                Content = "Invalid location selected!",
-                Duration = 3
-            })
-        end
-    end)
 
     Dropdown:SetValue("four")
 
-    Dropdown:OnChanged(function(value)
-                    local player = game.Players.LocalPlayer
-            local character = player.Character or player.CharacterAdded:Wait()
-            local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
+    Dropdown:OnChanged(function(Value)
+        print("Dropdown changed:", Value)
+    end)
 
-            local animePosition = Vector3.new(-168, 17, -1071)
-
-            humanoidRootPart.CFrame = CFrame.new(animePosition)
-
-            Fluent:Notify({
-                Title = "Teleportation",
-                Content = "Teleported To Anime!",
-                Duration = 3
-            })
-        end)
 
     -- Button for Escape Island
     TeleportTab:AddButton({
@@ -535,7 +480,6 @@ end)
         end
     })
 
-    
     -- Notify
     Fluent:Notify({
         Title = "Akelaides",
