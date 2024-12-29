@@ -41,7 +41,7 @@ if game.PlaceId == 14330243992 then
 
     local Tabs = {
         Main = Window:AddTab({ Title = "Home", Icon = "home" }),
-        Autofarm = Window:AddTab({ Title = "Automatic", Icon = "plane"}),
+        Autofarm = Window:AddTab({ Title = "Automatic", Icon = "bot"}),
         Teleportation = Window:AddTab({ Title = "Teleportation", Icon = "compass" }),
         Miscellaneous = Window:AddTab({ Title = "Miscellaneous", Icon = "boxes" }),
         Settings = Window:AddTab({ Title = "Settings", Icon = "settings" })
@@ -114,8 +114,9 @@ if game.PlaceId == 14330243992 then
         Content = "Thank you for using akelaides, as of now We are still in BETA and hope \nto expand our community to other games! We apologize for \nAny features that are experiencing errors. "
     })
 
+    local section = MainTab:AddSection("Our Discord")
     MainTab:AddButton({
-        Title = "Copy Discord Link",
+        Title = "Join Akelaides Discord",
         Description = " Click To Copy https://discord.gg/SE8fDd6YcC",
         Callback = function()
             setclipboard("https://discord.gg/SE8fDd6YcC")
