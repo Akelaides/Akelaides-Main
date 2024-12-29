@@ -236,8 +236,7 @@ end)
 -- Existing code...
 
 local VirtualInputManager = game:GetService("VirtualInputManager") -- For simulating input
-
-local holdAndClickToggle = AutofarmTab:AddToggle("Hold E and Spam Click", {Title = "Hold E for 2 seconds and Spam Click for 5", Default = false})
+local holdAndClickToggle = AutofarmTab:AddToggle("Hold E and Spam Click", {Title = "Auto Battle", Default = false})
 
 local spamClicking = false
 local spamInterval = 0.1 -- Time between clicks (adjust as needed)
@@ -262,82 +261,37 @@ local function startSpamClick()
     end
 end
 
+-- Function to check for the presence of the "E" prompt (customize to suit your game's UI)
+local function isPromptVisible()
+    -- You may need to replace this with actual logic for detecting the "E" prompt in your game
+    -- For example, checking for a UI element or screen overlay that shows the "E" prompt
+    local promptUI = game.Players.LocalPlayer.PlayerGui:FindFirstChild("PromptE")
+    return promptUI and promptUI.Visible
+end
+
+-- Main loop to repeat the action when the "E" prompt is visible
+local function repeatAction()
+    while holdAndClickToggle:Get() do
+        if isPromptVisible() then
+            holdEKey()  -- Hold the "E" key for 2 seconds
+            startSpamClick()  -- Start spam clicking for 5 seconds
+            Fluent:Notify({
+                Title = "Action Complete",
+                Content = "Held 'E' for 2 seconds and spam clicked for 5 seconds.",
+                Duration = 4
+            })
+            wait(1)  -- Wait a little before checking again (to prevent too rapid repeat)
+        end
+        wait(0.1)  -- Check every 0.1 seconds if the prompt is visible
+    end
+end
+
 holdAndClickToggle:OnChanged(function(state)
     if state then
-        -- If the toggle is enabled, start the process
-        holdEKey()  -- Hold the "E" key for 2 seconds
-        startSpamClick()  -- Start spam clicking for 5 seconds
-        Fluent:Notify({
-            Title = "Action Complete",
-            Content = "Held 'E' for 2 seconds and spam clicked for 5 seconds.",
-            Duration = 4
-        })
+        -- Start the repeat loop when the toggle is enabled
+        repeatAction()
     end
 end)
-
--- Existing code...
-
-
-local sections = AutofarmTab:AddSection("Automatic")
-local Toggle = AutofarmTab:AddToggle("AutoRebirth", {Title = "Auto Rebirth", Default = false})
-
-local isFirstRun = true -- Variable to check if it's the first time the script is loading
-
-Toggle:OnChanged(function(state)
-    getgenv().rebirth = state
-
-    -- Prevent notifying during the initial loading phase
-    if isFirstRun then
-        isFirstRun = false -- Set to false after the first run
-        return -- Exit the function early, so no notification is sent
-    end
-
-    if getgenv().rebirth then
-        while getgenv().rebirth do
-            game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Rebirth"):FireServer()
-            wait(0.1)
-
-            if not getgenv().rebirth then
-                break
-            end
-        end
-    end
-end)
-
-local function startSpamClick()
-    spamClicking = true
-    while spamClicking do
-        -- Simulate mouse click
-        VirtualInputManager:SendMouseButtonEvent(500, 300, 0, true, nil, 0) -- Mouse Down
-        VirtualInputManager:SendMouseButtonEvent(500, 300, 0, false, nil, 0) -- Mouse Up
-        wait(spamInterval) -- Wait before the next click
-    end
-end
-
-local function stopSpamClick()
-    spamClicking = false
-end
-
-local spamToggle = AutofarmTab:AddToggle("SpamClick", {Title = "Spam Click", Default = false})
-spamToggle:OnChanged(function(state)
-    spamClicking = state
-    if spamClicking then
-        startSpamClick()
-    else
-        stopSpamClick()
-    end
-end)
-
-
-
-    -- Miscellaneous Section for Infinite Yield
-    MiscTab:AddButton({
-        Title = "Load Infinite Yield",
-        Description = "Loads Infinite Yield script",
-        Callback = function()
-            loadstring(game:HttpGet("https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source"))() 
-        end
-    })
 
 
 
