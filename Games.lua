@@ -62,6 +62,31 @@ if game.PlaceId == 10822399154 then
         Content = "Selamat Datang di Akelaides, Revengers Online. Karena ini \nmasih beta dan in progress, maaf kalo ada beberapa \nfitur yang tidak jalan baik. \n Jika ada bug atau error, silahkan dihubungi kepada discord kita."
     })
     
+    local RunService = game:GetService("RunService")
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+
+-- Function to get the current FPS
+local function getFPS()
+    local frameTime = RunService.Heartbeat:Wait()
+    return math.floor(1 / frameTime)
+end
+
+local section = MainTab:AddSection("Device Information")
+-- Create the paragraph for FPS
+Tabs.Main:AddParagraph({
+    Title = "Device ",  -- Title of the paragraph
+    Content = "FPS: Loading...",  -- Initial content
+})
+
+-- Update the FPS in the paragraph content every second
+while true do
+    local fps = getFPS()
+    Tabs.Main:SetParagraphContent("Device", "FPS: " .. fps)  -- Update the content of the paragraph
+    wait(1)  -- Update every second
+end
+
+
     local section = TeleportTab:AddSection("Teleport To Players")
 
     local Players = game:GetService("Players")
