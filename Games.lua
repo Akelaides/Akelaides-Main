@@ -95,23 +95,48 @@ if game.PlaceId == 10822399154 then
     end)
     
     -- Create Teleport Button
-    Tabs.Teleportation:AddButton("Teleport to Player", function()
-        local selectedPlayerName = Dropdown.Value -- Get the currently selected player
-        if selectedPlayerName then
-            local selectedPlayer = Players:FindFirstChild(selectedPlayerName)
-            if selectedPlayer and selectedPlayer.Character and selectedPlayer.Character:FindFirstChild("HumanoidRootPart") then
-                -- Teleport the local player to the selected player's position
-                local targetPosition = selectedPlayer.Character.HumanoidRootPart.Position
-                if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
-                    LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(targetPosition)
+    Tabs.Teleportation:AddButton({
+        Title = "Teleport to Player",
+        Description = "Teleports you to the selected player.",
+        Callback = function()
+            local selectedPlayerName = Dropdown.Value -- Get the currently selected player
+            if selectedPlayerName then
+                local selectedPlayer = Players:FindFirstChild(selectedPlayerName)
+                if selectedPlayer and selectedPlayer.Character and selectedPlayer.Character:FindFirstChild("HumanoidRootPart") then
+                    -- Teleport the local player to the selected player's position
+                    local targetPosition = selectedPlayer.Character.HumanoidRootPart.Position
+                    if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
+                        LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(targetPosition)
+                        Fluent:Notify({
+                            Title = "Teleport Success",
+                            Content = "You have been teleported to " .. selectedPlayerName .. ".",
+                            Duration = 5,
+                        })
+                    else
+                        Fluent:Notify({
+                            Title = "Teleport Failed",
+                            Content = "Your character is missing its HumanoidRootPart.",
+                            Duration = 5,
+                        })
+                    end
+                else
+                    Fluent:Notify({
+                        Title = "Teleport Failed",
+                        Content = "Selected player's character is not valid for teleportation.",
+                        Duration = 5,
+                    })
                 end
             else
-                warn("Selected player's character is not valid for teleportation!")
+                Fluent:Notify({
+                    Title = "Teleport Failed",
+                    Content = "No player selected!",
+                    Duration = 5,
+                })
             end
-        else
-            warn("No player selected!")
-        end
-    end)
+        end,
+    })
+    
+    
      
     
 
