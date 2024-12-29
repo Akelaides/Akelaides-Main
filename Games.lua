@@ -137,7 +137,7 @@ local function disableFPSBoost()
 end
 
 -- Add Toggle to UI
-Tabs.Main:AddToggle({
+MainTab:AddToggle({
     Title = "FPS Optimizer",
     Description = "Toggle FPS optimization settings.",
     Default = false, -- Default state is off
@@ -254,6 +254,46 @@ Tabs.Main:AddToggle({
     })
      
 
+    MiscTab:AddButton({
+        Title = "Refresh Script",
+        Description = "Reloads the latest version of the script.",
+        Callback = function()
+            -- Notify the user about the reload process
+            Fluent:Notify({
+                Title = "Refreshing Script",
+                Content = "Reloading the latest version...",
+                Duration = 3,
+            })
+    
+            -- Destroy the current UI
+            for _, obj in ipairs(game:GetService("CoreGui"):GetChildren()) do
+                if obj.Name == "AkelaidesUI" then -- Replace "AkelaidesUI" with your UI's actual name
+                    obj:Destroy()
+                end
+            end
+    
+            -- Load the latest version of the script
+            local success, errorMessage = pcall(function()
+                loadstring(game:HttpGet("https://raw.githubusercontent.com/Akelaides/Akelaides-Main/main/Games.lua"))()
+            end)
+    
+            -- Notify user of success or failure
+            if success then
+                Fluent:Notify({
+                    Title = "Script Reloaded",
+                    Content = "The latest version has been successfully loaded.",
+                    Duration = 5,
+                })
+            else
+                Fluent:Notify({
+                    Title = "Error",
+                    Content = "Failed to reload the script: " .. errorMessage,
+                    Duration = 5,
+                })
+            end
+        end,
+    })
+        
     MiscTab:AddButton({
         Title = "Load Infinite Yield",
         Description = "Loads Infinite Yield script",
