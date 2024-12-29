@@ -241,7 +241,7 @@ local Fluent = {} -- Example Fluent library (replace with actual implementation)
 local spamClicking = false -- Toggle state
 local spamInterval = 0.1 -- Time between clicks (adjust as needed)
 
-local Toggle = AutofarmTab:AddToggle("Autofarm", {Title = "Autofarm", Default = getgenv().farmer})
+local Toggle = AutofarmTab:AddToggle("Autofarm", {Title = "Auto Battle", Default = getgenv().farmer})
 
 Toggle:OnChanged(function(State)
     local player = game.Players.LocalPlayer
