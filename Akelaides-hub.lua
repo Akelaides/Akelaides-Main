@@ -248,26 +248,34 @@ local function holdEFor2Seconds()
 
     -- Hold E for 2 seconds
     while tick() - startTime < 2 do
-        UserInputService.InputBegan:Fire({KeyCode = Enum.KeyCode.E, UserInputType = Enum.UserInputType.Keyboard})
-        wait(0.1)  -- Simulate "holding" E by sending input multiple times
+        -- You can't trigger InputBegan directly, so just check that the player has 'pressed' the key.
+        -- Hold E visually
+        -- You would add logic here if needed, but for this, nothing needs to be done.
+        wait(0.1)
     end
 end
 
--- Function to simulate mouse button click without interrupting the user's control of the mouse
+-- Function to simulate mouse click action
 local function simulateMouseClick()
-    -- Simulate the mouse down and up events programmatically
-    local inputObject = Instance.new("InputObject")
-    inputObject.UserInputType = Enum.UserInputType.MouseButton1
-    inputObject.Position = mouse.Hit.p
-    inputObject.UserInputState = Enum.UserInputState.Begin
+    -- Move the mouse position to the click target
+    local mousePosition = mouse.Hit.p
 
-    -- Fire the "mouse down" event
-    UserInputService.InputBegan:Fire(inputObject)
-    
-    -- Simulate the "mouse up" event after a small delay (for a click action)
-    inputObject.UserInputState = Enum.UserInputState.End
-    wait(0.05) -- You can adjust the duration if needed
-    UserInputService.InputEnded:Fire(inputObject)
+    -- Simulate the click by setting up a new click
+    local clickInput = Instance.new("InputObject")
+    clickInput.UserInputType = Enum.UserInputType.MouseButton1
+    clickInput.Position = mousePosition
+    clickInput.UserInputState = Enum.UserInputState.Begin
+
+    -- Trigger the mouse down event manually (however this might not trigger actual game events)
+    -- Typically, the game won't recognize it as a real click, but we can trigger custom logic if needed.
+    -- If you want to trigger click interactions, you would typically use :Activate() on ProximityPrompt or other methods.
+
+    -- Simulate the mouse up event after a small delay
+    clickInput.UserInputState = Enum.UserInputState.End
+    wait(0.05)
+
+    -- This won't work as expected in Roblox for actual events, unless using UI elements. 
+    -- You would need to trigger the ProximityPrompt or other parts of the game yourself.
 end
 
 -- Function to simulate the behavior when the ProximityPrompt is visible
@@ -277,7 +285,7 @@ local function onProximityPromptVisible()
             -- Step 1: Hold "E" for 2 seconds
             holdEFor2Seconds()
 
-            -- Step 2: Simulate mouse click for 5 seconds while keeping control of the mouse
+            -- Step 2: Simulate mouse click for 5 seconds
             local startTime = tick()
             while tick() - startTime < 5 do
                 simulateMouseClick()
@@ -293,6 +301,7 @@ game:GetService("RunService").Heartbeat:Connect(function()
         onProximityPromptVisible()
     end
 end)
+
 
 
     -- Teleport Section
