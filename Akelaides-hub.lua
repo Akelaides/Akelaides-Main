@@ -233,6 +233,105 @@ Toggle:OnChanged(function(state)
     end
 end)
 
+local VirtualInputManager = game:GetService("VirtualInputManager") -- For simulating input
+
+local AutofarmTab = {} -- Example Tab (replace with actual implementation for AutofarmTab)
+local Fluent = {} -- Example Fluent library (replace with actual implementation)
+
+local spamClicking = false -- Toggle state
+local spamInterval = 0.1 -- Time between clicks (adjust as needed)
+
+local Toggle = AutofarmTab:AddToggle("Autofarm", {Title = "Auto Battle / Macro", Default = getgenv().farmer})
+
+Toggle:OnChanged(function(State)
+    local player = game.Players.LocalPlayer
+    local character = player.Character or player.CharacterAdded:Wait()
+    local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
+
+    -- Check if the state has actually changed to avoid redundant notifications
+    if getgenv().farmer ~= State then
+        getgenv().farmer = State
+
+        if State then
+            Fluent:Notify({
+                Title = "Autofarm Enabled",
+                Content = "Autofarm has been activated.",
+                Duration = 4
+            })
+        else
+            Fluent:Notify({
+                Title = "Autofarm Disabled",
+                Content = "Autofarm has been deactivated.",
+                Duration = 4
+            })
+        end
+    end
+
+    getgenv().farmer = State
+
+    if getgenv().farmer then
+        while getgenv().farmer do
+            local args = {
+                [1] = "ClickStat",
+                [2] = getgenv().farmValue or 1
+            }
+            game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Client"):InvokeServer(unpack(args))
+            task.wait(0.01)
+        end
+    end
+end)
+
+local sections = AutofarmTab:AddSection("Automatic")
+local Toggle = AutofarmTab:AddToggle("AutoRebirth", {Title = "Auto Rebirth", Default = false})
+
+local isFirstRun = true -- Variable to check if it's the first time the script is loading
+
+Toggle:OnChanged(function(state)
+    getgenv().rebirth = state
+
+    -- Prevent notifying during the initial loading phase
+    if isFirstRun then
+        isFirstRun = false -- Set to false after the first run
+        return -- Exit the function early, so no notification is sent
+    end
+
+    if getgenv().rebirth then
+        while getgenv().rebirth do
+            game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Rebirth"):FireServer()
+            wait(0.1)
+
+            if not getgenv().rebirth then
+                break
+            end
+        end
+    end
+end)
+
+local function startSpamClick()
+    spamClicking = true
+    while spamClicking do
+        -- Simulate mouse click
+        VirtualInputManager:SendMouseButtonEvent(500, 300, 0, true, nil, 0) -- Mouse Down
+        VirtualInputManager:SendMouseButtonEvent(500, 300, 0, false, nil, 0) -- Mouse Up
+        wait(spamInterval) -- Wait before the next click
+    end
+end
+
+local function stopSpamClick()
+    spamClicking = false
+end
+
+local spamToggle = AutofarmTab:AddToggle("SpamClick", {Title = "Spam Click", Default = false})
+spamToggle:OnChanged(function(state)
+    spamClicking = state
+    if spamClicking then
+        startSpamClick()
+    else
+        stopSpamClick()
+    end
+end)
+
+
 
     -- Miscellaneous Section for Infinite Yield
     MiscTab:AddButton({
