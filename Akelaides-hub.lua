@@ -312,14 +312,14 @@ local VirtualInputManager = game:GetService("VirtualInputManager") -- For simula
 
 local holdAndClickToggle = AutofarmTab:AddToggle("Hold E and Spam Click", {Title = "Hold E for 2 seconds and Spam Click for 5", Default = false})
 
-local spamClicking = false
 local spamInterval = 0.1 -- Time between clicks (adjust as needed)
+local isRunning = false -- Flag to prevent overlapping actions
 
 -- Function to simulate holding "E" for 2 seconds
 local function holdEKey()
     -- Simulate pressing "E"
     VirtualInputManager:SendKeyEvent(true, Enum.KeyCode.E, false, game)
-    wait(2)  -- Hold for 2 seconds
+    task.wait(2)  -- Hold for 2 seconds
     -- Simulate releasing "E"
     VirtualInputManager:SendKeyEvent(false, Enum.KeyCode.E, false, game)
 end
@@ -329,14 +329,16 @@ local function startSpamClick()
     local endTime = tick() + 5  -- Set the end time for 5 seconds from now
     while tick() < endTime do
         -- Simulate mouse click
-        VirtualInputManager:SendMouseButtonEvent(500, 300, 0, true, nil, 0) -- Mouse Down
-        VirtualInputManager:SendMouseButtonEvent(500, 300, 0, false, nil, 0) -- Mouse Up
-        wait(spamInterval) -- Wait before the next click
+        local mouseX, mouseY = game.Players.LocalPlayer:GetMouse().X, game.Players.LocalPlayer:GetMouse().Y
+        VirtualInputManager:SendMouseButtonEvent(mouseX, mouseY, 0, true, nil, 0) -- Mouse Down
+        VirtualInputManager:SendMouseButtonEvent(mouseX, mouseY, 0, false, nil, 0) -- Mouse Up
+        task.wait(spamInterval) -- Wait before the next click
     end
 end
 
 holdAndClickToggle:OnChanged(function(state)
-    if state then
+    if state and not isRunning then
+        isRunning = true -- Set the flag to indicate the action is running
         -- Start an infinite loop that will repeat after each full cycle (hold + click)
         while holdAndClickToggle:Get() do
             -- Perform the "Hold E" and "Spam Click" actions
@@ -350,8 +352,11 @@ holdAndClickToggle:OnChanged(function(state)
                 Duration = 4
             })
             
-            wait(1) -- Wait for 7 seconds before repeating the process
+            task.wait(1) -- Wait for 1 second before repeating the process
         end
+        isRunning = false -- Reset the flag when done
+    elseif not state then
+        isRunning = false -- Reset the flag if the toggle is turned off
     end
 end)
 
