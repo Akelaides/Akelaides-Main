@@ -106,6 +106,14 @@ if game.PlaceId == 14330243992 then
     end)
 
     -- Main Section
+
+    local section = MainTab:AddSection("Introduction")
+
+    MainTab:AddParagraph({
+        Title = "Akelaides",
+        Content = "Thank you for using akelaides, as of now We are still in BETA and hope \nto expand our community to other games! We apologize for \nAny features that are experiencing errors. "
+    })
+
     MainTab:AddButton({
         Title = "Copy Discord Link",
         Description = " Click To Copy https://discord.gg/SE8fDd6YcC",
