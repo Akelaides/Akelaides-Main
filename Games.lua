@@ -62,6 +62,7 @@ if game.PlaceId == 10822399154 then
         Content = "Selamat Datang di Akelaides, Revengers Online. Karena ini \nmasih beta dan in progress, maaf kalo ada beberapa \nfitur yang tidak jalan baik. \n Jika ada bug atau error, silahkan dihubungi kepada discord kita."
     })
     
+    local section = TeleportTab:AddSection("Teleport To Players")
 
     local Players = game:GetService("Players")
     local LocalPlayer = Players.LocalPlayer
@@ -79,7 +80,7 @@ if game.PlaceId == 10822399154 then
     
     -- Create Dropdown
     local Dropdown = Tabs.Teleportation:AddDropdown("Dropdown", {
-        Title = "Player List",
+        Title = "Select Player",
         Values = getPlayerNames(),
         Multi = false,
         Default = 1,
@@ -136,7 +137,14 @@ if game.PlaceId == 10822399154 then
         end,
     })
     
-    
+    MiscTab:AddButton({
+        Title = "Load Infinite Yield",
+        Description = "Loads Infinite Yield script",
+        Callback = function()
+            loadstring(game:HttpGet("https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source"))() 
+        end
+    })
+
      
     
 
