@@ -245,6 +245,69 @@ end)
     -- Teleport Section
     local Section = TeleportTab:AddSection("Islands")
 
+    local teleportLocations = {
+        ["Anime"] = Vector3.new(-168, 17, -1071),
+        ["Escape Island"] = Vector3.new(-167, 17, -100),
+        ["Winter"] = Vector3.new(-168, 17, -445),
+        ["Spooky Island"] = Vector3.new(-168, 16, -771),
+        ["Desert Island"] = Vector3.new(-167, 15, -1383),
+        ["Underworld"] = Vector3.new(-167, 15, -1719),
+        ["Luck Island"] = Vector3.new(-168, 15, -2041),
+        ["Ice Island"] = Vector3.new(-169, 17, -2356),
+        ["Volcano"] = Vector3.new(-168, 15, -2685),
+        ["Mars"] = Vector3.new(-169, 16, -3052),
+        ["Robot Island"] = Vector3.new(-180, 16, -3419),
+        ["Pyramid Island"] = Vector3.new(-179, 14, -3797),
+    }
+
+    local Dropdown = Tabs.TeleportTab:AddDropdown("Dropdown", {
+        Title = "Select Location",
+        Values = {"Anime", "Escape Island", "Winter", "Spooky Island", "Desert Island", "Underworld", "Luck Island", "Ice Island", "Volcano", "Mars", "Robot Island", "Pyramid Island"},
+        Multi = false,
+        Default = 1,
+    })
+    
+    Dropdown:OnChanged(function(value)
+        local player = game.Players.LocalPlayer
+        local character = player.Character or player.CharacterAdded:Wait()
+        local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
+    
+        local targetPosition = teleportLocations[value]
+        if targetPosition then
+            humanoidRootPart.CFrame = CFrame.new(targetPosition)
+    
+            Fluent:Notify({
+                Title = "Teleportation",
+                Content = "Teleported to " .. value .. "!",
+                Duration = 3
+            })
+        else
+            Fluent:Notify({
+                Title = "Error",
+                Content = "Invalid location selected!",
+                Duration = 3
+            })
+        end
+    end)
+
+    Dropdown:SetValue("four")
+
+    Dropdown:OnChanged(function(value)
+                    local player = game.Players.LocalPlayer
+            local character = player.Character or player.CharacterAdded:Wait()
+            local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
+
+            local animePosition = Vector3.new(-168, 17, -1071)
+
+            humanoidRootPart.CFrame = CFrame.new(animePosition)
+
+            Fluent:Notify({
+                Title = "Teleportation",
+                Content = "Teleported To Anime!",
+                Duration = 3
+            })
+        end)
+
     -- Button for Escape Island
     TeleportTab:AddButton({
         Title = "Teleport to Escape Island",
@@ -472,6 +535,7 @@ end)
         end
     })
 
+    
     -- Notify
     Fluent:Notify({
         Title = "Akelaides",
