@@ -62,18 +62,15 @@ if game.PlaceId == 10822399154 then
         Content = "Selamat Datang di Akelaides, Revengers Online. Karena ini \nmasih beta dan in progress, maaf kalo ada beberapa \nfitur yang tidak jalan baik. \n Jika ada bug atau error, silahkan dihubungi kepada discord kita."
     })
     
-    local Slider = Tabs.Main:AddSlider("Slider", {
-        Title = "Walkspeed",
-        Description = "Changes Ur Speed",
-        Default = 16,
-        Min = 1,
-        Max = 250,
-        Rounding = 1,
-        Callback = function(Value)
-           game.Players.LocalPlayer.Character.Humanoid.Walkspeed = (Value)
-        end
+
+    local Dropdown = Tabs.Main:AddDropdown("Dropdown", {
+        Title = "Dropdown",
+        Values = {"one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twelve", "thirteen", "fourteen"},
+        Multi = false,
+        Default = 1,
     })
 
+    Dropdown:SetValue("four")
     
 
     Fluent:Notify({
