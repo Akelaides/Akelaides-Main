@@ -4,7 +4,11 @@ if game.PlaceId == 14330243992 then
     end)
 
     if FluentSuccess and Fluent then
-        -- Initial notification removed to prevent showing on load
+        Fluent:Notify({
+            Title = "Akelaides",
+            Content = "Akelaides Loaded Successfully!",
+            Duration = 3
+        })
     else
         if Fluent then
             Fluent:Notify({
@@ -37,7 +41,7 @@ if game.PlaceId == 14330243992 then
 
     local Tabs = {
         Main = Window:AddTab({ Title = "Home", Icon = "home" }),
-        Autofarm = Window:AddTab({ Title = "Automatic", Icon = "plane" }),
+        Autofarm = Window:AddTab({ Title = "Automatic", Icon = "plane"}),
         Teleportation = Window:AddTab({ Title = "Teleportation", Icon = "compass" }),
         Miscellaneous = Window:AddTab({ Title = "Miscellaneous", Icon = "boxes" }),
         Settings = Window:AddTab({ Title = "Settings", Icon = "settings" })
@@ -102,16 +106,16 @@ if game.PlaceId == 14330243992 then
     end)
 
     -- Main Section
+
     local section = MainTab:AddSection("Introduction")
 
     MainTab:AddParagraph({
         Title = "Akelaides",
-        Content = "Thank you for using akelaides, as of now We are still in BETA and hope \nto expand our community to other games! We apologize for \nAny features that are experiencing errors. "
+        Content = "Thank you for using akelaides, as of now We are still in BETA and hope \nto expand our community to other games! We apologize for \nAny features that are experiencing bugs. "
     })
 
-    local section = MainTab:AddSection("Our Discord")
     MainTab:AddButton({
-        Title = "Join Akelaides",
+        Title = "Copy Discord Link",
         Description = " Click To Copy https://discord.gg/SE8fDd6YcC",
         Callback = function()
             setclipboard("https://discord.gg/SE8fDd6YcC")
@@ -147,9 +151,13 @@ if game.PlaceId == 14330243992 then
         getgenv().farmer = false -- Initialize only if it doesn't exist
     end
 
-    local Toggle = AutofarmTab:AddToggle("Autofarm", { Title = "Autofarm", Default = getgenv().farmer })
+    local Toggle = AutofarmTab:AddToggle("Autofarm", {Title = "Autofarm", Default = getgenv().farmer})
 
     Toggle:OnChanged(function(State)
+        local player = game.Players.LocalPlayer
+        local character = player.Character or player.CharacterAdded:Wait()
+        local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
+
         -- Check if the state has actually changed to avoid redundant notifications
         if getgenv().farmer ~= State then
             getgenv().farmer = State
@@ -180,17 +188,59 @@ if game.PlaceId == 14330243992 then
                 game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Client"):InvokeServer(unpack(args))
                 task.wait(0.01)
             end
-        end 
+        end
+    end)
 
+    local sections = AutofarmTab:AddSection("Automatic")
+    local Toggle = Tabs.Autofarm:AddToggle("AutoRebirth", {Title = "Auto Rebirth", Default = false})
 
-        MiscTab:AddButton({
-            Title = "Load Infinite Yield",
-            Description = "Loads Infinite Yield script",
-            Callback = function()
-                loadstring(game:HttpGet("https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source"))() 
+    local isFirstRun = true  -- Variable to check if it's the first time the script is loading
+
+Toggle:OnChanged(function(state)
+    getgenv().rebirth = state
+
+    -- Prevent notifying during the initial loading phase
+    if isFirstRun then
+        isFirstRun = false  -- Set to false after the first run
+        return  -- Exit the function early, so no notification is sent
+    end
+
+    if getgenv().rebirth then
+        while getgenv().rebirth do
+            game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Rebirth"):FireServer()
+            wait(0.1)
+
+            if getgenv().rebirth ~= state then
+                getgenv().rebirth = state
             end
-        })
+        end
+    end
 
+    -- Notify only after the toggle state has changed
+    if state then
+        Fluent:Notify({
+            Title = "Auto Rebirth",
+            Content = "Auto Rebirth Enabled.",
+            Duration = 4
+        })
+    else 
+        Fluent:Notify({
+            Title = "Auto Rebirth",
+            Content = "Auto Rebirth Disabled.",
+            Duration = 4
+        })
+    end
+end)
+
+
+    -- Miscellaneous Section for Infinite Yield
+    MiscTab:AddButton({
+        Title = "Load Infinite Yield",
+        Description = "Loads Infinite Yield script",
+        Callback = function()
+            loadstring(game:HttpGet("https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source"))() 
+        end
+    })
 
 
 
@@ -440,5 +490,5 @@ if game.PlaceId == 14330243992 then
     SaveManager:BuildConfigSection(Tabs.Settings)
 
     Window:SelectTab(1)
-end)
+
 end
