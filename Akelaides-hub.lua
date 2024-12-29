@@ -339,9 +339,11 @@ holdAndClickToggle:OnChanged(function(state)
     if state then
         -- Start an infinite loop that will repeat after each full cycle (hold + click)
         while holdAndClickToggle:Get() do
+            -- Perform the "Hold E" and "Spam Click" actions
             holdEKey()  -- Hold the "E" key for 2 seconds
             startSpamClick()  -- Start spam clicking for 5 seconds
 
+            -- Notify the user that the action is complete
             Fluent:Notify({
                 Title = "Action Complete",
                 Content = "Held 'E' for 2 seconds and spam clicked for 5 seconds.",
@@ -352,6 +354,7 @@ holdAndClickToggle:OnChanged(function(state)
         end
     end
 end)
+
 
 
 
