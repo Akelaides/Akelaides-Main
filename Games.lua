@@ -63,14 +63,56 @@ if game.PlaceId == 10822399154 then
     })
     
 
-    local Dropdown = Tabs.Main:AddDropdown("Dropdown", {
-        Title = "Dropdown",
-        Values = {"one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twelve", "thirteen", "fourteen"},
+    local Players = game:GetService("Players")
+    local LocalPlayer = Players.LocalPlayer
+    
+    -- Function to get the list of players' names
+    local function getPlayerNames()
+        local playerNames = {}
+        for _, player in ipairs(Players:GetPlayers()) do
+            if player ~= LocalPlayer then -- Exclude the local player from the list
+                table.insert(playerNames, player.Name)
+            end
+        end
+        return playerNames
+    end
+    
+    -- Create Dropdown
+    local Dropdown = Tabs.Teleportation:AddDropdown("Dropdown", {
+        Title = "Player List",
+        Values = getPlayerNames(),
         Multi = false,
         Default = 1,
     })
-
-    Dropdown:SetValue("four")
+    
+    -- Update Dropdown when players join or leave
+    Players.PlayerAdded:Connect(function()
+        Dropdown.Values = getPlayerNames()
+    end)
+    
+    Players.PlayerRemoving:Connect(function()
+        Dropdown.Values = getPlayerNames()
+    end)
+    
+    -- Create Teleport Button
+    Tabs.Teleportation:AddButton("Teleport to Player", function()
+        local selectedPlayerName = Dropdown.Value -- Get the currently selected player
+        if selectedPlayerName then
+            local selectedPlayer = Players:FindFirstChild(selectedPlayerName)
+            if selectedPlayer and selectedPlayer.Character and selectedPlayer.Character:FindFirstChild("HumanoidRootPart") then
+                -- Teleport the local player to the selected player's position
+                local targetPosition = selectedPlayer.Character.HumanoidRootPart.Position
+                if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
+                    LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(targetPosition)
+                end
+            else
+                warn("Selected player's character is not valid for teleportation!")
+            end
+        else
+            warn("No player selected!")
+        end
+    end)
+     
     
 
     Fluent:Notify({
