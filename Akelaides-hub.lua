@@ -307,9 +307,27 @@ Toggle:OnChanged(function(state)
     end
 end)
 
+
+local VirtualInputManager = game:GetService("VirtualInputManager") -- For simulating input
+
+local holdAndClickToggle = AutofarmTab:AddToggle("Hold E and Spam Click", {Title = "Hold E for 2 seconds and Spam Click for 5", Default = false})
+
+local spamClicking = false
+local spamInterval = 0.1 -- Time between clicks (adjust as needed)
+
+-- Function to simulate holding "E" for 2 seconds
+local function holdEKey()
+    -- Simulate pressing "E"
+    VirtualInputManager:SendKeyEvent(true, Enum.KeyCode.E, false, game)
+    wait(2)  -- Hold for 2 seconds
+    -- Simulate releasing "E"
+    VirtualInputManager:SendKeyEvent(false, Enum.KeyCode.E, false, game)
+end
+
+-- Function to simulate spam clicking for 5 seconds
 local function startSpamClick()
-    spamClicking = true
-    while spamClicking do
+    local endTime = tick() + 5  -- Set the end time for 5 seconds from now
+    while tick() < endTime do
         -- Simulate mouse click
         VirtualInputManager:SendMouseButtonEvent(500, 300, 0, true, nil, 0) -- Mouse Down
         VirtualInputManager:SendMouseButtonEvent(500, 300, 0, false, nil, 0) -- Mouse Up
@@ -317,19 +335,24 @@ local function startSpamClick()
     end
 end
 
-local function stopSpamClick()
-    spamClicking = false
-end
+holdAndClickToggle:OnChanged(function(state)
+    if state then
+        -- Start an infinite loop that will repeat after each full cycle (hold + click)
+        while holdAndClickToggle:Get() do
+            holdEKey()  -- Hold the "E" key for 2 seconds
+            startSpamClick()  -- Start spam clicking for 5 seconds
 
-local spamToggle = AutofarmTab:AddToggle("SpamClick", {Title = "Spam Click", Default = false})
-spamToggle:OnChanged(function(state)
-    spamClicking = state
-    if spamClicking then
-        startSpamClick()
-    else
-        stopSpamClick()
+            Fluent:Notify({
+                Title = "Action Complete",
+                Content = "Held 'E' for 2 seconds and spam clicked for 5 seconds.",
+                Duration = 4
+            })
+            
+            wait(1) -- Wait for 7 seconds before repeating the process
+        end
     end
 end)
+
 
 
 
