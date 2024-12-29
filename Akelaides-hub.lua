@@ -233,53 +233,50 @@ Toggle:OnChanged(function(state)
     end
 end)
 
+-- Existing code...
+
 local VirtualInputManager = game:GetService("VirtualInputManager") -- For simulating input
 
-local AutofarmTab = {} -- Example Tab (replace with actual implementation for AutofarmTab)
-local Fluent = {} -- Example Fluent library (replace with actual implementation)
+local holdAndClickToggle = AutofarmTab:AddToggle("Hold E and Spam Click", {Title = "Hold E for 2 seconds and Spam Click for 5", Default = false})
 
-local spamClicking = false -- Toggle state
+local spamClicking = false
 local spamInterval = 0.1 -- Time between clicks (adjust as needed)
 
-local Toggle = AutofarmTab:AddToggle("Autofarm", {Title = "Auto Battle / Macro", Default = getgenv().farmer})
+-- Function to simulate holding "E" for 2 seconds
+local function holdEKey()
+    -- Simulate pressing "E"
+    VirtualInputManager:SendKeyEvent(true, Enum.KeyCode.E, false, game)
+    wait(2)  -- Hold for 2 seconds
+    -- Simulate releasing "E"
+    VirtualInputManager:SendKeyEvent(false, Enum.KeyCode.E, false, game)
+end
 
-Toggle:OnChanged(function(State)
-    local player = game.Players.LocalPlayer
-    local character = player.Character or player.CharacterAdded:Wait()
-    local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
-
-    -- Check if the state has actually changed to avoid redundant notifications
-    if getgenv().farmer ~= State then
-        getgenv().farmer = State
-
-        if State then
-            Fluent:Notify({
-                Title = "Autofarm Enabled",
-                Content = "Autofarm has been activated.",
-                Duration = 4
-            })
-        else
-            Fluent:Notify({
-                Title = "Autofarm Disabled",
-                Content = "Autofarm has been deactivated.",
-                Duration = 4
-            })
-        end
+-- Function to simulate spam clicking for 5 seconds
+local function startSpamClick()
+    local endTime = tick() + 5  -- Set the end time for 5 seconds from now
+    while tick() < endTime do
+        -- Simulate mouse click
+        VirtualInputManager:SendMouseButtonEvent(500, 300, 0, true, nil, 0) -- Mouse Down
+        VirtualInputManager:SendMouseButtonEvent(500, 300, 0, false, nil, 0) -- Mouse Up
+        wait(spamInterval) -- Wait before the next click
     end
+end
 
-    getgenv().farmer = State
-
-    if getgenv().farmer then
-        while getgenv().farmer do
-            local args = {
-                [1] = "ClickStat",
-                [2] = getgenv().farmValue or 1
-            }
-            game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Client"):InvokeServer(unpack(args))
-            task.wait(0.01)
-        end
+holdAndClickToggle:OnChanged(function(state)
+    if state then
+        -- If the toggle is enabled, start the process
+        holdEKey()  -- Hold the "E" key for 2 seconds
+        startSpamClick()  -- Start spam clicking for 5 seconds
+        Fluent:Notify({
+            Title = "Action Complete",
+            Content = "Held 'E' for 2 seconds and spam clicked for 5 seconds.",
+            Duration = 4
+        })
     end
 end)
+
+-- Existing code...
+
 
 local sections = AutofarmTab:AddSection("Automatic")
 local Toggle = AutofarmTab:AddToggle("AutoRebirth", {Title = "Auto Rebirth", Default = false})
