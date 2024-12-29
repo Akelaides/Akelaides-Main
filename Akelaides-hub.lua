@@ -235,63 +235,46 @@ end)
 
 -- Existing code...
 
-local part = workspace.YourPart -- Replace with your part containing the ProximityPrompt
-local proximityPrompt = part:FindFirstChildOfClass("ProximityPrompt")
+local ProximityPrompt = workspace:WaitForChild("BattleButton") -- Replace this with the correct part that triggers battle
 
-local UserInputService = game:GetService("UserInputService")
-local TweenService = game:GetService("TweenService")
-local RunService = game:GetService("RunService")
+local AutoBattleEnabled = false  -- Variable to track the auto-battle state
 
-local isHoldingE = false
-local isClicking = false
+-- Function to simulate the battle
+local function startAutoBattle()
+    -- Here, we simulate triggering the battle action repeatedly.
+    -- Depending on the game's mechanics, you may need to use `:Click()` or another method to initiate the battle.
 
--- Function to simulate pressing the ProximityPrompt for 2 seconds
-local function simulateProximityPrompt()
-    if proximityPrompt and proximityPrompt.Enabled then
-        -- Trigger the ProximityPrompt
-        proximityPrompt:Trigger()
-        
-        -- Simulate holding E for 2 seconds
-        isHoldingE = true
-        wait(2)  -- Hold for 2 seconds
-        isHoldingE = false
-    end
-end
-
--- Function to simulate spam clicking for 5 seconds
-local function simulateClicking()
-    if proximityPrompt and proximityPrompt.Enabled then
-        -- Start spamming clicks for 5 seconds
-        isClicking = true
-        local startTime = tick()
-        while tick() - startTime < 5 do
-            -- Simulate a click by triggering proximity prompt repeatedly
-            proximityPrompt:Trigger()
-            wait(0.1)  -- Spam click every 0.1 second
+    while AutoBattleEnabled do
+        -- Trigger the battle prompt (adjust if you're using a different method to trigger battle)
+        if ProximityPrompt and ProximityPrompt.Enabled then
+            ProximityPrompt:Trigger()
         end
-        isClicking = false
+        wait(0.5)  -- Adjust the wait time as needed (i.e., how fast you want to trigger the battle)
     end
 end
 
--- Main function to detect the ProximityPrompt visibility
-local function onProximityPromptTriggered()
-    -- Wait for the ProximityPrompt to be visible
-    while proximityPrompt and proximityPrompt.Enabled do
-        -- Simulate pressing "E" and spamming clicks when the prompt is visible
-        simulateProximityPrompt()
-        simulateClicking()
-        wait(0.1)  -- Adjust wait time if necessary
-    end
-end
+-- Toggle for enabling/disabling auto battle
+local AutoBattleToggle = AutofarmTab:AddToggle("Auto Battle", {
+    Title = "Enable Auto Battle",
+    Default = false
+})
 
--- Listen for ProximityPrompt visibility
-proximityPrompt.Triggered:Connect(onProximityPromptTriggered)
+AutoBattleToggle:OnChanged(function(state)
+    AutoBattleEnabled = state
 
--- Optionally, to monitor if proximity prompt is visible dynamically:
-RunService.Heartbeat:Connect(function()
-    if proximityPrompt.Enabled then
-        -- Trigger actions when the prompt is visible
-        onProximityPromptTriggered()
+    if AutoBattleEnabled then
+        Fluent:Notify({
+            Title = "Auto Battle Enabled",
+            Content = "Auto battle is now active.",
+            Duration = 4
+        })
+        startAutoBattle()
+    else
+        Fluent:Notify({
+            Title = "Auto Battle Disabled",
+            Content = "Auto battle has been deactivated.",
+            Duration = 4
+        })
     end
 end)
 
