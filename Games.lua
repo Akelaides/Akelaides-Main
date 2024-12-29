@@ -59,11 +59,22 @@ if game.PlaceId == 10822399154 then
     
     Tabs.Main:AddParagraph({
         Title = "Welcome To Akelaides!",
-        Content = "Selamat Datang di Akelaides, Revengers Online. Kan ini \nmasih beta dan in progress, maaf kalo ada beberapa \nfitur yang tidak jalan baik. \n Jika ada bug atau error, silahkan dihubungi kepada discord kita."
+        Content = "Selamat Datang di Akelaides, Revengers Online. Karena ini \nmasih beta dan in progress, maaf kalo ada beberapa \nfitur yang tidak jalan baik. \n Jika ada bug atau error, silahkan dihubungi kepada discord kita."
     })
     
-    Tabs.Player:AddButton: 
+    local Slider = Tabs.Main:AddSlider("Slider", {
+        Title = "Walkspeed",
+        Description = "Changes Ur Speed",
+        Default = 16,
+        Min = 1,
+        Max = 250,
+        Rounding = 1,
+        Callback = function(Value)
+           game.Players.LocalPlayer.Character.Humanoid.Walkspeed = (Value)
+        end
+    })
 
+    
 
     Fluent:Notify({
         Title = "Akelaides",

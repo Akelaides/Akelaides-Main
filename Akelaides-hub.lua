@@ -231,8 +231,8 @@ Toggle:OnChanged(function(state)
         })
     end
 end)
-
-
+    
+             
     -- Miscellaneous Section for Infinite Yield
     MiscTab:AddButton({
         Title = "Load Infinite Yield",
