@@ -236,7 +236,7 @@ end)
 -- Existing code...
 
 local VirtualInputManager = game:GetService("VirtualInputManager") -- For simulating input
-local holdAndClickToggle = AutofarmTab:AddToggle("Hold E and Spam Click", {Title = "Auto Battle", Default = false})
+local holdAndClickToggle = AutofarmTab:AddToggle("Hold E and Spam Click", {Title = "Hold E for 2 seconds and Spam Click for 5", Default = false})
 
 local spamClicking = false
 local spamInterval = 0.1 -- Time between clicks (adjust as needed)
@@ -271,7 +271,7 @@ end
 
 -- Main loop to repeat the action when the "E" prompt is visible
 local function repeatAction()
-    while holdAndClickToggle:Get() do
+    while holdAndClickToggle.Value do  -- Use .Value instead of .Get()
         if isPromptVisible() then
             holdEKey()  -- Hold the "E" key for 2 seconds
             startSpamClick()  -- Start spam clicking for 5 seconds
@@ -292,6 +292,7 @@ holdAndClickToggle:OnChanged(function(state)
         repeatAction()
     end
 end)
+
 
 
 
