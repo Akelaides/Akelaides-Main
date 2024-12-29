@@ -253,7 +253,7 @@ Tabs.Main:AddToggle({
         end,
     })
     
-    Tabs.Miscellaneous:AddButton({
+    MiscTab:AddButton({
         Title = "Refresh Script",
         Description = "Reloads the latest version of the script.",
         Callback = function()
