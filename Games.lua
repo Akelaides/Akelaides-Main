@@ -65,77 +65,88 @@ if game.PlaceId == 10822399154 then
     local section = TeleportTab:AddSection("Teleport To Players")
 
     local Players = game:GetService("Players")
-    local LocalPlayer = Players.LocalPlayer
-    
-    -- Function to get the list of players' names
-    local function getPlayerNames()
-        local playerNames = {}
-        for _, player in ipairs(Players:GetPlayers()) do
-            if player ~= LocalPlayer then -- Exclude the local player from the list
-                table.insert(playerNames, player.Name)
-            end
+local LocalPlayer = Players.LocalPlayer
+
+-- Function to get the list of players' names
+local function getPlayerNames()
+    local playerNames = {}
+    for _, player in ipairs(Players:GetPlayers()) do
+        if player ~= LocalPlayer then -- Exclude the local player from the list
+            table.insert(playerNames, player.Name)
         end
-        return playerNames
     end
-    
-    -- Create Dropdown
-    local Dropdown = Tabs.Teleportation:AddDropdown("Dropdown", {
-        Title = "Select Player",
-        Values = getPlayerNames(),
-        Multi = false,
-        Default = 1,
-    })
-    
-    -- Update Dropdown when players join or leave
-    Players.PlayerAdded:Connect(function()
-        Dropdown.Values = getPlayerNames()
-    end)
-    
-    Players.PlayerRemoving:Connect(function()
-        Dropdown.Values = getPlayerNames()
-    end)
-    
-    -- Create Teleport Button
-    Tabs.Teleportation:AddButton({
-        Title = "Teleport to Player",
-        Description = "Teleports you to the selected player.",
-        Callback = function()
-            local selectedPlayerName = Dropdown.Value -- Get the currently selected player
-            if selectedPlayerName then
-                local selectedPlayer = Players:FindFirstChild(selectedPlayerName)
-                if selectedPlayer and selectedPlayer.Character and selectedPlayer.Character:FindFirstChild("HumanoidRootPart") then
-                    -- Teleport the local player to the selected player's position
-                    local targetPosition = selectedPlayer.Character.HumanoidRootPart.Position
-                    if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
-                        LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(targetPosition)
-                        Fluent:Notify({
-                            Title = "Teleport Success",
-                            Content = "You have been teleported to " .. selectedPlayerName .. ".",
-                            Duration = 5,
-                        })
-                    else
-                        Fluent:Notify({
-                            Title = "Teleport Failed",
-                            Content = "Your character is missing its HumanoidRootPart.",
-                            Duration = 5,
-                        })
-                    end
+    return playerNames
+end
+
+-- Create Dropdown
+local Dropdown = Tabs.Teleportation:AddDropdown("Dropdown", {
+    Title = "Player List",
+    Values = getPlayerNames(),
+    Multi = false,
+    Default = 1,
+})
+
+-- Function to refresh dropdown values
+local function refreshDropdown()
+    Dropdown.Values = getPlayerNames()
+    if #Dropdown.Values > 0 then
+        Dropdown:SetValue(Dropdown.Values[1]) -- Set default to the first player if the list is not empty
+    else
+        Dropdown:SetValue(nil) -- Clear selection if no players are available
+    end
+end
+
+-- Update Dropdown when players join or leave
+Players.PlayerAdded:Connect(function()
+    refreshDropdown()
+end)
+
+Players.PlayerRemoving:Connect(function()
+    refreshDropdown()
+end)
+
+-- Add Teleport Button
+Tabs.Teleportation:AddButton({
+    Title = "Teleport to Player",
+    Description = "Teleports you to the selected player.",
+    Callback = function()
+        local selectedPlayerName = Dropdown.Value -- Get the currently selected player
+        if selectedPlayerName then
+            local selectedPlayer = Players:FindFirstChild(selectedPlayerName)
+            if selectedPlayer and selectedPlayer.Character and selectedPlayer.Character:FindFirstChild("HumanoidRootPart") then
+                -- Teleport the local player to the selected player's position
+                local targetPosition = selectedPlayer.Character.HumanoidRootPart.Position
+                if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
+                    LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(targetPosition)
+                    Fluent:Notify({
+                        Title = "Teleport Success",
+                        Content = "You have been teleported to " .. selectedPlayerName .. ".",
+                        Duration = 5,
+                    })
                 else
                     Fluent:Notify({
                         Title = "Teleport Failed",
-                        Content = "Selected player's character is not valid for teleportation.",
+                        Content = "Your character is missing its HumanoidRootPart.",
                         Duration = 5,
                     })
                 end
             else
                 Fluent:Notify({
                     Title = "Teleport Failed",
-                    Content = "No player selected!",
+                    Content = "Selected player's character is not valid for teleportation.",
                     Duration = 5,
                 })
             end
-        end,
-    })
+        else
+            Fluent:Notify({
+                Title = "Teleport Failed",
+                Content = "No player selected!",
+                Duration = 5,
+            })
+        end
+    end,
+})
+
     
     MiscTab:AddButton({
         Title = "Load Infinite Yield",
