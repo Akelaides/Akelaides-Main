@@ -68,6 +68,10 @@ if game.PlaceId == 10822399154 then
     local LocalPlayer = Players.LocalPlayer
     
     -- Function to get the list of players' names
+    local Players = game:GetService("Players")
+    local LocalPlayer = Players.LocalPlayer
+    
+    -- Function to get the list of players' names
     local function getPlayerNames()
         local playerNames = {}
         for _, player in ipairs(Players:GetPlayers()) do
@@ -86,13 +90,24 @@ if game.PlaceId == 10822399154 then
         Default = 1,
     })
     
+    -- Function to refresh dropdown values
+    local function refreshDropdown()
+        local updatedValues = getPlayerNames()
+        Dropdown:SetValues(updatedValues) -- Update the dropdown's values dynamically
+        if #updatedValues > 0 then
+            Dropdown:SetValue(updatedValues[1]) -- Set default to the first player if the list is not empty
+        else
+            Dropdown:SetValue(nil) -- Clear selection if no players are available
+        end
+    end
+    
     -- Update Dropdown when players join or leave
     Players.PlayerAdded:Connect(function()
-        Dropdown.Values = getPlayerNames()
+        refreshDropdown()
     end)
     
     Players.PlayerRemoving:Connect(function()
-        Dropdown.Values = getPlayerNames()
+        refreshDropdown()
     end)
     
     -- Create Teleport Button
@@ -136,6 +151,7 @@ if game.PlaceId == 10822399154 then
             end
         end,
     })
+    
     
     MiscTab:AddButton({
         Title = "Load Infinite Yield",
