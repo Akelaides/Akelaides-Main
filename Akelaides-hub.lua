@@ -235,65 +235,64 @@ end)
 
 -- Existing code...
 
-local VirtualInputManager = game:GetService("VirtualInputManager") -- For simulating input
-local holdAndClickToggle = AutofarmTab:AddToggle("Hold E and Spam Click", {Title = "Hold E for 2 seconds and Spam Click for 5", Default = false})
+local part = workspace.YourPart -- Replace with your part containing the ProximityPrompt
+local proximityPrompt = part:FindFirstChildOfClass("ProximityPrompt")
 
-local spamClicking = false
-local spamInterval = 0.1 -- Time between clicks (adjust as needed)
+local UserInputService = game:GetService("UserInputService")
+local player = game.Players.LocalPlayer
+local mouse = player:GetMouse()
 
--- Function to simulate holding "E" for 2 seconds
-local function holdEKey()
-    -- Simulate pressing "E"
-    VirtualInputManager:SendKeyEvent(true, Enum.KeyCode.E, false, game)
-    wait(2)  -- Hold for 2 seconds
-    -- Simulate releasing "E"
-    VirtualInputManager:SendKeyEvent(false, Enum.KeyCode.E, false, game)
-end
+-- Function to simulate pressing the 'E' key for 2 seconds
+local function holdEFor2Seconds()
+    local startTime = tick()
 
--- Function to simulate spam clicking for 5 seconds
-local function startSpamClick()
-    local endTime = tick() + 5  -- Set the end time for 5 seconds from now
-    while tick() < endTime do
-        -- Simulate mouse click
-        VirtualInputManager:SendMouseButtonEvent(500, 300, 0, true, nil, 0) -- Mouse Down
-        VirtualInputManager:SendMouseButtonEvent(500, 300, 0, false, nil, 0) -- Mouse Up
-        wait(spamInterval) -- Wait before the next click
+    -- Hold E for 2 seconds
+    while tick() - startTime < 2 do
+        UserInputService.InputBegan:Fire({KeyCode = Enum.KeyCode.E, UserInputType = Enum.UserInputType.Keyboard})
+        wait(0.1)  -- Simulate "holding" E by sending input multiple times
     end
 end
 
--- Function to check for the presence of the "E" prompt (customize to suit your game's UI)
-local function isPromptVisible()
-    -- You may need to replace this with actual logic for detecting the "E" prompt in your game
-    -- For example, checking for a UI element or screen overlay that shows the "E" prompt
-    local promptUI = game.Players.LocalPlayer.PlayerGui:FindFirstChild("PromptE")
-    return promptUI and promptUI.Visible
+-- Function to simulate mouse button click without interrupting the user's control of the mouse
+local function simulateMouseClick()
+    -- Simulate the mouse down and up events programmatically
+    local inputObject = Instance.new("InputObject")
+    inputObject.UserInputType = Enum.UserInputType.MouseButton1
+    inputObject.Position = mouse.Hit.p
+    inputObject.UserInputState = Enum.UserInputState.Begin
+
+    -- Fire the "mouse down" event
+    UserInputService.InputBegan:Fire(inputObject)
+    
+    -- Simulate the "mouse up" event after a small delay (for a click action)
+    inputObject.UserInputState = Enum.UserInputState.End
+    wait(0.05) -- You can adjust the duration if needed
+    UserInputService.InputEnded:Fire(inputObject)
 end
 
--- Main loop to repeat the action when the "E" prompt is visible
-local function repeatAction()
-    while holdAndClickToggle.Value do  -- Use .Value instead of .Get()
-        if isPromptVisible() then
-            holdEKey()  -- Hold the "E" key for 2 seconds
-            startSpamClick()  -- Start spam clicking for 5 seconds
-            Fluent:Notify({
-                Title = "Action Complete",
-                Content = "Held 'E' for 2 seconds and spam clicked for 5 seconds.",
-                Duration = 4
-            })
-            wait(1)  -- Wait a little before checking again (to prevent too rapid repeat)
+-- Function to simulate the behavior when the ProximityPrompt is visible
+local function onProximityPromptVisible()
+    if proximityPrompt then
+        if proximityPrompt.Enabled then
+            -- Step 1: Hold "E" for 2 seconds
+            holdEFor2Seconds()
+
+            -- Step 2: Simulate mouse click for 5 seconds while keeping control of the mouse
+            local startTime = tick()
+            while tick() - startTime < 5 do
+                simulateMouseClick()
+                wait(0.1)  -- Simulate multiple clicks in quick succession
+            end
         end
-        wait(0.1)  -- Check every 0.1 seconds if the prompt is visible
     end
 end
 
-holdAndClickToggle:OnChanged(function(state)
-    if state then
-        -- Start the repeat loop when the toggle is enabled
-        repeatAction()
+-- Check proximity prompt visibility
+game:GetService("RunService").Heartbeat:Connect(function()
+    if proximityPrompt and proximityPrompt.Enabled then
+        onProximityPromptVisible()
     end
 end)
-
-
 
 
     -- Teleport Section
