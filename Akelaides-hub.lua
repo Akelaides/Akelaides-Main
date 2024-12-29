@@ -36,15 +36,17 @@ if game.PlaceId == 14330243992 then
     })
 
     -- Optional: Adjust the background color and transparency for better visibility
-    Window.BackgroundColor3 = Color3.fromRGB(30, 30, 30)  -- Dark background color
+    Window.BackgroundColor3 = Color3.fromRGB(35, 35, 35)  -- Dark background color
     Window.BackgroundTransparency = 0.5  -- Adjust transparency to enhance the acrylic effect
 
+    Window.AccentColor = Color3.fromRGB(255, 87, 51)
+
     local Tabs = {
-        Main = Window:AddTab({ Title = "Home", Icon = "home" }),
-        Autofarm = Window:AddTab({ Title = "Automatic", Icon = "plane"}),
-        Teleportation = Window:AddTab({ Title = "Teleportation", Icon = "compass" }),
-        Miscellaneous = Window:AddTab({ Title = "Miscellaneous", Icon = "boxes" }),
-        Settings = Window:AddTab({ Title = "Settings", Icon = "settings" })
+        Main = Window:AddTab({ Title = "Home", Icon = "home", TabColor = Color3.fromRGB(255, 87, 51) }),
+        Autofarm = Window:AddTab({ Title = "Automatic", Icon = "plane", TabColor = Color3.fromRGB(255, 87, 51) }),
+        Teleportation = Window:AddTab({ Title = "Teleportation", Icon = "compass", TabColor = Color3.fromRGB(255,87, 51) }),
+        Miscellaneous = Window:AddTab({ Title = "Miscellaneous", Icon = "boxes", TabColor = Color3.fromRGB(255, 87, 51) }),
+        Settings = Window:AddTab({ Title = "Settings", Icon = "settings", TabColor = Color3.fromRGB(255, 87, 51) })
     }
 
     local MainTab = Tabs.Main
@@ -109,6 +111,7 @@ if game.PlaceId == 14330243992 then
     MainTab:AddButton({
         Title = "Copy Discord Link",
         Description = " Click To Copy https://discord.gg/SE8fDd6YcC",
+        ButtonColor = Color3.fromRGB(255, 87, 51),
         Callback = function()
             setclipboard("https://discord.gg/SE8fDd6YcC")
             
@@ -183,7 +186,9 @@ if game.PlaceId == 14330243992 then
         end
     end)
 
-    local sections = AutofarmTab:AddSection("Automatic")
+    local sections = AutofarmTab:AddSection("Automatic", {
+        SectionColor = Color3.fromRGB(255, 87, 51)
+    })
     local Toggle = Tabs.Autofarm:AddToggle("AutoRebirth", {Title = "Auto Rebirth", Default = false})
 
     local isFirstRun = true  -- Variable to check if it's the first time the script is loading
@@ -229,6 +234,7 @@ end)
     MiscTab:AddButton({
         Title = "Load Infinite Yield",
         Description = "Loads Infinite Yield script",
+        ButtonColor = Color3.fromRGB(255, 87, 51),
         Callback = function()
             loadstring(game:HttpGet("https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source"))() 
         end
