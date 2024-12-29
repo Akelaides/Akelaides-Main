@@ -62,76 +62,106 @@ if game.PlaceId == 10822399154 then
         Content = "Selamat Datang di Akelaides, Revengers Online. Karena ini \nmasih beta dan in progress, maaf kalo ada beberapa \nfitur yang tidak jalan baik. \n Jika ada bug atau error, silahkan dihubungi kepada discord kita."
     })
     
-    local function boostFPS()
-        -- Optimizations for FPS Boost
-        local Players = game:GetService("Players")
-        local Lighting = game:GetService("Lighting")
-        local Workspace = game:GetService("Workspace")
-        
-        -- Ignore Other Characters
-        for _, player in ipairs(Players:GetPlayers()) do
-            if player ~= Players.LocalPlayer and player.Character then
-                player.Character:Destroy() -- Removes other players' characters for performance
-            end
+    -- Variables to store the toggle state
+local fpsBoostEnabled = false
+
+-- Function to apply FPS optimization
+local function enableFPSBoost()
+    local Players = game:GetService("Players")
+    local Lighting = game:GetService("Lighting")
+    local Workspace = game:GetService("Workspace")
+
+    -- Ignore Other Characters
+    for _, player in ipairs(Players:GetPlayers()) do
+        if player ~= Players.LocalPlayer and player.Character then
+            player.Character:Destroy()
         end
-    
-        -- Optimize Lighting
-        Lighting.GlobalShadows = false
-        Lighting.FogEnd = 9e9
-        Lighting.Brightness = 1
-        for _, effect in ipairs(Lighting:GetDescendants()) do
-            if effect:IsA("PostEffect") then
-                effect:Destroy() -- Removes camera/lighting effects
-            end
+    end
+
+    -- Optimize Lighting
+    Lighting.GlobalShadows = false
+    Lighting.FogEnd = 9e9
+    Lighting.Brightness = 1
+    for _, effect in ipairs(Lighting:GetDescendants()) do
+        if effect:IsA("PostEffect") then
+            effect:Destroy()
         end
-    
-        -- Lower Rendering and Quality
-        Workspace.LevelOfDetail = Enum.ModelLevelOfDetail.Disabled
-        for _, instance in ipairs(Workspace:GetDescendants()) do
-            if instance:IsA("BasePart") then
-                instance.Material = Enum.Material.SmoothPlastic -- Lower material detail
-                instance.CastShadow = false -- Disable shadows
-            elseif instance:IsA("ParticleEmitter") or instance:IsA("Trail") then
-                instance:Destroy() -- Removes particles and trails
-            elseif instance:IsA("MeshPart") then
-                instance.RenderFidelity = Enum.RenderFidelity.Performance -- Set to low fidelity
-            end
+    end
+
+    -- Lower Rendering and Quality
+    Workspace.LevelOfDetail = Enum.ModelLevelOfDetail.Disabled
+    for _, instance in ipairs(Workspace:GetDescendants()) do
+        if instance:IsA("BasePart") then
+            instance.Material = Enum.Material.SmoothPlastic
+            instance.CastShadow = false
+        elseif instance:IsA("ParticleEmitter") or instance:IsA("Trail") then
+            instance:Destroy()
+        elseif instance:IsA("MeshPart") then
+            instance.RenderFidelity = Enum.RenderFidelity.Performance
         end
-    
-        -- Remove Clothes and Accessories
-        for _, player in ipairs(Players:GetPlayers()) do
-            if player.Character then
-                for _, obj in ipairs(player.Character:GetDescendants()) do
-                    if obj:IsA("Clothing") or obj:IsA("Accessory") then
-                        obj:Destroy() -- Removes clothing and accessories
-                    end
+    end
+
+    -- Remove Clothes and Accessories
+    for _, player in ipairs(Players:GetPlayers()) do
+        if player.Character then
+            for _, obj in ipairs(player.Character:GetDescendants()) do
+                if obj:IsA("Clothing") or obj:IsA("Accessory") then
+                    obj:Destroy()
                 end
             end
         end
-    
-        -- Optimize Water Graphics
-        Workspace.Terrain.WaterWaveSize = 0
-        Workspace.Terrain.WaterWaveSpeed = 0
-        Workspace.Terrain.WaterTransparency = 1
-        Workspace.Terrain.WaterReflectance = 0
     end
-    
-    -- Add FPS Boost Button
-    Tabs.Miscellaneous:AddButton({
-        Title = "Boost FPS",
-        Description = "Applies FPS boost to optimize game performance.",
-        Callback = function()
-            boostFPS() -- Call the FPS boost function
-    
-            -- Notify the user
+
+    -- Optimize Water Graphics
+    Workspace.Terrain.WaterWaveSize = 0
+    Workspace.Terrain.WaterWaveSpeed = 0
+    Workspace.Terrain.WaterTransparency = 1
+    Workspace.Terrain.WaterReflectance = 0
+end
+
+-- Function to reset FPS settings
+local function disableFPSBoost()
+    local Lighting = game:GetService("Lighting")
+    local Workspace = game:GetService("Workspace")
+
+    -- Reset Lighting
+    Lighting.GlobalShadows = true
+    Lighting.FogEnd = 1000
+    Lighting.Brightness = 2
+
+    -- Reset Water Graphics
+    Workspace.Terrain.WaterWaveSize = 0.5
+    Workspace.Terrain.WaterWaveSpeed = 10
+    Workspace.Terrain.WaterTransparency = 0.5
+    Workspace.Terrain.WaterReflectance = 0.5
+end
+
+-- Add Toggle to UI
+Tabs.Main:AddToggle({
+    Title = "FPS Optimizer",
+    Description = "Toggle FPS optimization settings.",
+    Default = false, -- Default state is off
+    Callback = function(state)
+        fpsBoostEnabled = state -- Update the toggle state
+
+        if fpsBoostEnabled then
+            enableFPSBoost()
             Fluent:Notify({
-                Title = "FPS Boost Applied",
-                Content = "Game settings have been optimized for better performance.",
+                Title = "FPS Boost Enabled",
+                Content = "Game settings optimized for better performance.",
                 Duration = 5,
             })
-        end,
-    })
-    
+        else
+            disableFPSBoost()
+            Fluent:Notify({
+                Title = "FPS Boost Disabled",
+                Content = "Game settings reset to default.",
+                Duration = 5,
+            })
+        end
+    end,
+})
+
 
     local section = TeleportTab:AddSection("Teleport To Players")
 
@@ -223,6 +253,47 @@ if game.PlaceId == 10822399154 then
         end,
     })
     
+    Tabs.Miscellaneous:AddButton({
+        Title = "Refresh Script",
+        Description = "Reloads the latest version of the script.",
+        Callback = function()
+            -- Notify the user about the reload process
+            Fluent:Notify({
+                Title = "Refreshing Script",
+                Content = "Reloading the latest version...",
+                Duration = 3,
+            })
+    
+            -- Destroy the current UI
+            for _, obj in ipairs(game:GetService("CoreGui"):GetChildren()) do
+                if obj.Name == "AkelaidesUI" then -- Replace "AkelaidesUI" with your UI's actual name
+                    obj:Destroy()
+                end
+            end
+    
+            -- Load the latest version of the script
+            local success, errorMessage = pcall(function()
+                loadstring(game:HttpGet("https://raw.githubusercontent.com/Akelaides/Akelaides-Main/main/Games.lua"))()
+            end)
+    
+            -- Notify user of success or failure
+            if success then
+                Fluent:Notify({
+                    Title = "Script Reloaded",
+                    Content = "The latest version has been successfully loaded.",
+                    Duration = 5,
+                })
+            else
+                Fluent:Notify({
+                    Title = "Error",
+                    Content = "Failed to reload the script: " .. errorMessage,
+                    Duration = 5,
+                })
+            end
+        end,
+    })
+    
+
     MiscTab:AddButton({
         Title = "Load Infinite Yield",
         Description = "Loads Infinite Yield script",
