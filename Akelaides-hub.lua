@@ -239,66 +239,59 @@ local part = workspace.YourPart -- Replace with your part containing the Proximi
 local proximityPrompt = part:FindFirstChildOfClass("ProximityPrompt")
 
 local UserInputService = game:GetService("UserInputService")
-local player = game.Players.LocalPlayer
-local mouse = player:GetMouse()
+local TweenService = game:GetService("TweenService")
+local RunService = game:GetService("RunService")
 
--- Function to simulate pressing the 'E' key for 2 seconds
-local function holdEFor2Seconds()
-    local startTime = tick()
+local isHoldingE = false
+local isClicking = false
 
-    -- Hold E for 2 seconds
-    while tick() - startTime < 2 do
-        -- You can't trigger InputBegan directly, so just check that the player has 'pressed' the key.
-        -- Hold E visually
-        -- You would add logic here if needed, but for this, nothing needs to be done.
-        wait(0.1)
-    end
-end
-
--- Function to simulate mouse click action
-local function simulateMouseClick()
-    -- Move the mouse position to the click target
-    local mousePosition = mouse.Hit.p
-
-    -- Simulate the click by setting up a new click
-    local clickInput = Instance.new("InputObject")
-    clickInput.UserInputType = Enum.UserInputType.MouseButton1
-    clickInput.Position = mousePosition
-    clickInput.UserInputState = Enum.UserInputState.Begin
-
-    -- Trigger the mouse down event manually (however this might not trigger actual game events)
-    -- Typically, the game won't recognize it as a real click, but we can trigger custom logic if needed.
-    -- If you want to trigger click interactions, you would typically use :Activate() on ProximityPrompt or other methods.
-
-    -- Simulate the mouse up event after a small delay
-    clickInput.UserInputState = Enum.UserInputState.End
-    wait(0.05)
-
-    -- This won't work as expected in Roblox for actual events, unless using UI elements. 
-    -- You would need to trigger the ProximityPrompt or other parts of the game yourself.
-end
-
--- Function to simulate the behavior when the ProximityPrompt is visible
-local function onProximityPromptVisible()
-    if proximityPrompt then
-        if proximityPrompt.Enabled then
-            -- Step 1: Hold "E" for 2 seconds
-            holdEFor2Seconds()
-
-            -- Step 2: Simulate mouse click for 5 seconds
-            local startTime = tick()
-            while tick() - startTime < 5 do
-                simulateMouseClick()
-                wait(0.1)  -- Simulate multiple clicks in quick succession
-            end
-        end
-    end
-end
-
--- Check proximity prompt visibility
-game:GetService("RunService").Heartbeat:Connect(function()
+-- Function to simulate pressing the ProximityPrompt for 2 seconds
+local function simulateProximityPrompt()
     if proximityPrompt and proximityPrompt.Enabled then
-        onProximityPromptVisible()
+        -- Trigger the ProximityPrompt
+        proximityPrompt:Trigger()
+        
+        -- Simulate holding E for 2 seconds
+        isHoldingE = true
+        wait(2)  -- Hold for 2 seconds
+        isHoldingE = false
+    end
+end
+
+-- Function to simulate spam clicking for 5 seconds
+local function simulateClicking()
+    if proximityPrompt and proximityPrompt.Enabled then
+        -- Start spamming clicks for 5 seconds
+        isClicking = true
+        local startTime = tick()
+        while tick() - startTime < 5 do
+            -- Simulate a click by triggering proximity prompt repeatedly
+            proximityPrompt:Trigger()
+            wait(0.1)  -- Spam click every 0.1 second
+        end
+        isClicking = false
+    end
+end
+
+-- Main function to detect the ProximityPrompt visibility
+local function onProximityPromptTriggered()
+    -- Wait for the ProximityPrompt to be visible
+    while proximityPrompt and proximityPrompt.Enabled do
+        -- Simulate pressing "E" and spamming clicks when the prompt is visible
+        simulateProximityPrompt()
+        simulateClicking()
+        wait(0.1)  -- Adjust wait time if necessary
+    end
+end
+
+-- Listen for ProximityPrompt visibility
+proximityPrompt.Triggered:Connect(onProximityPromptTriggered)
+
+-- Optionally, to monitor if proximity prompt is visible dynamically:
+RunService.Heartbeat:Connect(function()
+    if proximityPrompt.Enabled then
+        -- Trigger actions when the prompt is visible
+        onProximityPromptTriggered()
     end
 end)
 
