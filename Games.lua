@@ -163,30 +163,74 @@ if game.PlaceId == 10822399154 then
             loadstring(game:HttpGet('https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source'))()
         end
     })
-    
-    Tabs.Player:AddButton({
-        Title = "Refresh Player",
-        Description = "Respawns your character to reset it.",
-        Callback = function()
-            local Players = game:GetService("Players")
-            local LocalPlayer = Players.LocalPlayer
-    
-            if LocalPlayer and LocalPlayer.Character then
-                Fluent:Notify({
-                    Title = "Refreshing Player",
-                    Content = "Resetting your character...",
-                    Duration = 3,
-                })
-                LocalPlayer:LoadCharacter()
+
+    -- Slider to adjust the hitbox size
+local HitboxSlider = Tabs.Main:AddSlider("HitboxSlider", { 
+    Title = "Adjust Hitbox Size", 
+    Description = "Use this slider to adjust the hitbox size", 
+    Default = 2.0, 
+    Min = 0.0, 
+    Max = 15.5, 
+    Rounding = 1 
+})
+
+-- Function to update hitboxes based on the slider value
+local function updateHitboxes(expanded, size)
+    local Players = game:GetService("Players")
+    local LocalPlayer = Players.LocalPlayer
+
+    for _, player in ipairs(Players:GetPlayers()) do
+        if player ~= LocalPlayer and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+            local character = player.Character
+
+            -- Adjust the size of the hitbox (expand it or reset it)
+            if expanded then
+                -- Expand hitbox size (adjust based on slider value)
+                for _, part in ipairs(character:GetChildren()) do
+                    if part:IsA("Part") then
+                        part.Size = part.Size * size -- Apply the slider value to adjust size
+                        part.Transparency = 0.5
+                        part.CanCollide = false
+                    end
+                end
             else
-                Fluent:Notify({
-                    Title = "Refresh Failed",
-                    Content = "Could not refresh your character. Please try again.",
-                    Duration = 5,
-                })
+                -- Reset to default size
+                for _, part in ipairs(character:GetChildren()) do
+                    if part:IsA("Part") then
+                        part.Size = Vector3.new(2, 2, 1) -- Default size (adjust if different)
+                        part.Transparency = 0
+                        part.CanCollide = true
+                    end
+                end
             end
-        end,
+        end
+    end
+
+    Fluent:Notify({
+        Title = expanded and "Hitboxes Expanded" or "Hitboxes Reset",
+        Content = expanded and "Player hitboxes have been expanded." or "Player hitboxes have been reset to default.",
+        Duration = 5
     })
+end
+
+-- Toggle for expanding hitboxes
+local Toggle = Tabs.Main:AddToggle("HitboxToggle", {
+    Title = "Expand Hitboxes",
+    Default = false
+})
+
+-- Adjust hitbox size when the slider value changes
+HitboxSlider.OnChanged = function(value)
+    local expanded = Toggle:GetState()  -- Get current toggle state (expanded or not)
+    updateHitboxes(expanded, value)    -- Pass the slider value for size adjustment
+end
+
+-- Toggle behavior for expanding hitboxes
+Toggle:OnChanged(function(state)
+    local size = HitboxSlider:GetValue()  -- Get current size from the slider
+    updateHitboxes(state, size)  -- Update hitboxes with the toggle state and slider size
+end)
+
     
     
 
