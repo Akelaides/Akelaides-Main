@@ -227,7 +227,7 @@ end
 
 -- Toggle behavior for expanding hitboxes
 Toggle:OnChanged(function(state)
-    local size = HitboxSlider:GetValue()  -- Get current size from the slider
+    local size = HitboxSlider.Value  -- Use Value instead of GetValue()
     updateHitboxes(state, size)  -- Update hitboxes with the toggle state and slider size
 end)
 
