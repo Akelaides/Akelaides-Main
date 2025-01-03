@@ -165,6 +165,7 @@ if game.PlaceId == 10822399154 then
     })
 
     -- Slider to adjust the hitbox size
+-- Slider to adjust the hitbox size
 local HitboxSlider = Tabs.Main:AddSlider("HitboxSlider", { 
     Title = "Adjust Hitbox Size", 
     Description = "Use this slider to adjust the hitbox size", 
@@ -174,7 +175,7 @@ local HitboxSlider = Tabs.Main:AddSlider("HitboxSlider", {
     Rounding = 1 
 })
 
--- Function to update hitboxes based on the slider value
+-- Function to update hitboxes based on the expanded state and size
 local function updateHitboxes(expanded, size)
     local Players = game:GetService("Players")
     local LocalPlayer = Players.LocalPlayer
@@ -185,7 +186,7 @@ local function updateHitboxes(expanded, size)
 
             -- Adjust the size of the hitbox (expand it or reset it)
             if expanded then
-                -- Expand hitbox size (adjust based on slider value)
+                -- Expand hitbox size based on slider value
                 for _, part in ipairs(character:GetChildren()) do
                     if part:IsA("Part") then
                         part.Size = part.Size * size -- Apply the slider value to adjust size
@@ -219,17 +220,18 @@ local Toggle = Tabs.Main:AddToggle("HitboxToggle", {
     Default = false
 })
 
+-- Adjust hitbox size when the toggle state changes
+Toggle:OnChanged(function(state)
+    local size = HitboxSlider.Value  -- Get the current slider value
+    updateHitboxes(state, size)  -- Pass the toggle state (expanded or not) and the slider size
+end)
+
 -- Adjust hitbox size when the slider value changes
 HitboxSlider.OnChanged = function(value)
-    local expanded = Toggle:GetState()  -- Get current toggle state (expanded or not)
-    updateHitboxes(expanded, value)    -- Pass the slider value for size adjustment
+    local expanded = Toggle:GetState()  -- Get the current state of the toggle (whether it's expanded or not)
+    updateHitboxes(expanded, value)    -- Update hitboxes with the current toggle state and slider value
 end
 
--- Toggle behavior for expanding hitboxes
-Toggle:OnChanged(function(state)
-    local size = HitboxSlider.Value  -- Use Value instead of GetValue()
-    updateHitboxes(state, size)  -- Update hitboxes with the toggle state and slider size
-end)
 
     
     
