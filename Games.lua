@@ -164,29 +164,6 @@ if game.PlaceId == 10822399154 then
         end
     })
     
-    Tabs.Main:AddButton({
-        Title = "Refresh Player",
-        Description = "Respawns your character to reset it.",
-        Callback = function()
-            local Players = game:GetService("Players")
-            local LocalPlayer = Players.LocalPlayer
-    
-            if LocalPlayer and LocalPlayer.Character then
-                Fluent:Notify({
-                    Title = "Refreshing Player",
-                    Content = "Resetting your character...",
-                    Duration = 3,
-                })
-                LocalPlayer:LoadCharacter()
-            else
-                Fluent:Notify({
-                    Title = "Refresh Failed",
-                    Content = "Could not refresh your character. Please try again.",
-                    Duration = 5,
-                })
-            end
-        end,
-    })
     
     local hitboxToggle = MiscTab:AddToggle({
     Title = "Expand Hitboxes",
