@@ -61,7 +61,12 @@ if game.PlaceId == 10822399154 then
         Title = "Welcome To Akelaides!",
         Content = "Selamat Datang di Akelaides, Revengers Online. Karena ini \nmasih beta dan in progress, maaf kalo ada beberapa \nfitur yang tidak jalan baik. \n Jika ada bug atau error, silahkan dihubungi kepada discord kita."
     })
-    
+
+    Tabs.Main:AddParagraph({
+        Title = "lem is gay",
+        Content = "lem is gay \nlem is gay \nlem is gay \nlem is gay \nlem is gay \nlem is gay \nlem is gay \nlem is gay \nlem is gay \nlem is gay \nlem is gay \nlem is gay \nlem is gay..."
+    })
+
     local section = TeleportTab:AddSection("Teleport To Players")
 
     local Players = game:GetService("Players")
@@ -180,7 +185,13 @@ if game.PlaceId == 10822399154 then
         end,
     })
     
-    
+    Tabs.Miscellaneous:AddButton({
+        Title = "Infinite Yield",
+        Description = "Loads Infinite Yield",
+        Callback = function()
+            loadstring(game:HttpGet('https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source'))()
+        end
+    })
     
      
     
