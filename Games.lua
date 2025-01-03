@@ -164,43 +164,31 @@ if game.PlaceId == 10822399154 then
         end
     })
     
+    Tabs.Player:AddButton({
+        Title = "Refresh Player",
+        Description = "Respawns your character to reset it.",
+        Callback = function()
+            local Players = game:GetService("Players")
+            local LocalPlayer = Players.LocalPlayer
     
-    local hitboxToggle = MiscTab:AddToggle({
-    Title = "Expand Hitboxes",
-    Description = "Toggle expanded hitboxes for all players.",
-    Default = false
-})
-
-local function updateHitboxes(expanded)
-    local Players = game:GetService("Players")
-    local LocalPlayer = Players.LocalPlayer
-
-    for _, player in ipairs(Players:GetPlayers()) do
-        if player ~= LocalPlayer and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
-            local hitbox = player.Character:FindFirstChild("HumanoidRootPart")
-            if expanded then
-                hitbox.Size = Vector3.new(10, 10, 10)
-                hitbox.Transparency = 0.5
-                hitbox.CanCollide = false
+            if LocalPlayer and LocalPlayer.Character then
+                Fluent:Notify({
+                    Title = "Refreshing Player",
+                    Content = "Resetting your character...",
+                    Duration = 3,
+                })
+                LocalPlayer:LoadCharacter()
             else
-                hitbox.Size = Vector3.new(2, 2, 1) -- Default size (adjust if different)
-                hitbox.Transparency = 0
-                hitbox.CanCollide = true
+                Fluent:Notify({
+                    Title = "Refresh Failed",
+                    Content = "Could not refresh your character. Please try again.",
+                    Duration = 5,
+                })
             end
-        end
-    end
-
-    Fluent:Notify({
-        Title = expanded and "Hitboxes Expanded" or "Hitboxes Reset",
-        Content = expanded and "Player hitboxes have been expanded." or "Player hitboxes have been reset to default.",
-        Duration = 5
+        end,
     })
-end
-
-hitboxToggle.Changed:Connect(function(newValue)
-    updateHitboxes(newValue)
-end)
-
+    
+    
 
     Fluent:Notify({
         Title = "Akelaides",
