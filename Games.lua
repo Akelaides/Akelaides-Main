@@ -166,6 +166,7 @@ if game.PlaceId == 10822399154 then
 
     -- Slider to adjust the hitbox size
 -- Slider to adjust the hitbox size
+-- Slider to adjust the hitbox size
 local HitboxSlider = Tabs.Main:AddSlider("HitboxSlider", { 
     Title = "Adjust Hitbox Size", 
     Description = "Use this slider to adjust the hitbox size", 
@@ -191,7 +192,7 @@ local function updateHitboxes(expanded, size)
                     if part:IsA("Part") then
                         part.Size = part.Size * size -- Apply the slider value to adjust size
                         part.Transparency = 0.5
-                        part.CanCollide = false
+                        part.CanCollide = true  -- Ensure CanCollide is true to prevent phasing
                     end
                 end
             else
@@ -200,7 +201,7 @@ local function updateHitboxes(expanded, size)
                     if part:IsA("Part") then
                         part.Size = Vector3.new(2, 2, 1) -- Default size (adjust if different)
                         part.Transparency = 0
-                        part.CanCollide = true
+                        part.CanCollide = true  -- Keep CanCollide as true for default hitbox
                     end
                 end
             end
@@ -231,6 +232,7 @@ HitboxSlider.OnChanged = function(value)
     local expanded = Toggle:GetState()  -- Get the current state of the toggle (whether it's expanded or not)
     updateHitboxes(expanded, value)    -- Update hitboxes with the current toggle state and slider value
 end
+
 
 
     
