@@ -92,6 +92,7 @@ for _, obj in ipairs(Tabs.Teleportation:GetChildren()) do
 end
 
 -- Create the Dropdown
+-- Create the Dropdown (only once)
 local Dropdown = Tabs.Teleportation:AddDropdown("Dropdown", {
     Title = "Select Player",
     Values = getPlayerNames(),
@@ -99,27 +100,20 @@ local Dropdown = Tabs.Teleportation:AddDropdown("Dropdown", {
     Default = 1,
 })
 
--- Function to refresh dropdown values
+
 local function refreshDropdown()
     local updatedValues = getPlayerNames()
-    Dropdown:SetValues(updatedValues) -- Update the dropdown's values dynamically
+    Dropdown:SetValues(updatedValues) 
     if #updatedValues > 0 then
-        Dropdown:SetValue(updatedValues[1]) -- Set default to the first player if the list is not empty
+        Dropdown:SetValue(updatedValues[1]) 
     else
-        Dropdown:SetValue(nil) -- Clear selection if no players are available
+        Dropdown:SetValue(nil) 
     end
 end
 
--- Update Dropdown when players join or leave
-Players.PlayerAdded:Connect(function()
-    refreshDropdown()
-end)
+Players.PlayerAdded:Connect(refreshDropdown)
+Players.PlayerRemoving:Connect(refreshDropdown)
 
-Players.PlayerRemoving:Connect(function()
-    refreshDropdown()
-end)
-
--- Add Teleport Button
 Tabs.Teleportation:AddButton({
     Title = "Teleport to Player",
     Description = "Teleports you to the selected player.",
