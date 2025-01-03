@@ -96,6 +96,49 @@ if game.PlaceId == 10822399154 then
     end)
     
     -- Create Teleport Button
+    local Players = game:GetService("Players")
+    local LocalPlayer = Players.LocalPlayer
+    
+    -- Function to get the list of players' names
+    local function getPlayerNames()
+        local playerNames = {}
+        for _, player in ipairs(Players:GetPlayers()) do
+            if player ~= LocalPlayer then -- Exclude the local player from the list
+                table.insert(playerNames, player.Name)
+            end
+        end
+        return playerNames
+    end
+    
+    -- Create Dropdown
+    local Dropdown = Tabs.Teleportation:AddDropdown("Dropdown", {
+        Title = "Select Player",
+        Values = getPlayerNames(),
+        Multi = false,
+        Default = 1,
+    })
+    
+    -- Function to refresh dropdown values
+    local function refreshDropdown()
+        local updatedValues = getPlayerNames()
+        Dropdown:SetValues(updatedValues) -- Update the dropdown's values dynamically
+        if #updatedValues > 0 then
+            Dropdown:SetValue(updatedValues[1]) -- Set default to the first player if the list is not empty
+        else
+            Dropdown:SetValue(nil) -- Clear selection if no players are available
+        end
+    end
+    
+    -- Update Dropdown when players join or leave
+    Players.PlayerAdded:Connect(function()
+        refreshDropdown()
+    end)
+    
+    Players.PlayerRemoving:Connect(function()
+        refreshDropdown()
+    end)
+    
+    -- Add Teleport Button
     Tabs.Teleportation:AddButton({
         Title = "Teleport to Player",
         Description = "Teleports you to the selected player.",
@@ -136,6 +179,7 @@ if game.PlaceId == 10822399154 then
             end
         end,
     })
+    
     
     
      
