@@ -61,7 +61,7 @@ if game.PlaceId == 10822399154 then
         Title = "Welcome To Akelaides!",
         Content = "Selamat Datang di Akelaides, Revengers Online. Karena ini \nmasih beta dan in progress, maaf kalo ada beberapa \nfitur yang tidak jalan baik. \n Jika ada bug atau error, silahkan dihubungi kepada discord kita."
     })
-
+    local section = MainTab:AddSection("Others")
     Tabs.Main:AddParagraph({
         Title = "lem is gay",
         Content = "lem is gay \nlem is gay \nlem is gay \nlem is gay \nlem is gay \nlem is gay \nlem is gay \nlem is gay \nlem is gay \nlem is gay \nlem is gay \nlem is gay \nlem is gay..."
