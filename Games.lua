@@ -84,76 +84,74 @@ if game.PlaceId == 10822399154 then
     end
     
     -- Create Dropdown
-    -- Clean up any previous instances of the dropdown or UI
-for _, obj in ipairs(Tabs.Teleportation:GetChildren()) do
-    if obj:IsA("Instance") and obj.Name == "Dropdown" then
-        obj:Destroy()
+    local Dropdown = Tabs.Teleportation:AddDropdown("Dropdown", {
+        Title = "Player List",
+        Values = getPlayerNames(),
+        Multi = false,
+        Default = 1,
+    })
+    
+    -- Function to refresh dropdown values
+    local function refreshDropdown()
+        Dropdown.Values = getPlayerNames()
+        if #Dropdown.Values > 0 then
+            Dropdown:SetValue(Dropdown.Values[1]) -- Set default to the first player if the list is not empty
+        else
+            Dropdown:SetValue(nil) -- Clear selection if no players are available
+        end
     end
-end
-
--- Create the Dropdown
--- Create the Dropdown (only once)
-local Dropdown = Tabs.Teleportation:AddDropdown("Dropdown", {
-    Title = "Select Player",
-    Values = getPlayerNames(),
-    Multi = false,
-    Default = 1,
-})
-
-
-local function refreshDropdown()
-    local updatedValues = getPlayerNames()
-    Dropdown:SetValues(updatedValues) 
-    if #updatedValues > 0 then
-        Dropdown:SetValue(updatedValues[1]) 
-    else
-        Dropdown:SetValue(nil) 
-    end
-end
-
-Players.PlayerAdded:Connect(refreshDropdown)
-Players.PlayerRemoving:Connect(refreshDropdown)
-
-Tabs.Teleportation:AddButton({
-    Title = "Teleport to Player",
-    Description = "Teleports you to the selected player.",
-    Callback = function()
-        local selectedPlayerName = Dropdown.Value -- Get the currently selected player
-        if selectedPlayerName then
-            local selectedPlayer = Players:FindFirstChild(selectedPlayerName)
-            if selectedPlayer and selectedPlayer.Character and selectedPlayer.Character:FindFirstChild("HumanoidRootPart") then
-                -- Teleport the local player to the selected player's position
-                local targetPosition = selectedPlayer.Character.HumanoidRootPart.Position
-                if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
-                    LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(targetPosition)
-                    Fluent:Notify({
-                        Title = "Teleport Success",
-                        Content = "You have been teleported to " .. selectedPlayerName .. ".",
-                        Duration = 5,
-                    })
+    
+    -- Update Dropdown when players join or leave
+    Players.PlayerAdded:Connect(function()
+        refreshDropdown()
+    end)
+    
+    Players.PlayerRemoving:Connect(function()
+        refreshDropdown()
+    end)
+    
+    -- Add Teleport Button
+    Tabs.Teleportation:AddButton({
+        Title = "Teleport to Player",
+        Description = "Teleports you to the selected player.",
+        Callback = function()
+            local selectedPlayerName = Dropdown.Value -- Get the currently selected player
+            if selectedPlayerName then
+                local selectedPlayer = Players:FindFirstChild(selectedPlayerName)
+                if selectedPlayer and selectedPlayer.Character and selectedPlayer.Character:FindFirstChild("HumanoidRootPart") then
+                    -- Teleport the local player to the selected player's position
+                    local targetPosition = selectedPlayer.Character.HumanoidRootPart.Position
+                    if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
+                        LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(targetPosition)
+                        Fluent:Notify({
+                            Title = "Teleport Success",
+                            Content = "You have been teleported to " .. selectedPlayerName .. ".",
+                            Duration = 5,
+                        })
+                    else
+                        Fluent:Notify({
+                            Title = "Teleport Failed",
+                            Content = "Your character is missing its HumanoidRootPart.",
+                            Duration = 5,
+                        })
+                    end
                 else
                     Fluent:Notify({
                         Title = "Teleport Failed",
-                        Content = "Your character is missing its HumanoidRootPart.",
+                        Content = "Selected player's character is not valid for teleportation.",
                         Duration = 5,
                     })
                 end
             else
                 Fluent:Notify({
                     Title = "Teleport Failed",
-                    Content = "Selected player's character is not valid for teleportation.",
+                    Content = "No player selected!",
                     Duration = 5,
                 })
             end
-        else
-            Fluent:Notify({
-                Title = "Teleport Failed",
-                Content = "No player selected!",
-                Duration = 5,
-            })
-        end
-    end,
-})
+        end,
+    })
+    
 
     
     Tabs.Miscellaneous:AddButton({
