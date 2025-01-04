@@ -169,57 +169,86 @@ if game.PlaceId == 10822399154 then
 -- Slider to adjust the hitbox size
 local HitboxSlider = Tabs.Main:AddSlider("HitboxSlider", { 
     Title = "Adjust Hitbox Size", 
-    Description = "Use this slider to adjust the hitbox size", 
+    Description = "Use this slider to adjust the hitbox size for attacks", 
     Default = 2.0, 
-    Min = 0.0, 
-    Max = 15.5, 
+    Min = 1.0, 
+    Max = 15.0, 
     Rounding = 1 
 })
 
--- Function to update hitboxes based on the expanded state and size
+local Toggle = Tabs.Main:AddToggle("HitboxToggle", {
+    Title = "Enable Hitbox Expansion",
+    Default = false
+})
+
+local hitboxParts = {} -- Table to store visual hitbox parts
+
+-- Function to create or update the hitbox
 local function updateHitboxes(expanded, size)
     local Players = game:GetService("Players")
     local LocalPlayer = Players.LocalPlayer
 
     for _, player in ipairs(Players:GetPlayers()) do
         if player ~= LocalPlayer and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+            local humanoidRootPart = player.Character:FindFirstChild("HumanoidRootPart")
             local character = player.Character
 
-            -- Adjust the size of the hitbox (expand it or reset it)
             if expanded then
-                -- Expand hitbox size based on slider value
-                for _, part in ipairs(character:GetChildren()) do
-                    if part:IsA("Part") then
-                        part.Size = part.Size * size -- Apply the slider value to adjust size
-                        part.Transparency = 0.5
-                        part.CanCollide = true  -- Ensure CanCollide is true to prevent phasing
-                    end
+                -- Create a grey transparent box if it doesn't exist
+                if not hitboxParts[player] then
+                    local hitbox = Instance.new("Part")
+                    hitbox.Size = Vector3.new(size, size, size)
+                    hitbox.Transparency = 0.5 -- Semi-transparent
+                    hitbox.BrickColor = BrickColor.Gray() -- Grey color
+                    hitbox.Anchored = true
+                    hitbox.CanCollide = false
+                    hitbox.Name = "Hitbox"
+                    hitbox.Parent = character
+                    hitboxParts[player] = hitbox
                 end
+
+                -- Update the hitbox size and position
+                local hitbox = hitboxParts[player]
+                hitbox.Size = Vector3.new(size, size, size)
+                hitbox.CFrame = humanoidRootPart.CFrame
             else
-                -- Reset to default size
-                for _, part in ipairs(character:GetChildren()) do
-                    if part:IsA("Part") then
-                        part.Size = Vector3.new(2, 2, 1) -- Default size (adjust if different)
-                        part.Transparency = 0
-                        part.CanCollide = true  -- Keep CanCollide as true for default hitbox
-                    end
+                -- Remove the hitbox if it exists
+                if hitboxParts[player] then
+                    hitboxParts[player]:Destroy()
+                    hitboxParts[player] = nil
                 end
             end
         end
     end
 
     Fluent:Notify({
-        Title = expanded and "Hitboxes Expanded" or "Hitboxes Reset",
-        Content = expanded and "Player hitboxes have been expanded." or "Player hitboxes have been reset to default.",
+        Title = expanded and "Hitboxes Expanded" or "Hitboxes Hidden",
+        Content = expanded and ("Hitboxes expanded to size " .. size .. ".") or "Hitboxes have been hidden.",
         Duration = 5
     })
 end
 
--- Toggle for expanding hitboxes
-local Toggle = Tabs.Main:AddToggle("HitboxToggle", {
-    Title = "Expand Hitboxes",
-    Default = false
-})
+-- Connect slider to hitbox updates
+HitboxSlider:OnChanged(function(size)
+    if Toggle.Value then
+        updateHitboxes(true, size)
+    end
+end)
+
+-- Connect toggle to enable or disable hitbox expansion
+Toggle:OnChanged(function(expanded)
+    local size = HitboxSlider.Value
+    updateHitboxes(expanded, size)
+end)
+
+-- Cleanup on player removal
+game:GetService("Players").PlayerRemoving:Connect(function(player)
+    if hitboxParts[player] then
+        hitboxParts[player]:Destroy()
+        hitboxParts[player] = nil
+    end
+end)
+
 
 -- Adjust hitbox size when the toggle state changes
 Toggle:OnChanged(function(state)
