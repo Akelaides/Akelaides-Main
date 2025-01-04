@@ -193,20 +193,27 @@ local function updateHitboxes(expanded, size)
             local humanoidRootPart = player.Character.HumanoidRootPart
 
             if expanded then
-                -- Create a grey transparent box if it doesn't exist
+                -- Create a hitbox if it doesn't exist
                 if not hitboxParts[player] then
                     local hitbox = Instance.new("Part")
                     hitbox.Size = Vector3.new(size, size, size)
                     hitbox.Transparency = 0.5 -- Semi-transparent
                     hitbox.BrickColor = BrickColor.Gray() -- Grey color
-                    hitbox.Anchored = true
-                    hitbox.CanCollide = false
+                    hitbox.Anchored = false -- Ensure the box can be interacted with
+                    hitbox.CanCollide = false -- Disable physical collisions
+                    hitbox.Massless = true -- Reduce impact on physics
                     hitbox.Name = "Hitbox"
-                    hitbox.Parent = humanoidRootPart -- Attach the hitbox as a child of HumanoidRootPart
+                    hitbox.Parent = workspace -- Place the hitbox in the workspace
                     hitboxParts[player] = hitbox
+
+                    -- Weld the hitbox to the HumanoidRootPart
+                    local weld = Instance.new("WeldConstraint")
+                    weld.Part0 = humanoidRootPart
+                    weld.Part1 = hitbox
+                    weld.Parent = hitbox
                 end
 
-                -- Update the hitbox size and position
+                -- Update the hitbox size
                 local hitbox = hitboxParts[player]
                 hitbox.Size = Vector3.new(size, size, size)
                 hitbox.CFrame = humanoidRootPart.CFrame
@@ -248,11 +255,6 @@ game:GetService("Players").PlayerRemoving:Connect(function(player)
     end
 end)
 
-
-
-
-    
-    
 
     Fluent:Notify({
         Title = "Akelaides",
