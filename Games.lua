@@ -183,15 +183,14 @@ local Toggle = Tabs.Main:AddToggle("HitboxToggle", {
 
 local hitboxParts = {} -- Table to store visual hitbox parts
 
--- Function to create or update the hitbox
+-- Function to create or update the hitbox on HumanoidRootPart
 local function updateHitboxes(expanded, size)
     local Players = game:GetService("Players")
     local LocalPlayer = Players.LocalPlayer
 
     for _, player in ipairs(Players:GetPlayers()) do
         if player ~= LocalPlayer and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
-            local humanoidRootPart = player.Character:FindFirstChild("HumanoidRootPart")
-            local character = player.Character
+            local humanoidRootPart = player.Character.HumanoidRootPart
 
             if expanded then
                 -- Create a grey transparent box if it doesn't exist
@@ -203,7 +202,7 @@ local function updateHitboxes(expanded, size)
                     hitbox.Anchored = true
                     hitbox.CanCollide = false
                     hitbox.Name = "Hitbox"
-                    hitbox.Parent = character
+                    hitbox.Parent = humanoidRootPart -- Attach the hitbox as a child of HumanoidRootPart
                     hitboxParts[player] = hitbox
                 end
 
@@ -249,18 +248,6 @@ game:GetService("Players").PlayerRemoving:Connect(function(player)
     end
 end)
 
-
--- Adjust hitbox size when the toggle state changes
-Toggle:OnChanged(function(state)
-    local size = HitboxSlider.Value  -- Get the current slider value
-    updateHitboxes(state, size)  -- Pass the toggle state (expanded or not) and the slider size
-end)
-
--- Adjust hitbox size when the slider value changes
-HitboxSlider.OnChanged = function(value)
-    local expanded = Toggle:GetState()  -- Get the current state of the toggle (whether it's expanded or not)
-    updateHitboxes(expanded, value)    -- Update hitboxes with the current toggle state and slider value
-end
 
 
 
